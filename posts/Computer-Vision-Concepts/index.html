@@ -95,6 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -198,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-are-filters" class="level3">
 <h3 class="anchored" data-anchor-id="what-are-filters">What are filters ?</h3>
-<p>Filters are a way to alter the original image. Filters are smaller matrix that are multiplied with larger matrix in a left to right fashion (like a <em>torch</em>), for e.g., to result in a different matrix. The resultant matrix will have different pixel values at certain places which will result in altering the source image. This can be inferred as a small convolution operation.</p>
+<p>Filters are a way to alter the original image. Filters are smaller matrix that are multiplied with larger matrix in a left to right fashion (like a <em>torch</em>), for e.g., to result in a different matrix. The resultant matrix will have different pixel values at certain places which will result in altering the source image. This can be inferred as a small convolution operation. They are also termed as Kernels</p>
 </section>
 <section id="standard-type-of-filters" class="level3">
 <h3 class="anchored" data-anchor-id="standard-type-of-filters">Standard type of filters ?</h3>
@@ -210,32 +212,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="example-functioning-of-filters" class="level4">
 <h4 class="anchored" data-anchor-id="example-functioning-of-filters">Example functioning of Filters</h4>
 <div class="cell" data-tags="[]" data-execution_count="22">
+<details>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.ndimage <span class="im">import</span> convolve</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.pyplot <span class="im">import</span> imread</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell" data-tags="[]" data-execution_count="97">
+<details>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">"/Users/kashmkj/fastai_repo_22/kashish18.github.io/"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>image_profile <span class="op">=</span> imread(path<span class="op">+</span><span class="st">"/profile.jpg"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(image_profile)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell" data-tags="[]" data-execution_count="98">
+<details>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Edge <span class="op">=</span> np.array(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>     [<span class="dv">1</span>,<span class="op">-</span><span class="dv">8</span>,<span class="dv">1</span>],</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>     [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>]], dtype<span class="op">=</span>np.float64) <span class="co"># Filter Matrix</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Image_channel <span class="op">=</span> []</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell" data-tags="[]" data-execution_count="99">
+<details>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We have 3 channels since it's a colored image, hence we loop over 3 times.</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># convolve(array_input, filter) will do the convolution operation, i.e., </span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># multiply input image for each channel with the filter matrix</span></span>
@@ -246,11 +259,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.dstack((Image_channel[<span class="dv">0</span>], Image_channel[<span class="dv">1</span>], Image_channel[<span class="dv">2</span>]))</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell" data-tags="[]" data-execution_count="101">
+<details>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of output image = "</span> <span class="op">+</span> <span class="bu">str</span>(img.shape))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of input image = "</span> <span class="op">+</span> <span class="bu">str</span>(image_profile.shape))</span>
@@ -258,6 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Length of Image channel = "</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(Image_channel)))</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of each Image Channel = "</span> <span class="op">+</span> <span class="bu">str</span>(Image_channel[<span class="dv">0</span>].shape))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Shape of output image = (960, 640, 3)
 Shape of input image = (960, 640, 3)
@@ -285,8 +302,76 @@ from PIL.ImageFilter import (BLUR, CONTOUR, EDGE_ENHANCE...)</code></pre>
 <h3 class="anchored" data-anchor-id="what-is-a-convolutional-neural-netowork">What is a convolutional Neural netowork ?</h3>
 <p>Convolution combined with a feed forward network is called CNN. We applied convolution to N*M matrix.</p>
 <p>Then we flatten the image to 1D( 1 * ( N * M ) ) and apply the normal feed forward neural network.</p>
+</section>
+<section id="what-is-padding" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-padding">What is Padding ?</h3>
+<p>Adding additional rows/columns to the image arrays. This is usually done symmetrically. Zero-padding means adding Zeroes (i.e., black) pixels to the boundary of images. (1) This can be sometimes required when you don’t want to reduce the size of the output matrix once the filter is applied. For E.g., Input 100 * 100 matrix is multipled by 3 * 3 filter -&gt; Resultant is 98 * 98 matrix. But if you want to keep the input image intact, you can add padding to the input image to make it 102 * 102. (2) This is also useful to provide all pixels equal importance, mainly the Edges of the image which are only multiplied with the filter twice, as compared to the inner regions which are multiplied three or more times.</p>
+</section>
+<section id="what-is-stride" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-stride">What is Stride ?</h3>
+<p>Stride is a parameter of the neural network’s filter that modifies the amount of movement over the image. Stride of 2 means the filter moves two pixels ahead, that is, 1 pixel is ignored. Stride of 1 is the default movement for filter, in which case no pixel is ignored.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/6aca67e6-7ba8-4678-a9d8-4691501cc5f8-1-393be281-8f25-47bb-bfcb-d33ff22cede3.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Stride</figcaption>
+</figure>
+</div>
+</section>
+<section id="what-is-pooling" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-pooling">What is Pooling ?</h3>
+<p>Also type of sub-sampling, used to reduce the size of input image in multiplicative way. Max, Average and Min Pooling are two common type of pooling. In MaxPooling, the maximum value of the resultant 3 * 3 snapshot will be taken as the output pixel for that area.</p>
+</section>
+<section id="what-is-a-feature-map" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-a-feature-map">What is a feature map ?</h3>
+<p>Output of the convolution after doing all the operations like pooling, stride, padding, is called a feature map. This feature map is passed through an activation function like ReLU, and called an activation map.</p>
+</section>
+<section id="a-simple-cnn-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="a-simple-cnn-architecture">A Simple CNN Architecture</h2>
+<section id="what-is-inside-a-single-convolution-layer" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-inside-a-single-convolution-layer">What is inside a single convolution layer ?</h3>
+<ol type="1">
+<li>Image (RGB channels) is multiplied with (2) Kernel/Filters to produce a (3) convoluted matrix, also called feature map. This matrix is passed (4) to an activation function like ReLU to create an activation map, and (5) Pooling is applied on the resultant matrix. This new feature map will be input to the 2nd convolution layer.</li>
+</ol>
+<p>Once the image has gone through N Convolution layers, it is flattened to feed into the fully connected neural network, which will then perform classification. Here, the learnable parameters weights are Filters. So, the filter weights are updated during backpropagation.</p>
+</section>
+<section id="what-is-transfer-learning" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-transfer-learning">What is Transfer Learning ?</h3>
+<p>Model utilising the knowledge of a pre-trained model (which was trained for a task), to train a new similar task. Popularly used in both CNN, &amp; NLP.</p>
+<div class="cell" data-tags="[]" data-execution_count="114">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>latex</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>\nabla \cdot \vec{\mathbf{E}} <span class="op">&amp;</span> <span class="op">=</span> <span class="dv">4</span> \pi \rho \<span class="op">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>\nabla \times \vec{\mathbf{E}}\, <span class="op">+</span>\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} <span class="op">&amp;</span> <span class="op">=</span> \vec{\mathbf{<span class="dv">0</span>}} \<span class="op">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>\nabla \cdot \vec{\mathbf{B}} <span class="op">&amp;</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>\end{align}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><span class="math display">\[\begin{align}
+\nabla \cdot \vec{\mathbf{E}} &amp; = 4 \pi \rho \\
+\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} &amp; = \vec{\mathbf{0}} \\
+\nabla \cdot \vec{\mathbf{B}} &amp; = 0
+\end{align}\]</span></p>
+</div>
+</div>
+<div class="cell" data-tags="[]" data-execution_count="112">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>latex</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>\mathbf{B} <span class="op">&amp;</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>\end{align}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><span class="math display">\[\begin{align}
+\{B} &amp; = 0
+\end{align}\]</span></p>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
