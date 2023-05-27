@@ -9,9 +9,9 @@
   {
     "objectID": "posts/Hello-World-Example/index.html",
     "href": "posts/Hello-World-Example/index.html",
-    "title": "Creating a Blog Post using a Jupyter Notebook",
+    "title": "Creating a Hello World Post using a Jupyter Notebook",
     "section": "",
-    "text": "print(\"Hello kashish\")"
+    "text": "print(\"Hello kashish\")\n\nHello kashish"
   },
   {
     "objectID": "posts/welcome/index.html",
@@ -25,7 +25,7 @@
     "href": "index.html",
     "title": "kashish18.github.io",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\n  \n\n\n\n\nCreating a Blog Post using a Jupyter Notebook\n\n\n\n\n\n\n\nblogging\n\n\nquarto\n\n\njupyter\n\n\n\n\n\n\n\n\n\n\n\nOct 18, 2022\n\n\nChristian Wittmann\n\n\n\n\n\n\nNo matching items"
+    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nCreating a Hello World Post using a Jupyter Notebook\n\n\n\n\n\n\n\nblogging\n\n\nquarto\n\n\njupyter\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

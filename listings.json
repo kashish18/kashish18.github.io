@@ -3,8 +3,8 @@
     "listing": "/index.html",
     "items": [
       "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html",
-      "/posts/Hello-World-Example/index.html"
+      "/posts/Hello-World-Example/index.html",
+      "/posts/welcome/index.html"
     ]
   }
 ]
