@@ -2,9 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Computer-Vision-Concepts/Example.html",
-      "/posts/post-with-code/index.html",
-      "/posts/Hello-World-Example/index.html",
       "/posts/Computer-Vision-Concepts/index.html",
       "/posts/welcome/index.html"
     ]

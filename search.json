@@ -1,31 +1,10 @@
 [
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code."
-  },
-  {
-    "objectID": "posts/Hello-World-Example/index.html",
-    "href": "posts/Hello-World-Example/index.html",
-    "title": "Creating a Hello World Post using a Jupyter Notebook",
-    "section": "",
-    "text": "print(\"Hello kashish\")\n\nHello kashish"
-  },
-  {
     "objectID": "posts/welcome/index.html",
     "href": "posts/welcome/index.html",
     "title": "Welcome To My Blog",
     "section": "",
     "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "posts/Computer-Vision-Concepts/Example.html",
-    "href": "posts/Computer-Vision-Concepts/Example.html",
-    "title": "kashish18.github.io",
-    "section": "",
-    "text": "2+2\n\n4"
   },
   {
     "objectID": "posts/Computer-Vision-Concepts/index.html",
@@ -39,14 +18,14 @@
     "href": "posts/Computer-Vision-Concepts/index.html#a-simple-cnn-architecture",
     "title": "Computer Vision - Concepts",
     "section": "A Simple CNN Architecture",
-    "text": "A Simple CNN Architecture\n\nWhat is inside a single convolution layer ?\n\nImage (RGB channels) is multiplied with (2) Kernel/Filters to produce a (3) convoluted matrix, also called feature map. This matrix is passed (4) to an activation function like ReLU to create an activation map, and (5) Pooling is applied on the resultant matrix. This new feature map will be input to the 2nd convolution layer.\n\nOnce the image has gone through N Convolution layers, it is flattened to feed into the fully connected neural network, which will then perform classification. Here, the learnable parameters weights are Filters. So, the filter weights are updated during backpropagation.\n\n\nWhat is Transfer Learning ?\nModel utilising the knowledge of a pre-trained model (which was trained for a task), to train a new similar task. Popularly used in both CNN, & NLP.\n\n\nShow the code\n%%latex\n\\begin{align}\n\\nabla \\cdot \\vec{\\mathbf{E}} & = 4 \\pi \\rho \\\\\n\\nabla \\times \\vec{\\mathbf{E}}\\, +\\, \\frac1c\\, \\frac{\\partial\\vec{\\mathbf{B}}}{\\partial t} & = \\vec{\\mathbf{0}} \\\\\n\\nabla \\cdot \\vec{\\mathbf{B}} & = 0\n\\end{align}\n\n\n\\[\\begin{align}\n\\nabla \\cdot \\vec{\\mathbf{E}} & = 4 \\pi \\rho \\\\\n\\nabla \\times \\vec{\\mathbf{E}}\\, +\\, \\frac1c\\, \\frac{\\partial\\vec{\\mathbf{B}}}{\\partial t} & = \\vec{\\mathbf{0}} \\\\\n\\nabla \\cdot \\vec{\\mathbf{B}} & = 0\n\\end{align}\\]\n\n\n\n\nShow the code\n%%latex\n\\begin{align}\n\\mathbf{B} & = 0\n\\end{align}\n\n\n\\[\\begin{align}\n\\{B} & = 0\n\\end{align}\\]"
+    "text": "A Simple CNN Architecture\n\nWhat is inside a single convolution layer ?\n\nImage (RGB channels) is multiplied with (2) Kernel/Filters to produce a (3) convoluted matrix, also called feature map. This matrix is passed (4) to an activation function like ReLU to create an activation map, and (5) Pooling is applied on the resultant matrix. This new feature map will be input to the 2nd convolution layer.\n\nOnce the image has gone through N Convolution layers, it is flattened to feed into the fully connected neural network, which will then perform classification. Here, the learnable parameters weights are Filters. So, the filter weights are updated during backpropagation.\n\n\nWhat is Transfer Learning ?\nModel utilising the knowledge of a pre-trained model (which was trained for a task), to train a new similar task. Popularly used in both CNN, & NLP.\n\n\nShow the code\n%%latex\n\\begin{align}\n\\nabla \\cdot \\vec{\\mathbf{E}} & = 4 \\pi \\rho \\\\\n\\nabla \\times \\vec{\\mathbf{E}}\\, +\\, \\frac1c\\, \\frac{\\partial\\vec{\\mathbf{B}}}{\\partial t} & = \\vec{\\mathbf{0}} \\\\\n\\nabla \\cdot \\vec{\\mathbf{B}} & = 0\n\\end{align}\n\n\n\\[\\begin{align}\n\\nabla \\cdot \\vec{\\mathbf{E}} & = 4 \\pi \\rho \\\\\n\\nabla \\times \\vec{\\mathbf{E}}\\, +\\, \\frac1c\\, \\frac{\\partial\\vec{\\mathbf{B}}}{\\partial t} & = \\vec{\\mathbf{0}} \\\\\n\\nabla \\cdot \\vec{\\mathbf{B}} & = 0\n\\end{align}\\]\n\n\n\n\nShow the code\n9\n\n\n9\n\n\n\n\nShow the code\n%%latex\n\\begin{align}\n\\mathbf{B} & = 0\n\\end{align}\n\n\n\\[\\begin{align}\n\\{B} & = 0\n\\end{align}\\]"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "kashish18.github.io",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nCreating a Hello World Post using a Jupyter Notebook\n\n\n\n\n\n\n\nblogging\n\n\nquarto\n\n\njupyter\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nComputer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Computer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
