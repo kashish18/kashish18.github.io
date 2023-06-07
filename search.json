@@ -1,5 +1,75 @@
 [
   {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "",
+    "text": "There are several blogs already present that provide detail on OneHotEncoding, LabelEncoding, etc. This blog will strictly focus on Encoding 1 or multiple columns of the dataframe in a single go. To achieve this, we use sklearn’s ColumnTransformer API."
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#this-blog-focuses-on-encoding-columns-in-a-dataframe",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#this-blog-focuses-on-encoding-columns-in-a-dataframe",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "",
+    "text": "There are several blogs already present that provide detail on OneHotEncoding, LabelEncoding, etc. This blog will strictly focus on Encoding 1 or multiple columns of the dataframe in a single go. To achieve this, we use sklearn’s ColumnTransformer API."
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#installing-libraries",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#installing-libraries",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Installing Libraries",
+    "text": "Installing Libraries\n\nimport pandas as pd\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.preprocessing import OrdinalEncoder, OneHotEncoder"
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#lets-create-a-dummy-dataframe",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#lets-create-a-dummy-dataframe",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Let’s create a dummy dataframe",
+    "text": "Let’s create a dummy dataframe\n\nemployees_df = pd.DataFrame({\n    'field': ['Tech', 'Finance', 'HR', 'Marketing', 'Sales','BioTech'],\n    'salary': ['high', 'high', 'low', 'medium', 'medium', 'high'],\n    'avg_years_of_exp': [4, 6, 5, 8, 8, 10],\n    'gender_category': ['Male', 'Female', 'Female', 'Male', 'Male', 'Female'], # max(Male, Female) gender for each field  \n})\n\n\nDepartment, and higher_gender_category are non-ordinal categorical features\nsalary is an ordinal categorical feature\navg_years_of_exp looks like a categorical feature as well, but when considering the bigger picture, where we would have thousands of records, and maybe in floating point data types, will not be treated as a categorical feature. We can create a year_experice_range column containing different range of experience (For E.g., 0-3, 4-6, etc.) and treat that as a categorical feature. But we will ignore that for now."
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-ordinal-feature-and-ordinalencoder",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-ordinal-feature-and-ordinalencoder",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Creating Ordinal Feature and OrdinalEncoder",
+    "text": "Creating Ordinal Feature and OrdinalEncoder\n\nordinal_feature = ['salary']\nordinal_transformer = OrdinalEncoder()"
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-non-ordinal-feature-and-onehotencoder",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-non-ordinal-feature-and-onehotencoder",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Creating Non Ordinal Feature and OneHotEncoder",
+    "text": "Creating Non Ordinal Feature and OneHotEncoder\n\nnon_ordinal_categorical_features = ['field', 'gender_category']\nnon_ordinal_categorical_transformer = OneHotEncoder(handle_unknown=\"ignore\")"
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-column-transformer",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-column-transformer",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Creating Column Transformer",
+    "text": "Creating Column Transformer\nWe provide data for ordinal_transformer & non_ordinal_categorical_transformer\n\ncolumn_transformer = ColumnTransformer(transformers=[\n    ('ordinal', ordinal_transformer, ordinal_feature),\n    ('non_ordinal_category', non_ordinal_categorical_transformer, non_ordinal_categorical_features)],\n                                      remainder='drop')\n\n\nremainder='drop' will drop all the remaining columns which do not required to be transformed. If you want to keep the remaining columns as it is, you may provide remainder='passthrough\n\n\npd.DataFrame(column_transformer.fit_transform(employees_df))\n\n\n\n\n\n\n\n\n0\n1\n2\n3\n4\n5\n6\n7\n8\n\n\n\n\n0\n0.0\n0.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n1.0\n\n\n1\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n\n\n2\n1.0\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n1.0\n0.0\n\n\n3\n2.0\n0.0\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n1.0\n\n\n4\n2.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n0.0\n1.0\n\n\n5\n0.0\n1.0\n0.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n\n\n\n\n\n\n\nAs you can see, we are not really able to comprehend which column represents what value from the original dataframe. To compensate for it, we will just perform a couple of tweeks."
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-the-final-transformer-with-columns-intact-and-understandable",
+    "href": "posts/Data-preprocessing-Feature-Engineering/column_encoding.html#creating-the-final-transformer-with-columns-intact-and-understandable",
+    "title": "Encoding Columns in a DataFrame",
+    "section": "Creating the final Transformer with Columns intact and understandable",
+    "text": "Creating the final Transformer with Columns intact and understandable\n\nnon_ordinal_categorical_transformer = OneHotEncoder(sparse_output=False, handle_unknown=\"ignore\") # New code added\n\n# Note: sparse_output=False is required to preserve column orders and provide a prefix for the columns. \n\ncolumn_transformer = ColumnTransformer(transformers=[\n    ('ordinal', ordinal_transformer, ordinal_feature),\n    ('non_ordinal_category', non_ordinal_categorical_transformer, non_ordinal_categorical_features)],\n                                      remainder='drop') # This remains same\n\ncolumn_transformer.set_output(transform='pandas') # New code added\n\nColumnTransformer(transformers=[('ordinal', OrdinalEncoder(), ['salary']),\n                                ('non_ordinal_category',\n                                 OneHotEncoder(handle_unknown='ignore',\n                                               sparse_output=False),\n                                 ['field', 'gender_category'])])In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.ColumnTransformerColumnTransformer(transformers=[('ordinal', OrdinalEncoder(), ['salary']),\n                                ('non_ordinal_category',\n                                 OneHotEncoder(handle_unknown='ignore',\n                                               sparse_output=False),\n                                 ['field', 'gender_category'])])ordinal['salary']OrdinalEncoderOrdinalEncoder()non_ordinal_category['field', 'gender_category']OneHotEncoderOneHotEncoder(handle_unknown='ignore', sparse_output=False)\n\n\n\ndf_pandas = column_transformer.fit_transform(employees_df)\ndf_pandas\n\n\n\n\n\n\n\n\nordinal__salary\nnon_ordinal_category__field_BioTech\nnon_ordinal_category__field_Finance\nnon_ordinal_category__field_HR\nnon_ordinal_category__field_Marketing\nnon_ordinal_category__field_Sales\nnon_ordinal_category__field_Tech\nnon_ordinal_category__gender_category_Female\nnon_ordinal_category__gender_category_Male\n\n\n\n\n0\n0.0\n0.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n1.0\n\n\n1\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n\n\n2\n1.0\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n1.0\n0.0\n\n\n3\n2.0\n0.0\n0.0\n0.0\n1.0\n0.0\n0.0\n0.0\n1.0\n\n\n4\n2.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0\n0.0\n1.0\n\n\n5\n0.0\n1.0\n0.0\n0.0\n0.0\n0.0\n0.0\n1.0\n0.0"
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/index.html",
+    "href": "posts/Data-preprocessing-Feature-Engineering/index.html",
+    "title": "Handling Missing Values",
+    "section": "",
+    "text": "A dataset can have columns containing null values, and these arise from 3 reasons : (1) Missing Complete at Random, (2) Missing at Random, (3) Missing Not at Random. Null values in case of (1) and (2) are not useful for insights and inferences, and should be replaced/imputed with some other value. The some other value depends on multiple factors. We will focus on numerical and categorical columns with missing values as part of the current blog.\nWe can hanlde missing values by any of the below techniques:\n\nDropping rows or columns - This can lead to missing out of valuable information in the data. Most often, not a suggested approach. Listwise Deletion, is another form of dropping rows containing missing values.\nReplacing missing values with mean or median, i.e., P50 (for continuous data) - Effect of outliers will can play a role in replacing with mean. Replacing the values with median, is a good option.\nReplacing missing values with mode (for categorical) - This is only for categorical , and may or may not work depending on the dataset you’re dealing with. This completely ignores the affect of features (i.e., feature importance and tree interpretation) have on the target variables.\nReplacing missing values using KNN model - The k nearest neighbor algorithm is often used to impute a missing value based on how closely it resembles the points in the training set. The non-null features are used to predict the features having null values\nMultiVariate Imputation - It suggests imputing the null values based on the other columns in the dataset. It therefore assumes that data (or features) with missing values have some sort of relation with the non-missing feature columns. This is also called Multiple Imputation by Chained Equation."
+  },
+  {
+    "objectID": "posts/Data-preprocessing-Feature-Engineering/index.html#this-blog-focuses-on-handling-missing-values-in-the-dataframe.",
+    "href": "posts/Data-preprocessing-Feature-Engineering/index.html#this-blog-focuses-on-handling-missing-values-in-the-dataframe.",
+    "title": "Handling Missing Values",
+    "section": "",
+    "text": "A dataset can have columns containing null values, and these arise from 3 reasons : (1) Missing Complete at Random, (2) Missing at Random, (3) Missing Not at Random. Null values in case of (1) and (2) are not useful for insights and inferences, and should be replaced/imputed with some other value. The some other value depends on multiple factors. We will focus on numerical and categorical columns with missing values as part of the current blog.\nWe can hanlde missing values by any of the below techniques:\n\nDropping rows or columns - This can lead to missing out of valuable information in the data. Most often, not a suggested approach. Listwise Deletion, is another form of dropping rows containing missing values.\nReplacing missing values with mean or median, i.e., P50 (for continuous data) - Effect of outliers will can play a role in replacing with mean. Replacing the values with median, is a good option.\nReplacing missing values with mode (for categorical) - This is only for categorical , and may or may not work depending on the dataset you’re dealing with. This completely ignores the affect of features (i.e., feature importance and tree interpretation) have on the target variables.\nReplacing missing values using KNN model - The k nearest neighbor algorithm is often used to impute a missing value based on how closely it resembles the points in the training set. The non-null features are used to predict the features having null values\nMultiVariate Imputation - It suggests imputing the null values based on the other columns in the dataset. It therefore assumes that data (or features) with missing values have some sort of relation with the non-missing feature columns. This is also called Multiple Imputation by Chained Equation."
+  },
+  {
     "objectID": "posts/welcome/index.html",
     "href": "posts/welcome/index.html",
     "title": "Welcome To My Blog",
@@ -25,7 +95,7 @@
     "href": "index.html",
     "title": "kashish18.github.io",
     "section": "",
-    "text": "Computer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Encoding Columns in a DataFrame\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nJun 8, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nHandling Missing Values\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nComputer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMay 24, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Data-preprocessing-Feature-Engineering/column_encoding.html",
+      "/posts/Data-preprocessing-Feature-Engineering/index.html",
       "/posts/Computer-Vision-Concepts/index.html",
       "/posts/welcome/index.html"
     ]
