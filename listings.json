@@ -2,8 +2,6 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/HuggingFace/Untitled1.html",
-      "/posts/HuggingFace/Untitled.html",
       "/posts/HuggingFace/Stable_Diffusion_Mac_M2.html",
       "/posts/NLP/index.html",
       "/posts/Data-preprocessing-Feature-Engineering/column_encoding.html",
