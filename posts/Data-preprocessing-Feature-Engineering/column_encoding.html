@@ -187,10 +187,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="this-blog-focuses-on-encoding-columns-in-a-dataframe" class="level2">
 <h2 class="anchored" data-anchor-id="this-blog-focuses-on-encoding-columns-in-a-dataframe">This blog focuses on Encoding columns in a dataframe</h2>
 <p>There are several blogs already present that provide detail on OneHotEncoding, LabelEncoding, etc. This blog will strictly focus on Encoding 1 or multiple columns of the dataframe in a single go. To achieve this, we use sklearn’s ColumnTransformer API.</p>
+<p>Let’s start with Installing the necessary libraries..</p>
 </section>
 <section id="installing-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="installing-libraries">Installing Libraries</h2>
-<div class="cell" data-tags="[]" data-execution_count="9">
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;subslide&quot;}" data-tags="[]" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OrdinalEncoder, OneHotEncoder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -198,7 +199,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="lets-create-a-dummy-dataframe" class="level2">
 <h2 class="anchored" data-anchor-id="lets-create-a-dummy-dataframe">Let’s create a dummy dataframe</h2>
-<div class="cell" data-tags="[]" data-execution_count="7">
+<p>We will create a dataframe name <code>employee_df</code> with columns <code>field</code>, <code>salary, avg_years_of_exp</code>, and <code>gender_category</code>. Column <code>gender_category</code> will have one of either Male/Female whichever has the highest proportion in that particular field.</p>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;subslide&quot;}" data-tags="[]" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>employees_df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'field'</span>: [<span class="st">'Tech'</span>, <span class="st">'Finance'</span>, <span class="st">'HR'</span>, <span class="st">'Marketing'</span>, <span class="st">'Sales'</span>,<span class="st">'BioTech'</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'salary'</span>: [<span class="st">'high'</span>, <span class="st">'high'</span>, <span class="st">'low'</span>, <span class="st">'medium'</span>, <span class="st">'medium'</span>, <span class="st">'high'</span>],</span>
@@ -207,14 +209,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ol type="1">
-<li><code>Department</code>, and <code>higher_gender_category</code> are non-ordinal categorical features</li>
+<li><code>field</code>, and <code>gender_category</code> are non-ordinal categorical features</li>
 <li><code>salary</code> is an ordinal categorical feature</li>
 <li><code>avg_years_of_exp</code> looks like a categorical feature as well, but when considering the bigger picture, where we would have thousands of records, and maybe in floating point data types, will not be treated as a categorical feature. We can create a year_experice_range column containing different range of experience (For E.g., 0-3, 4-6, etc.) and treat that as a categorical feature. But we will ignore that for now.</li>
 </ol>
 </section>
 <section id="creating-ordinal-feature-and-ordinalencoder" class="level2">
 <h2 class="anchored" data-anchor-id="creating-ordinal-feature-and-ordinalencoder">Creating Ordinal Feature and OrdinalEncoder</h2>
-<div class="cell" data-tags="[]" data-execution_count="6">
+<p>Ordinal related to a column which can be thought of as a categorical one, but with a maintained sequencing or hierarchy. For instance, (1) <code>Rank</code> 1,2, or 3 ; (2) <code>Salary</code> as high, low, or medium; (3) <code>height</code> as tall, taller, tallest and so on.</p>
+<div class="cell" data-slideshow="{&quot;slide_type&quot;:&quot;fragment&quot;}" data-tags="[]" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ordinal_feature <span class="op">=</span> [<span class="st">'salary'</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ordinal_transformer <span class="op">=</span> OrdinalEncoder()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
