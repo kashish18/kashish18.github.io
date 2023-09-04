@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+<meta name="dcterms.date" content="2023-06-04">
+
+<title>kashish18.github.io - Customer Sentiment Analysis - Using Bidirectional LSTM : PGP Guided Project</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">kashish18.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Customer Sentiment Analysis - Using Bidirectional LSTM : PGP Guided Project</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Deep Learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 4, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="part-a" class="level1">
+<h1>PART A</h1>
+<p>Build a sequential NLP classifier which can use input text parameters to determine the customer sentiments</p>
+<section id="importing-libraries-and-setup" class="level2">
+<h2 class="anchored" data-anchor-id="importing-libraries-and-setup">Importing libraries and setup</h2>
+<div class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.datasets <span class="im">import</span> imdb</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.preprocessing <span class="im">import</span> sequence</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.utils <span class="im">import</span> to_categorical</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> models</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras <span class="im">import</span> layers</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.utils <span class="im">import</span> pad_sequences</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Sequential</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Embedding, Flatten, Dense</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tf.config.list_physical_devices()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>[PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'),
+ PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.expand_frame_repr'</span>, <span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q1.-import-and-analyse-the-data-set" class="level2">
+<h2 class="anchored" data-anchor-id="q1.-import-and-analyse-the-data-set">Q1. Import and analyse the data set</h2>
+<p>Importing the dataset from keras.datasets and instantiating the top 10000 words</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>most_frequent_words <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(x_train, y_train), (x_test, y_test) <span class="op">=</span> imdb.load_data(num_words<span class="op">=</span>most_frequent_words)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x_train.shape, x_test.shape, y_train.shape, y_test.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>((25000,), (25000,), (25000,), (25000,))</code></pre>
+</div>
+</div>
+</section>
+<section id="q2.-perform-relevant-sequence-adding-on-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="q2.-perform-relevant-sequence-adding-on-the-data">Q2. Perform relevant sequence adding on the data</h2>
+<p>We’ll vectorize using one hot encoding and create a feature for the one hot encoded strings</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> one_hot_encode(sequences, dimension <span class="op">=</span> <span class="dv">10000</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> np.zeros((<span class="bu">len</span>(sequences), dimension))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, sequence <span class="kw">in</span> <span class="bu">enumerate</span>(sequences):</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        results[i, sequence] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>whole_data <span class="op">=</span> np.concatenate((x_train, x_test), axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> np.concatenate((y_train, y_test), axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Categories:"</span>, np.unique(label))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of unique words:"</span>, <span class="bu">len</span>(np.unique(np.hstack(whole_data))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Categories: [0 1]
+Number of unique words: 9998</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>length <span class="op">=</span> [<span class="bu">len</span>(i) <span class="cf">for</span> i <span class="kw">in</span> whole_data]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Average Review length:"</span>, np.mean(length))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Standard Deviation:"</span>, <span class="bu">round</span>(np.std(length)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Average Review length: 234.75892
+Standard Deviation: 173</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>feature_ohe <span class="op">=</span> one_hot_encode(whole_data)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> np.array(label).astype(<span class="st">"float32"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q3.-perform-following-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="q3.-perform-following-data-analysis">Q3. Perform following data analysis</h2>
+<ol type="1">
+<li>Print shape of features and labels</li>
+<li>Print value of any one feature and it’s label</li>
+</ol>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>whole_data.shape, label.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>((50000,), (50000,))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Feature first = </span><span class="sc">{</span>feature_ohe<span class="sc">}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'label first = </span><span class="sc">{</span>label[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Feature first = [[0. 1. 1. ... 0. 0. 0.]
+ [0. 1. 1. ... 0. 0. 0.]
+ [0. 1. 1. ... 0. 0. 0.]
+ ...
+ [0. 1. 1. ... 0. 0. 0.]
+ [0. 1. 1. ... 0. 0. 0.]
+ [0. 1. 1. ... 0. 0. 0.]] 
+
+label first = 1.0</code></pre>
+</div>
+</div>
+</section>
+<section id="q4.-decode-the-feature-value-to-get-original-sentence" class="level2">
+<h2 class="anchored" data-anchor-id="q4.-decode-the-feature-value-to-get-original-sentence">Q4. Decode the feature value to get original sentence</h2>
+<div class="cell" data-scrolled="true" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(x_train)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(x_train[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>218</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>vocab_index <span class="op">=</span> imdb.get_word_index()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>vocab_index <span class="op">=</span> { key:(value <span class="op">+</span> <span class="dv">3</span>) <span class="cf">for</span> key, value <span class="kw">in</span> vocab_index.items() }</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>vocab_index[<span class="st">''</span>] <span class="op">=</span> <span class="dv">0</span>                                                    <span class="co"># Padding</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>vocab_index[<span class="st">'&gt;'</span>] <span class="op">=</span> <span class="dv">1</span>                                                   <span class="co"># Start</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>vocab_index[<span class="st">'?'</span>] <span class="op">=</span> <span class="dv">2</span>                                                   <span class="co"># Unknown word</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>reverse_word_dict <span class="op">=</span> { value:key <span class="cf">for</span> key, value <span class="kw">in</span> vocab_index.items() }</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>reverse_vocab_index <span class="op">=</span> <span class="bu">dict</span>([(value, key) <span class="cf">for</span> (key, value) <span class="kw">in</span> vocab_index.items()]) </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">' '</span>.join(reverse_word_dict[<span class="bu">id</span>] <span class="cf">for</span> <span class="bu">id</span> <span class="kw">in</span> x_train[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>"&gt; this has to be one of the worst films of the 1990s when my friends i were watching this film being the target audience it was aimed at we just sat watched the first half an hour with our jaws touching the floor at how bad it really was the rest of the time everyone else in the theatre just started talking to each other leaving or generally crying into their popcorn that they actually paid money they had ? working to watch this feeble excuse for a film it must have looked like a great idea on paper but on film it looks like no one in the film has a clue what is going on crap acting crap costumes i can't get across how ? this is to watch save yourself an hour a bit of your life"</code></pre>
+</div>
+</div>
+</section>
+<section id="q5.-design-train-tune-and-test-a-sequential-model" class="level2">
+<h2 class="anchored" data-anchor-id="q5.-design-train-tune-and-test-a-sequential-model">Q5. Design, train, tune and test a sequential model</h2>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>max_review_length <span class="op">=</span> <span class="dv">926</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> pad_sequences(x_train, maxlen<span class="op">=</span>max_review_length)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> pad_sequences(x_test, maxlen<span class="op">=</span>max_review_length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>x_train.shape, x_test.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>((25000, 926), (25000, 926))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>time</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>embedding_vector_length <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Sequential()</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>model.add(Embedding(most_frequent_words, embedding_vector_length, input_length<span class="op">=</span>max_review_length))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>model.add(Flatten())</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">16</span>, activation<span class="op">=</span><span class="st">'relu'</span>))</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">16</span>, activation<span class="op">=</span><span class="st">'relu'</span>))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>model.add(Dense(<span class="dv">1</span>, activation<span class="op">=</span><span class="st">'sigmoid'</span>))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>, optimizer<span class="op">=</span><span class="st">'adam'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "sequential_4"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ embedding_2 (Embedding)     (None, 926, 32)           320000    
+                                                                 
+ flatten_1 (Flatten)         (None, 29632)             0         
+                                                                 
+ dense_4 (Dense)             (None, 16)                474128    
+                                                                 
+ dense_5 (Dense)             (None, 16)                272       
+                                                                 
+ dense_6 (Dense)             (None, 1)                 17        
+                                                                 
+=================================================================
+Total params: 794,417
+Trainable params: 794,417
+Non-trainable params: 0
+_________________________________________________________________
+None
+CPU times: user 50.5 ms, sys: 36.4 ms, total: 87 ms
+Wall time: 111 ms</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>callback <span class="op">=</span> tf.keras.callbacks.EarlyStopping(monitor<span class="op">=</span><span class="st">'loss'</span>, patience<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a> optimizer <span class="op">=</span> <span class="st">"adam"</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a> loss <span class="op">=</span> <span class="st">"binary_crossentropy"</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a> metrics <span class="op">=</span> [<span class="st">"accuracy"</span>]</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tf.device(<span class="st">'/device:GPU:0'</span>):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> model.fit(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        x_train, y_train,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        epochs<span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        batch_size <span class="op">=</span> <span class="dv">128</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        validation_data <span class="op">=</span> (x_test, y_test),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        callbacks<span class="op">=</span>[callback],</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        verbose<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>_, train_acc <span class="op">=</span> model.evaluate(x_train, y_train, verbose<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>_, test_acc <span class="op">=</span> model.evaluate(x_test, y_test, verbose<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Train: </span><span class="sc">%.3f</span><span class="st">, Test: </span><span class="sc">%.3f</span><span class="st">'</span> <span class="op">%</span> (train_acc, test_acc))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>782/782 [==============================] - 5s 6ms/step - loss: 8.7406e-05 - accuracy: 1.0000
+782/782 [==============================] - 5s 6ms/step - loss: 0.6214 - accuracy: 0.8732
+Train: 1.000, Test: 0.873</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> model.evaluate(x_test, y_test, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accuracy: </span><span class="sc">%.2f%%</span><span class="st">"</span> <span class="op">%</span> (scores[<span class="dv">1</span>] <span class="op">*</span> <span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 87.32%</code></pre>
+</div>
+</div>
+</section>
+<section id="q6.-use-the-designed-model-to-print-the-prediction-on-any-one-sample" class="level2">
+<h2 class="anchored" data-anchor-id="q6.-use-the-designed-model-to-print-the-prediction-on-any-one-sample">Q6. Use the designed model to print the prediction on any one sample</h2>
+<div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> model.predict(x_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>782/782 [==============================] - 5s 6ms/step</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>preds[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<pre><code>array([2.9718738e-05], dtype=float32)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_sentiment(text):</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prepare the input by removing punctuation characters, converting</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># characters to lower case, and removing words containing numbers</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    translator <span class="op">=</span> <span class="bu">str</span>.maketrans(<span class="st">''</span>, <span class="st">''</span>, string.punctuation)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> text.translate(translator)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> text.lower().split(<span class="st">' '</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> [word <span class="cf">for</span> word <span class="kw">in</span> text <span class="cf">if</span> word.isalpha()]</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate an input tensor</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">input</span> <span class="op">=</span> [<span class="dv">1</span>]</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word <span class="kw">in</span> text:</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> word <span class="kw">in</span> vocab_index <span class="kw">and</span> vocab_index[word] <span class="op">&lt;</span> most_frequent_words:</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>            <span class="bu">input</span>.append(vocab_index[word])</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>            <span class="bu">input</span>.append(<span class="dv">2</span>)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    padded_input <span class="op">=</span> pad_sequences([<span class="bu">input</span>], maxlen<span class="op">=</span><span class="dv">926</span>)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Invoke the model and return the result</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> model.predict(np.array([padded_input][<span class="dv">0</span>]))[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="62">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>predict_sentiment(<span class="st">'Undoubtedly the most stellar experience I have ever watched.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1/1 [==============================] - 0s 25ms/step</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="62">
+<pre><code>0.9829639</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="61">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>predict_sentiment(<span class="st">'I had a really bad experience with the customer executive.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1/1 [==============================] - 0s 17ms/step</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="61">
+<pre><code>0.1035999</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="part-b" class="level1">
+<h1>PART B</h1>
+<section id="importing-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="importing-libraries">Importing libraries</h2>
+<div class="cell" data-execution_count="140">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.text <span class="im">import</span> Tokenizer</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.sequence <span class="im">import</span> pad_sequences</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Dense, Input, LSTM, Embedding, Dropout, Activation, Flatten, Bidirectional, GlobalMaxPool1D</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model, Sequential</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> zipfile <span class="im">import</span> ZipFile</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q1.-read-and-explore-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="q1.-read-and-explore-the-data">Q1. Read and explore the data</h2>
+<div class="cell" data-execution_count="97">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df <span class="op">=</span> pd.read_json(<span class="st">'Sarcasm_Headlines_Dataset.json'</span>,lines<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="101">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.head(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="101">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">is_sarcastic</th>
+<th data-quarto-table-cell-role="th">headline</th>
+<th data-quarto-table-cell-role="th">article_link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>thirtysomething scientists unveil doomsday clo...</td>
+<td>https://www.theonion.com/thirtysomething-scien...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0</td>
+<td>dem rep. totally nails why congress is falling...</td>
+<td>https://www.huffingtonpost.com/entry/donna-edw...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0</td>
+<td>eat your veggies: 9 deliciously different recipes</td>
+<td>https://www.huffingtonpost.com/entry/eat-your-...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>1</td>
+<td>inclement weather prevents liar from getting t...</td>
+<td>https://local.theonion.com/inclement-weather-p...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>1</td>
+<td>mother comes pretty close to using word 'strea...</td>
+<td>https://www.theonion.com/mother-comes-pretty-c...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>0</td>
+<td>my white inheritance</td>
+<td>https://www.huffingtonpost.com/entry/my-white-...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>0</td>
+<td>5 ways to file your taxes with less stress</td>
+<td>https://www.huffingtonpost.com/entry/5-ways-to...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>1</td>
+<td>richard branson's global-warming donation near...</td>
+<td>https://www.theonion.com/richard-bransons-glob...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>1</td>
+<td>shadow government getting too large to meet in...</td>
+<td>https://politics.theonion.com/shadow-governmen...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>0</td>
+<td>lots of parents know this scenario</td>
+<td>https://www.huffingtonpost.comhttp://pubx.co/6...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="102">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="102">
+<pre><code>(28619, 3)</code></pre>
+</div>
+</div>
+<p>Looking at statistical summary for the dataframe</p>
+<div class="cell" data-execution_count="103">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 28619 entries, 0 to 28618
+Data columns (total 3 columns):
+ #   Column        Non-Null Count  Dtype 
+---  ------        --------------  ----- 
+ 0   is_sarcastic  28619 non-null  int64 
+ 1   headline      28619 non-null  object
+ 2   article_link  28619 non-null  object
+dtypes: int64(1), object(2)
+memory usage: 670.9+ KB</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="104">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="104">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">is_sarcastic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>28619.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>0.476397</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>0.499451</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>1.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="144">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.is_sarcastic.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="144">
+<pre><code>is_sarcastic
+0    14985
+1    13634
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>The data looks almost perfectly balanced. Hence, we don’t need to perform any balancing of data.</p>
+<p>Let’s Look at the first headline</p>
+<div class="cell" data-execution_count="106">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>sarcasm_df.loc[<span class="dv">0</span>][<span class="st">'headline'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="106">
+<pre><code>'thirtysomething scientists unveil doomsday clock of hair loss'</code></pre>
+</div>
+</div>
+</section>
+<section id="q2.-retain-relevant-columns" class="level2">
+<h2 class="anchored" data-anchor-id="q2.-retain-relevant-columns">Q2. Retain relevant columns</h2>
+<p>For the current project, column <code>article_link</code> is not relevant. For other capstone projects, we can maybe scrape data on the whole article and perform detailed analysis, but this is out of the scope for this.</p>
+<div class="cell" data-execution_count="108">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>sarcasm_relevant_df <span class="op">=</span> sarcasm_df.drop(<span class="st">'article_link'</span>,axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q3.-get-length-of-each-sentence" class="level2">
+<h2 class="anchored" data-anchor-id="q3.-get-length-of-each-sentence">Q3. Get length of each sentence</h2>
+<div class="cell" data-execution_count="110">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>length_each_sentence <span class="op">=</span> [<span class="bu">len</span>(text) <span class="cf">for</span> text <span class="kw">in</span> sarcasm_relevant_df[<span class="st">'headline'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s look at the maximum length from the headline column</p>
+<div class="cell" data-execution_count="114">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>max_length_sentence <span class="op">=</span> <span class="bu">max</span>(length_each_sentence)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>max_length_sentence</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="114">
+<pre><code>926</code></pre>
+</div>
+</div>
+</section>
+<section id="q4.-define-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="q4.-define-parameters">Q4. Define parameters</h2>
+<div class="cell" data-execution_count="145">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>max_features <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>maxlen <span class="op">=</span> max_length_sentence</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>embedding_size <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>output_dim <span class="op">=</span> <span class="dv">200</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q5.-get-indices-for-words" class="level2">
+<h2 class="anchored" data-anchor-id="q5.-get-indices-for-words">Q5. Get indices for words</h2>
+<p>We’ll now tokenize the word, and get the index for the word using the tokenizer library.</p>
+<div class="cell" data-execution_count="117">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> Tokenizer(num_words<span class="op">=</span>max_features,filters<span class="op">=</span><span class="st">'!"#$%&amp;()*+,-./:;&lt;=&gt;?@[</span><span class="ch">\\</span><span class="st">]^_`{|}~</span><span class="ch">\t\n</span><span class="st">'</span>,lower<span class="op">=</span><span class="va">True</span>,split<span class="op">=</span><span class="st">' '</span>, char_level<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>tokenizer.fit_on_texts(sarcasm_relevant_df[<span class="st">'headline'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="118">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>tokenizer.word_index</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="118">
+<pre><code>{'to': 1,
+ 'of': 2,
+ 'the': 3,
+ 'in': 4,
+ 'for': 5,
+ 'a': 6,
+ 'on': 7,
+ 'and': 8,
+ 'with': 9,
+ 'is': 10,
+ 'new': 11,
+ 'trump': 12,
+ 'man': 13,
+ 'at': 14,
+ 'from': 15,
+ 'about': 16,
+ 'by': 17,
+ 'after': 18,
+ 'you': 19,
+ 'this': 20,
+ 'out': 21,
+ 'up': 22,
+ 'be': 23,
+ 'as': 24,
+ 'that': 25,
+ 'it': 26,
+ 'how': 27,
+ 'not': 28,
+ 'he': 29,
+ 'his': 30,
+ 'are': 31,
+ 'your': 32,
+ 'just': 33,
+ 'what': 34,
+ 'all': 35,
+ 'who': 36,
+ 'has': 37,
+ 'will': 38,
+ 'report': 39,
+ 'into': 40,
+ 'more': 41,
+ 'one': 42,
+ 'have': 43,
+ 'year': 44,
+ 'over': 45,
+ 'why': 46,
+ 'day': 47,
+ 'u': 48,
+ 'area': 49,
+ 'woman': 50,
+ 'can': 51,
+ 's': 52,
+ 'says': 53,
+ 'donald': 54,
+ 'time': 55,
+ 'first': 56,
+ 'like': 57,
+ 'no': 58,
+ 'her': 59,
+ 'get': 60,
+ 'off': 61,
+ 'old': 62,
+ "trump's": 63,
+ 'life': 64,
+ 'now': 65,
+ 'people': 66,
+ "'": 67,
+ 'an': 68,
+ 'house': 69,
+ 'still': 70,
+ 'obama': 71,
+ 'white': 72,
+ 'back': 73,
+ 'make': 74,
+ 'was': 75,
+ 'than': 76,
+ 'women': 77,
+ 'if': 78,
+ 'down': 79,
+ 'when': 80,
+ 'i': 81,
+ 'my': 82,
+ '5': 83,
+ 'clinton': 84,
+ 'could': 85,
+ 'they': 86,
+ 'their': 87,
+ 'before': 88,
+ 'world': 89,
+ 'him': 90,
+ 'way': 91,
+ 'americans': 92,
+ 'family': 93,
+ 'we': 94,
+ 'study': 95,
+ 'do': 96,
+ 'would': 97,
+ 'only': 98,
+ 'most': 99,
+ 'school': 100,
+ 'gop': 101,
+ 'being': 102,
+ 'black': 103,
+ 'years': 104,
+ 'bill': 105,
+ "it's": 106,
+ 'so': 107,
+ 'finds': 108,
+ 'really': 109,
+ 'american': 110,
+ 'best': 111,
+ '3': 112,
+ 'last': 113,
+ 'know': 114,
+ 'but': 115,
+ 'she': 116,
+ 'should': 117,
+ 'police': 118,
+ 'nation': 119,
+ "can't": 120,
+ '10': 121,
+ 'going': 122,
+ 'watch': 123,
+ 'during': 124,
+ 'state': 125,
+ 'death': 126,
+ 'video': 127,
+ 'or': 128,
+ 'home': 129,
+ 'president': 130,
+ 'good': 131,
+ 'every': 132,
+ 'say': 133,
+ 'show': 134,
+ 'campaign': 135,
+ "'the": 136,
+ 'health': 137,
+ 'too': 138,
+ 'big': 139,
+ 'things': 140,
+ 'mom': 141,
+ 'getting': 142,
+ '2': 143,
+ 'against': 144,
+ 'may': 145,
+ '000': 146,
+ 'right': 147,
+ 'hillary': 148,
+ 'love': 149,
+ 'party': 150,
+ 'work': 151,
+ 'gets': 152,
+ 'while': 153,
+ 'some': 154,
+ 'self': 155,
+ 'need': 156,
+ 'high': 157,
+ 'little': 158,
+ 'parents': 159,
+ 'where': 160,
+ 'never': 161,
+ 'take': 162,
+ 'kids': 163,
+ 'through': 164,
+ "doesn't": 165,
+ 'court': 166,
+ 'makes': 167,
+ 'john': 168,
+ 'child': 169,
+ 'change': 170,
+ 'these': 171,
+ 'other': 172,
+ 'own': 173,
+ 'news': 174,
+ 'calls': 175,
+ 'dead': 176,
+ 'stop': 177,
+ 'look': 178,
+ "he's": 179,
+ 'want': 180,
+ 'election': 181,
+ 'next': 182,
+ 'our': 183,
+ 'gay': 184,
+ 'local': 185,
+ "don't": 186,
+ 'even': 187,
+ '4': 188,
+ 'see': 189,
+ 'go': 190,
+ 'around': 191,
+ 'america': 192,
+ 'real': 193,
+ 'takes': 194,
+ 'war': 195,
+ 'its': 196,
+ '7': 197,
+ "here's": 198,
+ 'baby': 199,
+ 'sex': 200,
+ "nation's": 201,
+ 'them': 202,
+ 'million': 203,
+ 'again': 204,
+ 'plan': 205,
+ 'bush': 206,
+ 'made': 207,
+ 'two': 208,
+ 'another': 209,
+ '6': 210,
+ 'guy': 211,
+ 'college': 212,
+ 'dog': 213,
+ 'office': 214,
+ 'announces': 215,
+ 'dad': 216,
+ 'ever': 217,
+ 'finally': 218,
+ 'debate': 219,
+ 'got': 220,
+ 'week': 221,
+ 'wants': 222,
+ 'been': 223,
+ 'long': 224,
+ 'help': 225,
+ 'much': 226,
+ 'job': 227,
+ '1': 228,
+ 'thing': 229,
+ 'under': 230,
+ 'there': 231,
+ 'gun': 232,
+ 'reveals': 233,
+ 'night': 234,
+ 'care': 235,
+ 'actually': 236,
+ 'couple': 237,
+ 'congress': 238,
+ 'live': 239,
+ 'us': 240,
+ 'north': 241,
+ 'sexual': 242,
+ 'trying': 243,
+ 'money': 244,
+ 'national': 245,
+ 'shows': 246,
+ 'god': 247,
+ "man's": 248,
+ 'climate': 249,
+ 'senate': 250,
+ 'better': 251,
+ "won't": 252,
+ 'star': 253,
+ 'face': 254,
+ 'without': 255,
+ '8': 256,
+ 'had': 257,
+ 'away': 258,
+ 'food': 259,
+ 'everyone': 260,
+ '9': 261,
+ 'game': 262,
+ 'season': 263,
+ 'enough': 264,
+ 'facebook': 265,
+ 'anti': 266,
+ 'give': 267,
+ 'top': 268,
+ '20': 269,
+ 'media': 270,
+ 'paul': 271,
+ 'making': 272,
+ 'any': 273,
+ 'law': 274,
+ 'me': 275,
+ 'bad': 276,
+ 'teen': 277,
+ 'shooting': 278,
+ 'ways': 279,
+ 'york': 280,
+ 'end': 281,
+ 'supreme': 282,
+ 'movie': 283,
+ 'free': 284,
+ 'entire': 285,
+ 'men': 286,
+ 'history': 287,
+ 'students': 288,
+ 'children': 289,
+ 'pope': 290,
+ 'government': 291,
+ 'single': 292,
+ 'introduces': 293,
+ 'business': 294,
+ 'tell': 295,
+ 'part': 296,
+ 'body': 297,
+ 'attack': 298,
+ 'fight': 299,
+ 'already': 300,
+ 'think': 301,
+ 'city': 302,
+ 'tv': 303,
+ 'story': 304,
+ 'friends': 305,
+ 'son': 306,
+ 'deal': 307,
+ 'fire': 308,
+ 'same': 309,
+ 'friend': 310,
+ 'releases': 311,
+ 'great': 312,
+ 'must': 313,
+ 'sanders': 314,
+ 'line': 315,
+ 'find': 316,
+ 'found': 317,
+ '11': 318,
+ 'book': 319,
+ 'call': 320,
+ 'pretty': 321,
+ 'does': 322,
+ 'former': 323,
+ 'second': 324,
+ 'car': 325,
+ 'film': 326,
+ 'company': 327,
+ 'having': 328,
+ 'come': 329,
+ 'unveils': 330,
+ 'use': 331,
+ 'public': 332,
+ 'support': 333,
+ 'speech': 334,
+ 'social': 335,
+ 'wedding': 336,
+ 'power': 337,
+ 'presidential': 338,
+ "didn't": 339,
+ 'middle': 340,
+ 'keep': 341,
+ 'behind': 342,
+ 'run': 343,
+ 'name': 344,
+ 'case': 345,
+ 'talk': 346,
+ 'doing': 347,
+ 'republican': 348,
+ 'open': 349,
+ 'coming': 350,
+ 'girl': 351,
+ 'photos': 352,
+ 'fans': 353,
+ 'scientists': 354,
+ 'room': 355,
+ 'looking': 356,
+ 'security': 357,
+ 'between': 358,
+ 'human': 359,
+ 'something': 360,
+ 'morning': 361,
+ 'full': 362,
+ 'thinks': 363,
+ 'fucking': 364,
+ 'james': 365,
+ 'voters': 366,
+ 'rights': 367,
+ 'asks': 368,
+ 'republicans': 369,
+ 'once': 370,
+ 'might': 371,
+ 'claims': 372,
+ 'future': 373,
+ 'used': 374,
+ 'christmas': 375,
+ 'tax': 376,
+ 'email': 377,
+ 'ceo': 378,
+ 'student': 379,
+ 'win': 380,
+ 'forced': 381,
+ 'admits': 382,
+ 'goes': 383,
+ 'group': 384,
+ 'secret': 385,
+ 'vote': 386,
+ '2016': 387,
+ "world's": 388,
+ 'michael': 389,
+ 'marriage': 390,
+ 'because': 391,
+ 'violence': 392,
+ 'democrats': 393,
+ 'poll': 394,
+ 'killed': 395,
+ 'team': 396,
+ 'control': 397,
+ 'ad': 398,
+ 'country': 399,
+ '12': 400,
+ 'sure': 401,
+ 'department': 402,
+ 'plans': 403,
+ 'female': 404,
+ 'ban': 405,
+ 'many': 406,
+ 'bernie': 407,
+ 'teacher': 408,
+ 'inside': 409,
+ 'person': 410,
+ 'post': 411,
+ 'until': 412,
+ 'wife': 413,
+ 'ryan': 414,
+ 'put': 415,
+ 'always': 416,
+ 'twitter': 417,
+ 'super': 418,
+ 'political': 419,
+ 'water': 420,
+ 'running': 421,
+ 'hot': 422,
+ 'dies': 423,
+ 'meet': 424,
+ 'father': 425,
+ 'warns': 426,
+ 'each': 427,
+ 'head': 428,
+ 'photo': 429,
+ '30': 430,
+ 'eating': 431,
+ 'boy': 432,
+ 'reports': 433,
+ 'minutes': 434,
+ 'race': 435,
+ 'judge': 436,
+ 'red': 437,
+ 'days': 438,
+ 'music': 439,
+ 'employee': 440,
+ 'let': 441,
+ 'perfect': 442,
+ 'record': 443,
+ 'tells': 444,
+ 'taking': 445,
+ 'candidate': 446,
+ 'past': 447,
+ 'everything': 448,
+ 'art': 449,
+ 'idea': 450,
+ 'living': 451,
+ 'list': 452,
+ 'class': 453,
+ 'summer': 454,
+ 'month': 455,
+ 'three': 456,
+ 'missing': 457,
+ 'wall': 458,
+ 'were': 459,
+ '15': 460,
+ 'working': 461,
+ 'did': 462,
+ 'here': 463,
+ 'needs': 464,
+ 'states': 465,
+ 'secretary': 466,
+ 'very': 467,
+ 'looks': 468,
+ 'save': 469,
+ 'thousands': 470,
+ 'mother': 471,
+ 'service': 472,
+ 'town': 473,
+ 'mike': 474,
+ 'pay': 475,
+ 'russia': 476,
+ 'george': 477,
+ 'times': 478,
+ 'left': 479,
+ 'shot': 480,
+ 'thought': 481,
+ 'california': 482,
+ 'phone': 483,
+ "'i": 484,
+ 'heart': 485,
+ 'start': 486,
+ 'lives': 487,
+ 'hours': 488,
+ 'set': 489,
+ 'place': 490,
+ 'age': 491,
+ 'wrong': 492,
+ 'gives': 493,
+ 'comes': 494,
+ 'together': 495,
+ 'cruz': 496,
+ 'meeting': 497,
+ 'shit': 498,
+ 'ready': 499,
+ 'officials': 500,
+ 'justice': 501,
+ 'ice': 502,
+ 'cancer': 503,
+ 'believe': 504,
+ "you're": 505,
+ 'obamacare': 506,
+ 'young': 507,
+ 'probably': 508,
+ 'texas': 509,
+ 'someone': 510,
+ 'talks': 511,
+ 'wearing': 512,
+ 'half': 513,
+ 'breaking': 514,
+ '50': 515,
+ 'giving': 516,
+ 'street': 517,
+ 'kill': 518,
+ 'lost': 519,
+ 'yet': 520,
+ 'ex': 521,
+ 'king': 522,
+ 'chief': 523,
+ 'korea': 524,
+ 'watching': 525,
+ 'few': 526,
+ 'kim': 527,
+ 'small': 528,
+ 'drug': 529,
+ 'air': 530,
+ 'owner': 531,
+ 'prison': 532,
+ "women's": 533,
+ 'iran': 534,
+ 'daughter': 535,
+ 'leave': 536,
+ 'isis': 537,
+ 'restaurant': 538,
+ 'fbi': 539,
+ 'today': 540,
+ 'dream': 541,
+ 'fan': 542,
+ 'feel': 543,
+ 'ted': 544,
+ 'crisis': 545,
+ 'sleep': 546,
+ 'letter': 547,
+ 'mark': 548,
+ 'word': 549,
+ 'cat': 550,
+ "i'm": 551,
+ 'wins': 552,
+ 'administration': 553,
+ 'south': 554,
+ 'director': 555,
+ "she's": 556,
+ 'biden': 557,
+ 'hard': 558,
+ 'earth': 559,
+ 'hour': 560,
+ 'tips': 561,
+ 'education': 562,
+ 'washington': 563,
+ 'third': 564,
+ 'military': 565,
+ 'personal': 566,
+ 'community': 567,
+ 'nothing': 568,
+ 'attacks': 569,
+ 'outside': 570,
+ 'using': 571,
+ 'less': 572,
+ 'chris': 573,
+ 'talking': 574,
+ 'democratic': 575,
+ 'bar': 576,
+ 'system': 577,
+ 'rock': 578,
+ 'internet': 579,
+ 'questions': 580,
+ 'francis': 581,
+ 'nuclear': 582,
+ 'months': 583,
+ 'leaves': 584,
+ 'kind': 585,
+ 'federal': 586,
+ 'romney': 587,
+ 'those': 588,
+ 'move': 589,
+ 't': 590,
+ 'well': 591,
+ 'following': 592,
+ 'percent': 593,
+ 'online': 594,
+ 'latest': 595,
+ 'majority': 596,
+ 'order': 597,
+ 'birthday': 598,
+ 'issues': 599,
+ 'march': 600,
+ 'tweets': 601,
+ 'girlfriend': 602,
+ 'fun': 603,
+ 'fox': 604,
+ "what's": 605,
+ 'assault': 606,
+ 'since': 607,
+ 'excited': 608,
+ 'gift': 609,
+ 'investigation': 610,
+ 'knows': 611,
+ 'congressman': 612,
+ 'abortion': 613,
+ 'lot': 614,
+ 'florida': 615,
+ 'series': 616,
+ 'buy': 617,
+ 'store': 618,
+ 'straight': 619,
+ 'minute': 620,
+ 'rules': 621,
+ 'guide': 622,
+ 'hit': 623,
+ 'read': 624,
+ 'special': 625,
+ 'cover': 626,
+ 'mueller': 627,
+ 'beautiful': 628,
+ 'holiday': 629,
+ 'waiting': 630,
+ 'happy': 631,
+ 'spends': 632,
+ '100': 633,
+ 'stephen': 634,
+ 'called': 635,
+ 'reason': 636,
+ 'huge': 637,
+ 'travel': 638,
+ 'muslim': 639,
+ 'trip': 640,
+ 'ask': 641,
+ 'problem': 642,
+ 'offers': 643,
+ 'kid': 644,
+ 'leaders': 645,
+ 'different': 646,
+ 'told': 647,
+ "isn't": 648,
+ 'whole': 649,
+ 'visit': 650,
+ 'russian': 651,
+ 'break': 652,
+ 'scott': 653,
+ 'hollywood': 654,
+ 'front': 655,
+ 'favorite': 656,
+ 'rise': 657,
+ 'relationship': 658,
+ 'worried': 659,
+ 'hair': 660,
+ 'david': 661,
+ 'cop': 662,
+ 'non': 663,
+ 'chinese': 664,
+ 'millions': 665,
+ 'thinking': 666,
+ 'trailer': 667,
+ '2015': 668,
+ 'box': 669,
+ 'celebrates': 670,
+ 'girls': 671,
+ 'anything': 672,
+ 'play': 673,
+ 'date': 674,
+ 'immigration': 675,
+ 'hate': 676,
+ 'protest': 677,
+ 'al': 678,
+ "america's": 679,
+ 'late': 680,
+ 'early': 681,
+ 'career': 682,
+ 'die': 683,
+ 'response': 684,
+ 'himself': 685,
+ "obama's": 686,
+ 'taylor': 687,
+ 'union': 688,
+ 'stars': 689,
+ 'china': 690,
+ 'drunk': 691,
+ 'fall': 692,
+ 'birth': 693,
+ 'struggling': 694,
+ 'reasons': 695,
+ 'billion': 696,
+ 'united': 697,
+ 'message': 698,
+ 'massive': 699,
+ 'weekend': 700,
+ '40': 701,
+ 'candidates': 702,
+ 'politics': 703,
+ 'accused': 704,
+ 'opens': 705,
+ 'become': 706,
+ 'least': 707,
+ 'starting': 708,
+ 'killing': 709,
+ 'huffpost': 710,
+ 'senator': 711,
+ 'bring': 712,
+ 'hands': 713,
+ 'mass': 714,
+ 'feels': 715,
+ 'interview': 716,
+ 'vows': 717,
+ 'hope': 718,
+ 'victims': 719,
+ 'experts': 720,
+ 'light': 721,
+ 'moment': 722,
+ 'discover': 723,
+ 'turn': 724,
+ 'returns': 725,
+ 'leader': 726,
+ 'words': 727,
+ 'pence': 728,
+ 'point': 729,
+ 'c': 730,
+ 'jimmy': 731,
+ 'clearly': 732,
+ 'turns': 733,
+ 'far': 734,
+ 'driving': 735,
+ 'center': 736,
+ 'dating': 737,
+ 'key': 738,
+ 'employees': 739,
+ 'sports': 740,
+ 'policy': 741,
+ 'lessons': 742,
+ 'tom': 743,
+ 'sick': 744,
+ 'wishes': 745,
+ 'apple': 746,
+ 'conversation': 747,
+ 'host': 748,
+ 'sign': 749,
+ 'whether': 750,
+ "they're": 751,
+ 'completely': 752,
+ 'murder': 753,
+ 'fashion': 754,
+ 'adds': 755,
+ 'adorable': 756,
+ 'totally': 757,
+ 'learned': 758,
+ 'signs': 759,
+ 'hoping': 760,
+ 'prince': 761,
+ 'fuck': 762,
+ 'role': 763,
+ 'stage': 764,
+ 'j': 765,
+ 'oil': 766,
+ 'powerful': 767,
+ 'k': 768,
+ 'breaks': 769,
+ 'abuse': 770,
+ 'song': 771,
+ 'across': 772,
+ 'reality': 773,
+ 'moving': 774,
+ 'decision': 775,
+ 'global': 776,
+ 'keeps': 777,
+ 'experience': 778,
+ 'seen': 779,
+ 'syrian': 780,
+ 'announce': 781,
+ 'true': 782,
+ 'risk': 783,
+ 'iraq': 784,
+ 'joe': 785,
+ 'bus': 786,
+ 'begins': 787,
+ 'jr': 788,
+ 'syria': 789,
+ 'hand': 790,
+ 'puts': 791,
+ 'dance': 792,
+ '13': 793,
+ 'final': 794,
+ 'check': 795,
+ 'cops': 796,
+ 'dinner': 797,
+ 'stand': 798,
+ 'apartment': 799,
+ 'cut': 800,
+ 'almost': 801,
+ 'playing': 802,
+ 'names': 803,
+ 'coffee': 804,
+ 'weird': 805,
+ 'longer': 806,
+ 'hurricane': 807,
+ 'schools': 808,
+ 'kills': 809,
+ "there's": 810,
+ 'lose': 811,
+ 'amazon': 812,
+ 'awards': 813,
+ 'un': 814,
+ 'low': 815,
+ 'press': 816,
+ 'robert': 817,
+ 'mind': 818,
+ 'number': 819,
+ 'lead': 820,
+ 'west': 821,
+ 'd': 822,
+ 'worth': 823,
+ 'anniversary': 824,
+ 'surprise': 825,
+ 'oscar': 826,
+ 'feeling': 827,
+ 'anyone': 828,
+ 'crash': 829,
+ 'mental': 830,
+ 'trans': 831,
+ 'test': 832,
+ 'lgbt': 833,
+ 'worst': 834,
+ 'band': 835,
+ 'hall': 836,
+ 'space': 837,
+ 'return': 838,
+ 'official': 839,
+ 'which': 840,
+ 'audience': 841,
+ 'queer': 842,
+ 'shop': 843,
+ 'hits': 844,
+ 'demands': 845,
+ 'oscars': 846,
+ 'data': 847,
+ 'workers': 848,
+ 'university': 849,
+ 'iowa': 850,
+ 'side': 851,
+ 'apologizes': 852,
+ 'road': 853,
+ 'cool': 854,
+ 'industry': 855,
+ 'suspect': 856,
+ 'planned': 857,
+ 'plane': 858,
+ 'nfl': 859,
+ 'evidence': 860,
+ 'steve': 861,
+ 'eat': 862,
+ 'program': 863,
+ 'door': 864,
+ 'table': 865,
+ 'governor': 866,
+ 'remember': 867,
+ 'try': 868,
+ 'important': 869,
+ 'chance': 870,
+ 'transgender': 871,
+ 'defense': 872,
+ 'reportedly': 873,
+ 'urges': 874,
+ 'near': 875,
+ 'church': 876,
+ 'chicago': 877,
+ 'halloween': 878,
+ 'users': 879,
+ 'possible': 880,
+ 'general': 881,
+ 'doctor': 882,
+ '2014': 883,
+ 'hear': 884,
+ 'style': 885,
+ 'spot': 886,
+ 'supporters': 887,
+ 'five': 888,
+ 'rubio': 889,
+ 'reveal': 890,
+ 'kardashian': 891,
+ 'advice': 892,
+ 'coworker': 893,
+ 'given': 894,
+ 'voter': 895,
+ 'brings': 896,
+ 'picture': 897,
+ 'dying': 898,
+ 'success': 899,
+ 'blood': 900,
+ 'executive': 901,
+ 'finding': 902,
+ 'suicide': 903,
+ 'tour': 904,
+ 'biggest': 905,
+ '2017': 906,
+ 'allegations': 907,
+ 'accidentally': 908,
+ 'easy': 909,
+ 'boys': 910,
+ 'football': 911,
+ 'protesters': 912,
+ 'bathroom': 913,
+ 'fighting': 914,
+ 'demand': 915,
+ 'michelle': 916,
+ 'peace': 917,
+ 'push': 918,
+ 'reform': 919,
+ 'paris': 920,
+ 'close': 921,
+ 'avoid': 922,
+ 'elizabeth': 923,
+ 'israel': 924,
+ 'homeless': 925,
+ 'poor': 926,
+ 'fear': 927,
+ 'cnn': 928,
+ 'quietly': 929,
+ 'reminds': 930,
+ 'teens': 931,
+ 'nyc': 932,
+ 'address': 933,
+ 'learn': 934,
+ 'board': 935,
+ 'bowl': 936,
+ 'uses': 937,
+ 'apparently': 938,
+ 'building': 939,
+ 'act': 940,
+ 'staff': 941,
+ 'rest': 942,
+ 'pro': 943,
+ 'major': 944,
+ 'carolina': 945,
+ 'train': 946,
+ 'force': 947,
+ 'voice': 948,
+ 'pregnant': 949,
+ 'weight': 950,
+ 'officer': 951,
+ 'suggests': 952,
+ 'walking': 953,
+ 'google': 954,
+ 'members': 955,
+ 'rally': 956,
+ 'economy': 957,
+ 'ideas': 958,
+ 'lets': 959,
+ 'died': 960,
+ 'celebrate': 961,
+ 'card': 962,
+ 'website': 963,
+ 'park': 964,
+ 'ben': 965,
+ 'performance': 966,
+ 'prevent': 967,
+ 'williams': 968,
+ 'moore': 969,
+ 'moms': 970,
+ '18': 971,
+ 'green': 972,
+ 'ferguson': 973,
+ 'saudi': 974,
+ 'asking': 975,
+ 'artist': 976,
+ 'leading': 977,
+ 'pick': 978,
+ 'passes': 979,
+ 'opening': 980,
+ 'said': 981,
+ 'christian': 982,
+ 'album': 983,
+ 'happens': 984,
+ 'netflix': 985,
+ 'culture': 986,
+ 'magazine': 987,
+ 'throws': 988,
+ 'leads': 989,
+ 'eyes': 990,
+ 'humans': 991,
+ 'chicken': 992,
+ 'beauty': 993,
+ 'crime': 994,
+ 'recalls': 995,
+ 'energy': 996,
+ 'voting': 997,
+ 'question': 998,
+ 'episode': 999,
+ 'swift': 1000,
+ ...}</code></pre>
+</div>
+</div>
+</section>
+<section id="q6.-create-features-and-labels" class="level2">
+<h2 class="anchored" data-anchor-id="q6.-create-features-and-labels">Q6. Create features and labels</h2>
+<div class="cell" data-scrolled="true" data-execution_count="120">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> tokenizer.texts_to_sequences(sarcasm_relevant_df[<span class="st">'headline'</span>])</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pad_sequences(X, maxlen <span class="op">=</span> maxlen)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.asarray(sarcasm_relevant_df[<span class="st">'is_sarcastic'</span>])</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of Feature samples:"</span>, <span class="bu">len</span>(X))</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X[<span class="dv">0</span>])</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of Labels: "</span>, <span class="bu">len</span>(y))</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of Feature samples: 28619
+[   0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0    0    0    0    0    0
+    0    0    0    0    0    0    0    0    0  354 3166 7473 2643    2
+  660 1118]
+Number of Labels:  28619
+1</code></pre>
+</div>
+</div>
+</section>
+<section id="q7.-get-vocabulary-size" class="level2">
+<h2 class="anchored" data-anchor-id="q7.-get-vocabulary-size">Q7. Get vocabulary size</h2>
+<div class="cell" data-execution_count="121">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>vocabulary_size <span class="op">=</span> <span class="bu">len</span>(tokenizer.word_index)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (vocabulary_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>30884</code></pre>
+</div>
+</div>
+</section>
+<section id="q8.-create-a-weight-matrix-using-glove-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="q8.-create-a-weight-matrix-using-glove-embeddings">Q8. Create a weight matrix using GloVe embeddings</h2>
+<div class="cell" data-execution_count="123">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>glove_file <span class="op">=</span> <span class="st">"glove.6B.zip"</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract Glove embedding zip file</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> ZipFile(glove_file, <span class="st">'r'</span>) <span class="im">as</span> z:</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  z.extractall()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="124">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>EMBEDDING_FILE <span class="op">=</span> <span class="st">'./glove.6B.200d.txt'</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>embeddings <span class="op">=</span> {}</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> o <span class="kw">in</span> <span class="bu">open</span>(EMBEDDING_FILE):</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    word <span class="op">=</span> o.split(<span class="st">" "</span>)[<span class="dv">0</span>]</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(word)</span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>    embd <span class="op">=</span> o.split(<span class="st">" "</span>)[<span class="dv">1</span>:]</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>    embd <span class="op">=</span> np.asarray(embd, dtype<span class="op">=</span><span class="st">'float32'</span>)</span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(embd)</span></span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>    embeddings[word] <span class="op">=</span> embd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-scrolled="true" data-execution_count="128">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>embedding_matrix <span class="op">=</span> np.zeros((vocabulary_size, <span class="dv">200</span>))</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word, i <span class="kw">in</span> tokenizer.word_index.items():</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>    embedding_vector <span class="op">=</span> embeddings.get(word)</span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> embedding_vector <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>        embedding_matrix[i<span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> embedding_vector</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(embeddings.values())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="128">
+<pre><code>400000</code></pre>
+</div>
+</div>
+</section>
+<section id="q9.-define-and-compile-a-bidirectional-lstm-model" class="level2">
+<h2 class="anchored" data-anchor-id="q9.-define-and-compile-a-bidirectional-lstm-model">Q9. Define and compile a Bidirectional LSTM model</h2>
+<div class="cell" data-execution_count="129">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co">### Embedding layer for hint </span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co">## model.add(Embedding(num_words, embedding_size, weights = [embedding_matrix]))</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="co">### Bidirectional LSTM layer for hint </span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="co">## model.add(Bidirectional(LSTM(128, return_sequences = True)))</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>input_layer <span class="op">=</span> Input(shape<span class="op">=</span>(maxlen,),dtype<span class="op">=</span>tf.int64)</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>embed <span class="op">=</span> Embedding(embedding_matrix.shape[<span class="dv">0</span>],output_dim<span class="op">=</span><span class="dv">200</span>,weights<span class="op">=</span>[embedding_matrix],input_length<span class="op">=</span>maxlen, trainable<span class="op">=</span><span class="va">True</span>)(input_layer)</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>lstm<span class="op">=</span>Bidirectional(LSTM(<span class="dv">128</span>))(embed)</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>drop<span class="op">=</span>Dropout(<span class="fl">0.3</span>)(lstm)</span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>dense <span class="op">=</span>Dense(<span class="dv">100</span>,activation<span class="op">=</span><span class="st">'relu'</span>)(drop)</span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>out<span class="op">=</span>Dense(<span class="dv">2</span>,activation<span class="op">=</span><span class="st">'softmax'</span>)(dense)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="q10.-fit-the-model-and-check-the-validation-accuracy" class="level2">
+<h2 class="anchored" data-anchor-id="q10.-fit-the-model-and-check-the-validation-accuracy">Q10. Fit the model and check the validation accuracy</h2>
+<div class="cell" data-execution_count="130">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(input_layer,out)</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'sparse_categorical_crossentropy'</span>,optimizer<span class="op">=</span><span class="st">"adam"</span>,metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "model"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_1 (InputLayer)        [(None, 926)]             0         
+                                                                 
+ embedding (Embedding)       (None, 926, 200)          6176800   
+                                                                 
+ bidirectional (Bidirectiona  (None, 256)              336896    
+ l)                                                              
+                                                                 
+ dropout_8 (Dropout)         (None, 256)               0         
+                                                                 
+ dense_16 (Dense)            (None, 100)               25700     
+                                                                 
+ dense_17 (Dense)            (None, 2)                 202       
+                                                                 
+=================================================================
+Total params: 6,539,598
+Trainable params: 6,539,598
+Non-trainable params: 0
+_________________________________________________________________</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="133">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>tf.config.run_functions_eagerly(<span class="va">True</span>)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> tf.device(<span class="st">'/device:GPU:0'</span>):</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> model.fit(X_train,y_train,batch_size<span class="op">=</span>batch_size, epochs<span class="op">=</span>epochs, verbose<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/5
+229/229 [==============================] - 173s 745ms/step - loss: 0.5122 - accuracy: 0.7243
+Epoch 2/5
+229/229 [==============================] - 235s 1s/step - loss: 0.2859 - accuracy: 0.8794
+Epoch 3/5
+229/229 [==============================] - 167s 729ms/step - loss: 0.1933 - accuracy: 0.9240
+Epoch 4/5
+229/229 [==============================] - 165s 719ms/step - loss: 0.1287 - accuracy: 0.9537
+Epoch 5/5
+229/229 [==============================] - 162s 706ms/step - loss: 0.0852 - accuracy: 0.9716</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/kashmkj/micromamba/envs/tensorflow_gl/lib/python3.10/site-packages/tensorflow/python/data/ops/structured_function.py:254: UserWarning: Even though the `tf.config.experimental_run_functions_eagerly` option is set, this option does not apply to tf.data functions. To force eager execution of tf.data functions, please use `tf.data.experimental.enable_debug_mode()`.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="134">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> model.predict(np.array(X_test), verbose<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>179/179 [==============================] - 12s 60ms/step</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="136">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>test_pred <span class="op">=</span> [<span class="dv">0</span> <span class="cf">if</span> i<span class="op">&gt;</span>j <span class="cf">else</span> <span class="dv">1</span> <span class="cf">for</span> i,j <span class="kw">in</span> predictions]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="142">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, test_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              precision    recall  f1-score   support
+
+           0       0.85      0.88      0.86      2977
+           1       0.86      0.83      0.84      2747
+
+    accuracy                           0.85      5724
+   macro avg       0.85      0.85      0.85      5724
+weighted avg       0.85      0.85      0.85      5724
+</code></pre>
+</div>
+</div>
+<p>We’ve got an accuracy of over 95%. We can further fine-tune the model, by running through more epochs, and adding more hidden layers, with dropout. The project ends here.</p>
+</section>
+</section>
+<section id="the-end" class="level1">
+<h1>The End</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
