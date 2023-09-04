@@ -494,6 +494,12 @@ step=7; loss=3.45</code></pre>
 </script>
 </div>
 </div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Defining the Foundation of Neural Networks_files/figure-html/660b9818-1-55aebfbe-ef6c-4e08-a60a-e845b821663d.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">ReLU</figcaption>
+</figure>
+</div>
 </section>
 <section id="but-why-is-it-interesting" class="level3">
 <h3 class="anchored" data-anchor-id="but-why-is-it-interesting">But why is it interesting ?</h3>
@@ -511,7 +517,13 @@ step=7; loss=3.45</code></pre>
 </script>
 </div>
 </div>
-<p>Let’s another layer of ReLU and observe..</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Defining the Foundation of Neural Networks_files/figure-html/d0df4492-1-9495ca37-d571-4711-b557-2323716222dc.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Double ReLU</figcaption>
+</figure>
+</div>
+<p>Let’s another layer of ReLU and observe..!</p>
 <div class="cell" data-tags="[]" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> triple_relu(m1, b1, m2, b2, m3, b3, x):</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rectified_linear(m1, b1, x) <span class="op">+</span> rectified_linear(m2, b2, x) <span class="op">+</span> rectified_linear(m3, b3, x)</span>
@@ -525,7 +537,13 @@ step=7; loss=3.45</code></pre>
 </script>
 </div>
 </div>
-<p>So, we can add as many ReLUs as we want and fit the function as close as we want. Hence, Neural networks are infinitely flexibile functions and can approximate to any input as we like!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Defining the Foundation of Neural Networks_files/figure-html/9f8864bc-1-cbb47e0e-9f0f-4dad-ab3d-a942a7e4b4f7.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Triple ReLU</figcaption>
+</figure>
+</div>
+<p>So, we can add as many ReLUs as we want and fit the function as close as we want. Hence, Neural networks are infinitely flexibile functions and can approximate to any input as we like!!</p>
 <section id="wuhooo-congratulations-we-have-just-derived-the-very-foundation-of-deep-learningg" class="level5">
 <h5 class="anchored" data-anchor-id="wuhooo-congratulations-we-have-just-derived-the-very-foundation-of-deep-learningg">WUHOOO!! CONGRATULATIONS… WE HAVE JUST DERIVED THE VERY FOUNDATION OF DEEP LEARNINGg</h5>
 
