@@ -1,0 +1,3894 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+<meta name="dcterms.date" content="2022-07-04">
+
+<title>kashish18.github.io - House Prices Prediction - Random Forest Interpretations</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">kashish18.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">House Prices Prediction - Random Forest Interpretations</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">blogging</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Deep Learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 4, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="mission-statement" class="level2">
+<h2 class="anchored" data-anchor-id="mission-statement">Mission Statement</h2>
+<p>This jupyter notebook attempts to perform initial preprocessing on the house sales data in an attemp to understand the foundational Machine Learning mainly through Random Forests. In this notebook I have tried to perform some hyperparameter tuning on random-forests and plot feature importance and tree dependence plots to interpret the results.</p>
+</section>
+<section id="setting-up-the-installation-and-configurations" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-the-installation-and-configurations">Setting up the installation and configurations</h2>
+<div class="cell" hidden="true" data-tags="[]" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-tags="[]" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>sudo apt<span class="op">-</span>get remove fastai</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install Pillow<span class="op">==</span><span class="fl">4.1.1</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="st">"fastai==0.7.0"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install torchtext<span class="op">==</span><span class="fl">0.2.3</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get <span class="op">-</span>qq install <span class="op">-</span>y libsm6 libxext6 <span class="op">&amp;&amp;</span> pip install <span class="op">-</span>q <span class="op">-</span>U opencv<span class="op">-</span>python</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> path</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wheel.pep425tags <span class="im">import</span> get_abbr_impl, get_impl_ver, get_abi_tag</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>platform <span class="op">=</span> <span class="st">'</span><span class="sc">{}{}</span><span class="st">-</span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(get_abbr_impl(), get_impl_ver(), get_abi_tag())</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt update <span class="op">&amp;&amp;</span> apt install <span class="op">-</span>y libsm6 libxext6</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>accelerator <span class="op">=</span> <span class="st">'cu80'</span> <span class="cf">if</span> path.exists(<span class="st">'/opt/bin/nvidia-smi'</span>) <span class="cf">else</span> <span class="st">'cpu'</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>q http:<span class="op">//</span>download.pytorch.org<span class="op">/</span>whl<span class="op">/</span>{accelerator}<span class="op">/</span>torch<span class="op">-</span><span class="fl">0.3.0</span>.post4<span class="op">-</span>{platform}<span class="op">-</span>linux_x86_64.whl torchvision</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install image</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.imports <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+E: Unable to locate package fastai
+Collecting Pillow==4.1.1
+  Downloading https://files.pythonhosted.org/packages/36/e5/88b3d60924a3f8476fa74ec086f5fbaba56dd6cee0d82845f883b6b6dd18/Pillow-4.1.1-cp36-cp36m-manylinux1_x86_64.whl (5.7MB)
+    100% |████████████████████████████████| 5.7MB 5.3MB/s 
+Requirement already satisfied: olefile in /usr/local/lib/python3.6/dist-packages (from Pillow==4.1.1) (0.46)
+Installing collected packages: Pillow
+  Found existing installation: Pillow 5.3.0
+    Uninstalling Pillow-5.3.0:
+      Successfully uninstalled Pillow-5.3.0
+Successfully installed Pillow-4.1.1
+Collecting fastai==0.7.0
+  Downloading https://files.pythonhosted.org/packages/50/6d/9d0d6e17a78b0598d5e8c49a0d03ffc7ff265ae62eca3e2345fab14edb9b/fastai-0.7.0-py3-none-any.whl (112kB)
+    100% |████████████████████████████████| 122kB 6.2MB/s 
+Collecting jedi (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/7a/1a/9bd24a185873b998611c2d8d4fb15cd5e8a879ead36355df7ee53e9111bf/jedi-0.13.1-py2.py3-none-any.whl (177kB)
+    100% |████████████████████████████████| 184kB 4.6MB/s 
+Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.28.1)
+Requirement already satisfied: jupyter in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (1.0.0)
+Requirement already satisfied: cycler in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.10.0)
+Requirement already satisfied: Pygments in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.1.3)
+Requirement already satisfied: seaborn in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.7.1)
+Collecting plotnine (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/84/02/b171c828560aea3a5da1efda464230dac3ef4f4834b88e0bd52ad14a08f0/plotnine-0.5.1-py2.py3-none-any.whl (3.6MB)
+    100% |████████████████████████████████| 3.6MB 7.7MB/s 
+Requirement already satisfied: certifi in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2018.11.29)
+Requirement already satisfied: decorator in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.3.0)
+Collecting bcolz (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/5c/4e/23942de9d5c0fb16f10335fa83e52b431bcb8c0d4a8419c9ac206268c279/bcolz-1.2.1.tar.gz (1.5MB)
+    100% |████████████████████████████████| 1.5MB 13.8MB/s 
+Collecting pandas-summary (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/97/55/ea54109a4e7a8e7342bdf23e9382c858224263d984b0d95610568e564f59/pandas_summary-0.0.5-py2.py3-none-any.whl
+Requirement already satisfied: matplotlib in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.1.2)
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.5.3)
+Collecting torchtext (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/c6/bc/b28b9efb4653c03e597ed207264eea45862b5260f48e9f010b5068d64db1/torchtext-0.3.1-py3-none-any.whl (62kB)
+    100% |████████████████████████████████| 71kB 15.6MB/s 
+Requirement already satisfied: wcwidth in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.1.7)
+Requirement already satisfied: scipy in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (1.1.0)
+Requirement already satisfied: traitlets in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.3.2)
+Collecting isoweek (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/c2/d4/fe7e2637975c476734fcbf53776e650a29680194eb0dd21dbdc020ca92de/isoweek-1.3.3-py2.py3-none-any.whl
+Requirement already satisfied: tornado in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.5.3)
+Requirement already satisfied: ipython in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (5.5.0)
+Requirement already satisfied: numpy in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (1.14.6)
+Requirement already satisfied: webencodings in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.5.1)
+Requirement already satisfied: ipywidgets in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (7.4.2)
+Requirement already satisfied: ipykernel in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.6.1)
+Requirement already satisfied: widgetsnbextension in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (3.4.2)
+Requirement already satisfied: graphviz in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.10.1)
+Collecting feather-format (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/08/55/940b97cc6f19a19f5dab9efef2f68a0ce43a7632f858b272391f0b851a7e/feather-format-0.4.0.tar.gz
+Requirement already satisfied: Pillow in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (4.1.1)
+Requirement already satisfied: pyzmq in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (17.0.0)
+Requirement already satisfied: MarkupSafe in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (1.1.0)
+Requirement already satisfied: pyparsing in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.3.0)
+Requirement already satisfied: pytz in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2018.7)
+Requirement already satisfied: Jinja2 in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.10)
+Requirement already satisfied: opencv-python in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (3.4.4.19)
+Requirement already satisfied: entrypoints in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.2.3)
+Requirement already satisfied: pandas in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.22.0)
+Requirement already satisfied: ipython-genutils in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.2.0)
+Requirement already satisfied: pickleshare in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.7.5)
+Requirement already satisfied: torch&lt;0.4 in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.3.0.post4)
+Requirement already satisfied: PyYAML in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (3.13)
+Requirement already satisfied: html5lib in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (1.0.1)
+Requirement already satisfied: ptyprocess in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.6.0)
+Collecting sklearn-pandas (from fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/1f/48/4e1461d828baf41d609efaa720d20090ac6ec346b5daad3c88e243e2207e/sklearn_pandas-1.8.0-py2.py3-none-any.whl
+Requirement already satisfied: jsonschema in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (2.6.0)
+Requirement already satisfied: bleach in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (3.0.2)
+Requirement already satisfied: torchvision in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.2.1)
+Requirement already satisfied: simplegeneric in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.8.1)
+Requirement already satisfied: testpath in /usr/local/lib/python3.6/dist-packages (from fastai==0.7.0) (0.4.2)
+Collecting parso&gt;=0.3.0 (from jedi-&gt;fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/09/51/9c48a46334be50c13d25a3afe55fa05c445699304c5ad32619de953a2305/parso-0.3.1-py2.py3-none-any.whl (88kB)
+    100% |████████████████████████████████| 92kB 24.6MB/s 
+Requirement already satisfied: qtconsole in /usr/local/lib/python3.6/dist-packages (from jupyter-&gt;fastai==0.7.0) (4.4.3)
+Requirement already satisfied: notebook in /usr/local/lib/python3.6/dist-packages (from jupyter-&gt;fastai==0.7.0) (5.2.2)
+Requirement already satisfied: jupyter-console in /usr/local/lib/python3.6/dist-packages (from jupyter-&gt;fastai==0.7.0) (6.0.0)
+Requirement already satisfied: nbconvert in /usr/local/lib/python3.6/dist-packages (from jupyter-&gt;fastai==0.7.0) (5.4.0)
+Requirement already satisfied: six in /usr/local/lib/python3.6/dist-packages (from cycler-&gt;fastai==0.7.0) (1.11.0)
+Requirement already satisfied: statsmodels&gt;=0.8.0 in /usr/local/lib/python3.6/dist-packages (from plotnine-&gt;fastai==0.7.0) (0.8.0)
+Collecting mizani&gt;=0.5.2 (from plotnine-&gt;fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/10/3a/1d1c5563b6aeb5fffda694b70d649a0f728a112b79a66b85a6af4814a643/mizani-0.5.2-py2.py3-none-any.whl (58kB)
+    100% |████████████████████████████████| 61kB 24.2MB/s 
+Collecting descartes&gt;=1.1.0 (from plotnine-&gt;fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/e5/b6/1ed2eb03989ae574584664985367ba70cd9cf8b32ee8cad0e8aaeac819f3/descartes-1.1.0-py3-none-any.whl
+Requirement already satisfied: patsy&gt;=0.4.1 in /usr/local/lib/python3.6/dist-packages (from plotnine-&gt;fastai==0.7.0) (0.5.1)
+Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from torchtext-&gt;fastai==0.7.0) (2.18.4)
+Requirement already satisfied: setuptools&gt;=18.5 in /usr/local/lib/python3.6/dist-packages (from ipython-&gt;fastai==0.7.0) (40.6.2)
+Requirement already satisfied: pexpect; sys_platform != "win32" in /usr/local/lib/python3.6/dist-packages (from ipython-&gt;fastai==0.7.0) (4.6.0)
+Requirement already satisfied: prompt-toolkit&lt;2.0.0,&gt;=1.0.4 in /usr/local/lib/python3.6/dist-packages (from ipython-&gt;fastai==0.7.0) (1.0.15)
+Requirement already satisfied: nbformat&gt;=4.2.0 in /usr/local/lib/python3.6/dist-packages (from ipywidgets-&gt;fastai==0.7.0) (4.4.0)
+Requirement already satisfied: jupyter-client in /usr/local/lib/python3.6/dist-packages (from ipykernel-&gt;fastai==0.7.0) (5.2.4)
+Collecting pyarrow&gt;=0.4.0 (from feather-format-&gt;fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/36/94/23135312f97b20d6457294606fb70fad43ef93b7bffe567088ebe3623703/pyarrow-0.11.1-cp36-cp36m-manylinux1_x86_64.whl (11.6MB)
+    100% |████████████████████████████████| 11.6MB 3.1MB/s 
+Requirement already satisfied: olefile in /usr/local/lib/python3.6/dist-packages (from Pillow-&gt;fastai==0.7.0) (0.46)
+Requirement already satisfied: scikit-learn&gt;=0.15.0 in /usr/local/lib/python3.6/dist-packages (from sklearn-pandas-&gt;fastai==0.7.0) (0.20.1)
+Requirement already satisfied: jupyter-core in /usr/local/lib/python3.6/dist-packages (from qtconsole-&gt;jupyter-&gt;fastai==0.7.0) (4.4.0)
+Requirement already satisfied: terminado&gt;=0.3.3; sys_platform != "win32" in /usr/local/lib/python3.6/dist-packages (from notebook-&gt;jupyter-&gt;fastai==0.7.0) (0.8.1)
+Requirement already satisfied: defusedxml in /usr/local/lib/python3.6/dist-packages (from nbconvert-&gt;jupyter-&gt;fastai==0.7.0) (0.5.0)
+Requirement already satisfied: mistune&gt;=0.8.1 in /usr/local/lib/python3.6/dist-packages (from nbconvert-&gt;jupyter-&gt;fastai==0.7.0) (0.8.4)
+Requirement already satisfied: pandocfilters&gt;=1.4.1 in /usr/local/lib/python3.6/dist-packages (from nbconvert-&gt;jupyter-&gt;fastai==0.7.0) (1.4.2)
+Collecting palettable (from mizani&gt;=0.5.2-&gt;plotnine-&gt;fastai==0.7.0)
+  Downloading https://files.pythonhosted.org/packages/56/8a/84537c0354f0d1f03bf644b71bf8e0a50db9c1294181905721a5f3efbf66/palettable-3.1.1-py2.py3-none-any.whl (77kB)
+    100% |████████████████████████████████| 81kB 25.5MB/s 
+Requirement already satisfied: urllib3&lt;1.23,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext-&gt;fastai==0.7.0) (1.22)
+Requirement already satisfied: idna&lt;2.7,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext-&gt;fastai==0.7.0) (2.6)
+Requirement already satisfied: chardet&lt;3.1.0,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext-&gt;fastai==0.7.0) (3.0.4)
+Building wheels for collected packages: bcolz, feather-format
+  Running setup.py bdist_wheel for bcolz ... done
+  Stored in directory: /content/.cache/pip/wheels/9f/78/26/fb8c0acb91a100dc8914bf236c4eaa4b207cb876893c40b745
+  Running setup.py bdist_wheel for feather-format ... done
+  Stored in directory: /content/.cache/pip/wheels/85/7d/12/2dfa5c0195f921ac935f5e8f27deada74972edc0ae9988a9c1
+Successfully built bcolz feather-format
+mizani 0.5.2 has requirement pandas&gt;=0.23.4, but you'll have pandas 0.22.0 which is incompatible.
+plotnine 0.5.1 has requirement matplotlib&gt;=3.0.0, but you'll have matplotlib 2.1.2 which is incompatible.
+plotnine 0.5.1 has requirement pandas&gt;=0.23.4, but you'll have pandas 0.22.0 which is incompatible.
+Installing collected packages: parso, jedi, palettable, mizani, descartes, plotnine, bcolz, pandas-summary, torchtext, isoweek, pyarrow, feather-format, sklearn-pandas, fastai
+  Found existing installation: fastai 1.0.38.dev0
+    Uninstalling fastai-1.0.38.dev0:
+      Successfully uninstalled fastai-1.0.38.dev0
+Successfully installed bcolz-1.2.1 descartes-1.1.0 fastai-0.7.0 feather-format-0.4.0 isoweek-1.3.3 jedi-0.13.1 mizani-0.5.2 palettable-3.1.1 pandas-summary-0.0.5 parso-0.3.1 plotnine-0.5.1 pyarrow-0.11.1 sklearn-pandas-1.8.0 torchtext-0.3.1
+Collecting torchtext==0.2.3
+  Downloading https://files.pythonhosted.org/packages/78/90/474d5944d43001a6e72b9aaed5c3e4f77516fbef2317002da2096fd8b5ea/torchtext-0.2.3.tar.gz (42kB)
+    100% |████████████████████████████████| 51kB 3.5MB/s 
+Requirement already satisfied: tqdm in /usr/local/lib/python3.6/dist-packages (from torchtext==0.2.3) (4.28.1)
+Requirement already satisfied: requests in /usr/local/lib/python3.6/dist-packages (from torchtext==0.2.3) (2.18.4)
+Requirement already satisfied: idna&lt;2.7,&gt;=2.5 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext==0.2.3) (2.6)
+Requirement already satisfied: urllib3&lt;1.23,&gt;=1.21.1 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext==0.2.3) (1.22)
+Requirement already satisfied: chardet&lt;3.1.0,&gt;=3.0.2 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext==0.2.3) (3.0.4)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /usr/local/lib/python3.6/dist-packages (from requests-&gt;torchtext==0.2.3) (2018.11.29)
+Building wheels for collected packages: torchtext
+  Running setup.py bdist_wheel for torchtext ... done
+  Stored in directory: /content/.cache/pip/wheels/42/a6/f4/b267328bde6bb680094a0c173e8e5627ccc99543abded97204
+Successfully built torchtext
+Installing collected packages: torchtext
+  Found existing installation: torchtext 0.3.1
+    Uninstalling torchtext-0.3.1:
+      Successfully uninstalled torchtext-0.3.1
+Successfully installed torchtext-0.2.3
+Ign:1 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64  InRelease
+Ign:2 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64  InRelease
+Hit:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1710/x86_64  Release
+Hit:4 http://security.ubuntu.com/ubuntu bionic-security InRelease
+Hit:5 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64  Release
+Hit:6 http://ppa.launchpad.net/graphics-drivers/ppa/ubuntu bionic InRelease
+Hit:7 http://archive.ubuntu.com/ubuntu bionic InRelease
+Hit:9 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
+Hit:10 http://archive.ubuntu.com/ubuntu bionic-backports InRelease
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+13 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+libsm6 is already the newest version (2:1.2.2-1).
+libxext6 is already the newest version (2:1.3.3-1).
+0 upgraded, 0 newly installed, 0 to remove and 13 not upgraded.
+Requirement already satisfied: image in /usr/local/lib/python3.6/dist-packages (1.5.27)
+Requirement already satisfied: pillow in /usr/local/lib/python3.6/dist-packages (from image) (4.1.1)
+Requirement already satisfied: django in /usr/local/lib/python3.6/dist-packages (from image) (2.1.4)
+Requirement already satisfied: olefile in /usr/local/lib/python3.6/dist-packages (from pillow-&gt;image) (0.46)
+Requirement already satisfied: pytz in /usr/local/lib/python3.6/dist-packages (from django-&gt;image) (2018.7)</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.imports <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.structured <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas_summary <span class="im">import</span> DataFrameSummary</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor, RandomForestClassifier</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> metrics</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>PATH <span class="op">=</span> <span class="st">"data/HousePrice/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cd ..</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/content/clouderizer/fast.ai</code></pre>
+</div>
+</div>
+<div class="cell" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-tags="[]" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls {PATH}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>head data<span class="op">/</span>HousePrice<span class="op">/</span>train.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>data_description.txt   sample_submission.csv.gz  test.csv.gz  train.csv.gz
+sample_submission.csv  test.csv          train.csv
+Id,MSSubClass,MSZoning,LotFrontage,LotArea,Street,Alley,LotShape,LandContour,Utilities,LotConfig,LandSlope,Neighborhood,Condition1,Condition2,BldgType,HouseStyle,OverallQual,OverallCond,YearBuilt,YearRemodAdd,RoofStyle,RoofMatl,Exterior1st,Exterior2nd,MasVnrType,MasVnrArea,ExterQual,ExterCond,Foundation,BsmtQual,BsmtCond,BsmtExposure,BsmtFinType1,BsmtFinSF1,BsmtFinType2,BsmtFinSF2,BsmtUnfSF,TotalBsmtSF,Heating,HeatingQC,CentralAir,Electrical,1stFlrSF,2ndFlrSF,LowQualFinSF,GrLivArea,BsmtFullBath,BsmtHalfBath,FullBath,HalfBath,BedroomAbvGr,KitchenAbvGr,KitchenQual,TotRmsAbvGrd,Functional,Fireplaces,FireplaceQu,GarageType,GarageYrBlt,GarageFinish,GarageCars,GarageArea,GarageQual,GarageCond,PavedDrive,WoodDeckSF,OpenPorchSF,EnclosedPorch,3SsnPorch,ScreenPorch,PoolArea,PoolQC,Fence,MiscFeature,MiscVal,MoSold,YrSold,SaleType,SaleCondition,SalePrice
+1,60,RL,65,8450,Pave,NA,Reg,Lvl,AllPub,Inside,Gtl,CollgCr,Norm,Norm,1Fam,2Story,7,5,2003,2003,Gable,CompShg,VinylSd,VinylSd,BrkFace,196,Gd,TA,PConc,Gd,TA,No,GLQ,706,Unf,0,150,856,GasA,Ex,Y,SBrkr,856,854,0,1710,1,0,2,1,3,1,Gd,8,Typ,0,NA,Attchd,2003,RFn,2,548,TA,TA,Y,0,61,0,0,0,0,NA,NA,NA,0,2,2008,WD,Normal,208500
+2,20,RL,80,9600,Pave,NA,Reg,Lvl,AllPub,FR2,Gtl,Veenker,Feedr,Norm,1Fam,1Story,6,8,1976,1976,Gable,CompShg,MetalSd,MetalSd,None,0,TA,TA,CBlock,Gd,TA,Gd,ALQ,978,Unf,0,284,1262,GasA,Ex,Y,SBrkr,1262,0,0,1262,0,1,2,0,3,1,TA,6,Typ,1,TA,Attchd,1976,RFn,2,460,TA,TA,Y,298,0,0,0,0,0,NA,NA,NA,0,5,2007,WD,Normal,181500
+3,60,RL,68,11250,Pave,NA,IR1,Lvl,AllPub,Inside,Gtl,CollgCr,Norm,Norm,1Fam,2Story,7,5,2001,2002,Gable,CompShg,VinylSd,VinylSd,BrkFace,162,Gd,TA,PConc,Gd,TA,Mn,GLQ,486,Unf,0,434,920,GasA,Ex,Y,SBrkr,920,866,0,1786,1,0,2,1,3,1,Gd,6,Typ,1,TA,Attchd,2001,RFn,2,608,TA,TA,Y,0,42,0,0,0,0,NA,NA,NA,0,9,2008,WD,Normal,223500
+4,70,RL,60,9550,Pave,NA,IR1,Lvl,AllPub,Corner,Gtl,Crawfor,Norm,Norm,1Fam,2Story,7,5,1915,1970,Gable,CompShg,Wd Sdng,Wd Shng,None,0,TA,TA,BrkTil,TA,Gd,No,ALQ,216,Unf,0,540,756,GasA,Gd,Y,SBrkr,961,756,0,1717,1,0,1,0,3,1,Gd,7,Typ,1,Gd,Detchd,1998,Unf,3,642,TA,TA,Y,0,35,272,0,0,0,NA,NA,NA,0,2,2006,WD,Abnorml,140000
+5,60,RL,84,14260,Pave,NA,IR1,Lvl,AllPub,FR2,Gtl,NoRidge,Norm,Norm,1Fam,2Story,8,5,2000,2000,Gable,CompShg,VinylSd,VinylSd,BrkFace,350,Gd,TA,PConc,Gd,TA,Av,GLQ,655,Unf,0,490,1145,GasA,Ex,Y,SBrkr,1145,1053,0,2198,1,0,2,1,4,1,Gd,9,Typ,1,TA,Attchd,2000,RFn,3,836,TA,TA,Y,192,84,0,0,0,0,NA,NA,NA,0,12,2008,WD,Normal,250000
+6,50,RL,85,14115,Pave,NA,IR1,Lvl,AllPub,Inside,Gtl,Mitchel,Norm,Norm,1Fam,1.5Fin,5,5,1993,1995,Gable,CompShg,VinylSd,VinylSd,None,0,TA,TA,Wood,Gd,TA,No,GLQ,732,Unf,0,64,796,GasA,Ex,Y,SBrkr,796,566,0,1362,1,0,1,1,1,1,TA,5,Typ,0,NA,Attchd,1993,Unf,2,480,TA,TA,Y,40,30,0,320,0,0,NA,MnPrv,Shed,700,10,2009,WD,Normal,143000
+7,20,RL,75,10084,Pave,NA,Reg,Lvl,AllPub,Inside,Gtl,Somerst,Norm,Norm,1Fam,1Story,8,5,2004,2005,Gable,CompShg,VinylSd,VinylSd,Stone,186,Gd,TA,PConc,Ex,TA,Av,GLQ,1369,Unf,0,317,1686,GasA,Ex,Y,SBrkr,1694,0,0,1694,1,0,2,0,3,1,Gd,7,Typ,1,Gd,Attchd,2004,RFn,2,636,TA,TA,Y,255,57,0,0,0,0,NA,NA,NA,0,8,2007,WD,Normal,307000
+8,60,RL,NA,10382,Pave,NA,IR1,Lvl,AllPub,Corner,Gtl,NWAmes,PosN,Norm,1Fam,2Story,7,6,1973,1973,Gable,CompShg,HdBoard,HdBoard,Stone,240,TA,TA,CBlock,Gd,TA,Mn,ALQ,859,BLQ,32,216,1107,GasA,Ex,Y,SBrkr,1107,983,0,2090,1,0,2,1,3,1,TA,7,Typ,2,TA,Attchd,1973,RFn,2,484,TA,TA,Y,235,204,228,0,0,0,NA,NA,Shed,350,11,2009,WD,Normal,200000
+9,50,RM,51,6120,Pave,NA,Reg,Lvl,AllPub,Inside,Gtl,OldTown,Artery,Norm,1Fam,1.5Fin,7,5,1931,1950,Gable,CompShg,BrkFace,Wd Shng,None,0,TA,TA,BrkTil,TA,TA,No,Unf,0,Unf,0,952,952,GasA,Gd,Y,FuseF,1022,752,0,1774,0,0,2,0,2,2,TA,8,Min1,2,TA,Detchd,1931,Unf,2,468,Fa,TA,Y,90,0,205,0,0,0,NA,NA,NA,0,4,2008,WD,Abnorml,129900</code></pre>
+</div>
+</div>
+<ul>
+<li>{} indicates a bash command</li>
+<li>head displays the column names and the first five rows of the dataset</li>
+</ul>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_raw <span class="op">=</span> pd.read_csv(<span class="ss">f'</span><span class="sc">{</span>PATH<span class="sc">}</span><span class="ss">train.csv'</span>, low_memory<span class="op">=</span><span class="va">False</span>, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                     )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>f’{}..’ allows to execute the string as well as python command Example Name = “Kashish” print(f’Hello {Name} !’)</li>
+</ul>
+<p>-output :- Hello Kashish</p>
+<div class="cell" hidden="true" data-scrolled="true" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> display_all(df):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> pd.option_context(<span class="st">"display.max_rows"</span>, <span class="dv">1000</span>, <span class="st">"display.max_columns"</span>, <span class="dv">1000</span>): </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        display(df)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>display_all(df_raw.tail().T)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>display_all(df_raw.describe(include<span class="op">=</span><span class="st">'all'</span>).T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">1455</th>
+<th data-quarto-table-cell-role="th">1456</th>
+<th data-quarto-table-cell-role="th">1457</th>
+<th data-quarto-table-cell-role="th">1458</th>
+<th data-quarto-table-cell-role="th">1459</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Id</td>
+<td>1456</td>
+<td>1457</td>
+<td>1458</td>
+<td>1459</td>
+<td>1460</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MSSubClass</td>
+<td>60</td>
+<td>20</td>
+<td>70</td>
+<td>20</td>
+<td>20</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MSZoning</td>
+<td>RL</td>
+<td>RL</td>
+<td>RL</td>
+<td>RL</td>
+<td>RL</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LotFrontage</td>
+<td>62</td>
+<td>85</td>
+<td>66</td>
+<td>68</td>
+<td>75</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LotArea</td>
+<td>7917</td>
+<td>13175</td>
+<td>9042</td>
+<td>9717</td>
+<td>9937</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Street</td>
+<td>Pave</td>
+<td>Pave</td>
+<td>Pave</td>
+<td>Pave</td>
+<td>Pave</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Alley</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LotShape</td>
+<td>Reg</td>
+<td>Reg</td>
+<td>Reg</td>
+<td>Reg</td>
+<td>Reg</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LandContour</td>
+<td>Lvl</td>
+<td>Lvl</td>
+<td>Lvl</td>
+<td>Lvl</td>
+<td>Lvl</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Utilities</td>
+<td>AllPub</td>
+<td>AllPub</td>
+<td>AllPub</td>
+<td>AllPub</td>
+<td>AllPub</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LotConfig</td>
+<td>Inside</td>
+<td>Inside</td>
+<td>Inside</td>
+<td>Inside</td>
+<td>Inside</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LandSlope</td>
+<td>Gtl</td>
+<td>Gtl</td>
+<td>Gtl</td>
+<td>Gtl</td>
+<td>Gtl</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Neighborhood</td>
+<td>Gilbert</td>
+<td>NWAmes</td>
+<td>Crawfor</td>
+<td>NAmes</td>
+<td>Edwards</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Condition1</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Condition2</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>Norm</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BldgType</td>
+<td>1Fam</td>
+<td>1Fam</td>
+<td>1Fam</td>
+<td>1Fam</td>
+<td>1Fam</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HouseStyle</td>
+<td>2Story</td>
+<td>1Story</td>
+<td>2Story</td>
+<td>1Story</td>
+<td>1Story</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">OverallQual</td>
+<td>6</td>
+<td>6</td>
+<td>7</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">OverallCond</td>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+<td>6</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">YearBuilt</td>
+<td>1999</td>
+<td>1978</td>
+<td>1941</td>
+<td>1950</td>
+<td>1965</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">YearRemodAdd</td>
+<td>2000</td>
+<td>1988</td>
+<td>2006</td>
+<td>1996</td>
+<td>1965</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">RoofStyle</td>
+<td>Gable</td>
+<td>Gable</td>
+<td>Gable</td>
+<td>Hip</td>
+<td>Gable</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">RoofMatl</td>
+<td>CompShg</td>
+<td>CompShg</td>
+<td>CompShg</td>
+<td>CompShg</td>
+<td>CompShg</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Exterior1st</td>
+<td>VinylSd</td>
+<td>Plywood</td>
+<td>CemntBd</td>
+<td>MetalSd</td>
+<td>HdBoard</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Exterior2nd</td>
+<td>VinylSd</td>
+<td>Plywood</td>
+<td>CmentBd</td>
+<td>MetalSd</td>
+<td>HdBoard</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MasVnrType</td>
+<td>None</td>
+<td>Stone</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MasVnrArea</td>
+<td>0</td>
+<td>119</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">ExterQual</td>
+<td>TA</td>
+<td>TA</td>
+<td>Ex</td>
+<td>TA</td>
+<td>Gd</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ExterCond</td>
+<td>TA</td>
+<td>TA</td>
+<td>Gd</td>
+<td>TA</td>
+<td>TA</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Foundation</td>
+<td>PConc</td>
+<td>CBlock</td>
+<td>Stone</td>
+<td>CBlock</td>
+<td>CBlock</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtQual</td>
+<td>Gd</td>
+<td>Gd</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtCond</td>
+<td>TA</td>
+<td>TA</td>
+<td>Gd</td>
+<td>TA</td>
+<td>TA</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtExposure</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Mn</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFinType1</td>
+<td>Unf</td>
+<td>ALQ</td>
+<td>GLQ</td>
+<td>GLQ</td>
+<td>BLQ</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtFinSF1</td>
+<td>0</td>
+<td>790</td>
+<td>275</td>
+<td>49</td>
+<td>830</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFinType2</td>
+<td>Unf</td>
+<td>Rec</td>
+<td>Unf</td>
+<td>Rec</td>
+<td>LwQ</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtFinSF2</td>
+<td>0</td>
+<td>163</td>
+<td>0</td>
+<td>1029</td>
+<td>290</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtUnfSF</td>
+<td>953</td>
+<td>589</td>
+<td>877</td>
+<td>0</td>
+<td>136</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">TotalBsmtSF</td>
+<td>953</td>
+<td>1542</td>
+<td>1152</td>
+<td>1078</td>
+<td>1256</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Heating</td>
+<td>GasA</td>
+<td>GasA</td>
+<td>GasA</td>
+<td>GasA</td>
+<td>GasA</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HeatingQC</td>
+<td>Ex</td>
+<td>TA</td>
+<td>Ex</td>
+<td>Gd</td>
+<td>Gd</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">CentralAir</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Electrical</td>
+<td>SBrkr</td>
+<td>SBrkr</td>
+<td>SBrkr</td>
+<td>FuseA</td>
+<td>SBrkr</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1stFlrSF</td>
+<td>953</td>
+<td>2073</td>
+<td>1188</td>
+<td>1078</td>
+<td>1256</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2ndFlrSF</td>
+<td>694</td>
+<td>0</td>
+<td>1152</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LowQualFinSF</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GrLivArea</td>
+<td>1647</td>
+<td>2073</td>
+<td>2340</td>
+<td>1078</td>
+<td>1256</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFullBath</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtHalfBath</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">FullBath</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HalfBath</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BedroomAbvGr</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">KitchenAbvGr</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">KitchenQual</td>
+<td>TA</td>
+<td>TA</td>
+<td>Gd</td>
+<td>Gd</td>
+<td>TA</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">TotRmsAbvGrd</td>
+<td>7</td>
+<td>7</td>
+<td>9</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Functional</td>
+<td>Typ</td>
+<td>Min1</td>
+<td>Typ</td>
+<td>Typ</td>
+<td>Typ</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Fireplaces</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">FireplaceQu</td>
+<td>TA</td>
+<td>TA</td>
+<td>Gd</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageType</td>
+<td>Attchd</td>
+<td>Attchd</td>
+<td>Attchd</td>
+<td>Attchd</td>
+<td>Attchd</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageYrBlt</td>
+<td>1999</td>
+<td>1978</td>
+<td>1941</td>
+<td>1950</td>
+<td>1965</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageFinish</td>
+<td>RFn</td>
+<td>Unf</td>
+<td>RFn</td>
+<td>Unf</td>
+<td>Fin</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageCars</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageArea</td>
+<td>460</td>
+<td>500</td>
+<td>252</td>
+<td>240</td>
+<td>276</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageQual</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageCond</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+<td>TA</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">PavedDrive</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+<td>Y</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">WoodDeckSF</td>
+<td>0</td>
+<td>349</td>
+<td>0</td>
+<td>366</td>
+<td>736</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">OpenPorchSF</td>
+<td>40</td>
+<td>0</td>
+<td>60</td>
+<td>0</td>
+<td>68</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">EnclosedPorch</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>112</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3SsnPorch</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ScreenPorch</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">PoolArea</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">PoolQC</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Fence</td>
+<td>NaN</td>
+<td>MnPrv</td>
+<td>GdPrv</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MiscFeature</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Shed</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MiscVal</td>
+<td>0</td>
+<td>0</td>
+<td>2500</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MoSold</td>
+<td>8</td>
+<td>2</td>
+<td>5</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">YrSold</td>
+<td>2007</td>
+<td>2010</td>
+<td>2010</td>
+<td>2010</td>
+<td>2008</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">SaleType</td>
+<td>WD</td>
+<td>WD</td>
+<td>WD</td>
+<td>WD</td>
+<td>WD</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">SaleCondition</td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">SalePrice</td>
+<td>175000</td>
+<td>210000</td>
+<td>266500</td>
+<td>142125</td>
+<td>147500</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">unique</th>
+<th data-quarto-table-cell-role="th">top</th>
+<th data-quarto-table-cell-role="th">freq</th>
+<th data-quarto-table-cell-role="th">mean</th>
+<th data-quarto-table-cell-role="th">std</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">25%</th>
+<th data-quarto-table-cell-role="th">50%</th>
+<th data-quarto-table-cell-role="th">75%</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Id</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>730.5</td>
+<td>421.61</td>
+<td>1</td>
+<td>365.75</td>
+<td>730.5</td>
+<td>1095.25</td>
+<td>1460</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MSSubClass</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>56.8973</td>
+<td>42.3006</td>
+<td>20</td>
+<td>20</td>
+<td>50</td>
+<td>70</td>
+<td>190</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MSZoning</td>
+<td>1460</td>
+<td>5</td>
+<td>RL</td>
+<td>1151</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LotFrontage</td>
+<td>1201</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>70.05</td>
+<td>24.2848</td>
+<td>21</td>
+<td>59</td>
+<td>69</td>
+<td>80</td>
+<td>313</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LotArea</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>10516.8</td>
+<td>9981.26</td>
+<td>1300</td>
+<td>7553.5</td>
+<td>9478.5</td>
+<td>11601.5</td>
+<td>215245</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Street</td>
+<td>1460</td>
+<td>2</td>
+<td>Pave</td>
+<td>1454</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Alley</td>
+<td>91</td>
+<td>2</td>
+<td>Grvl</td>
+<td>50</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LotShape</td>
+<td>1460</td>
+<td>4</td>
+<td>Reg</td>
+<td>925</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LandContour</td>
+<td>1460</td>
+<td>4</td>
+<td>Lvl</td>
+<td>1311</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Utilities</td>
+<td>1460</td>
+<td>2</td>
+<td>AllPub</td>
+<td>1459</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">LotConfig</td>
+<td>1460</td>
+<td>5</td>
+<td>Inside</td>
+<td>1052</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LandSlope</td>
+<td>1460</td>
+<td>3</td>
+<td>Gtl</td>
+<td>1382</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Neighborhood</td>
+<td>1460</td>
+<td>25</td>
+<td>NAmes</td>
+<td>225</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Condition1</td>
+<td>1460</td>
+<td>9</td>
+<td>Norm</td>
+<td>1260</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Condition2</td>
+<td>1460</td>
+<td>8</td>
+<td>Norm</td>
+<td>1445</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BldgType</td>
+<td>1460</td>
+<td>5</td>
+<td>1Fam</td>
+<td>1220</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HouseStyle</td>
+<td>1460</td>
+<td>8</td>
+<td>1Story</td>
+<td>726</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">OverallQual</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>6.09932</td>
+<td>1.383</td>
+<td>1</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">OverallCond</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>5.57534</td>
+<td>1.1128</td>
+<td>1</td>
+<td>5</td>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">YearBuilt</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1971.27</td>
+<td>30.2029</td>
+<td>1872</td>
+<td>1954</td>
+<td>1973</td>
+<td>2000</td>
+<td>2010</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">YearRemodAdd</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1984.87</td>
+<td>20.6454</td>
+<td>1950</td>
+<td>1967</td>
+<td>1994</td>
+<td>2004</td>
+<td>2010</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">RoofStyle</td>
+<td>1460</td>
+<td>6</td>
+<td>Gable</td>
+<td>1141</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">RoofMatl</td>
+<td>1460</td>
+<td>8</td>
+<td>CompShg</td>
+<td>1434</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Exterior1st</td>
+<td>1460</td>
+<td>15</td>
+<td>VinylSd</td>
+<td>515</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Exterior2nd</td>
+<td>1460</td>
+<td>16</td>
+<td>VinylSd</td>
+<td>504</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MasVnrType</td>
+<td>1452</td>
+<td>4</td>
+<td>None</td>
+<td>864</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MasVnrArea</td>
+<td>1452</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>103.685</td>
+<td>181.066</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>166</td>
+<td>1600</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">ExterQual</td>
+<td>1460</td>
+<td>4</td>
+<td>TA</td>
+<td>906</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ExterCond</td>
+<td>1460</td>
+<td>5</td>
+<td>TA</td>
+<td>1282</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Foundation</td>
+<td>1460</td>
+<td>6</td>
+<td>PConc</td>
+<td>647</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtQual</td>
+<td>1423</td>
+<td>4</td>
+<td>TA</td>
+<td>649</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtCond</td>
+<td>1423</td>
+<td>4</td>
+<td>TA</td>
+<td>1311</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtExposure</td>
+<td>1422</td>
+<td>4</td>
+<td>No</td>
+<td>953</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFinType1</td>
+<td>1423</td>
+<td>6</td>
+<td>Unf</td>
+<td>430</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtFinSF1</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>443.64</td>
+<td>456.098</td>
+<td>0</td>
+<td>0</td>
+<td>383.5</td>
+<td>712.25</td>
+<td>5644</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFinType2</td>
+<td>1422</td>
+<td>6</td>
+<td>Unf</td>
+<td>1256</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtFinSF2</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>46.5493</td>
+<td>161.319</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1474</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtUnfSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>567.24</td>
+<td>441.867</td>
+<td>0</td>
+<td>223</td>
+<td>477.5</td>
+<td>808</td>
+<td>2336</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">TotalBsmtSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1057.43</td>
+<td>438.705</td>
+<td>0</td>
+<td>795.75</td>
+<td>991.5</td>
+<td>1298.25</td>
+<td>6110</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Heating</td>
+<td>1460</td>
+<td>6</td>
+<td>GasA</td>
+<td>1428</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HeatingQC</td>
+<td>1460</td>
+<td>5</td>
+<td>Ex</td>
+<td>741</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">CentralAir</td>
+<td>1460</td>
+<td>2</td>
+<td>Y</td>
+<td>1365</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Electrical</td>
+<td>1459</td>
+<td>5</td>
+<td>SBrkr</td>
+<td>1334</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1stFlrSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1162.63</td>
+<td>386.588</td>
+<td>334</td>
+<td>882</td>
+<td>1087</td>
+<td>1391.25</td>
+<td>4692</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2ndFlrSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>346.992</td>
+<td>436.528</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>728</td>
+<td>2065</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">LowQualFinSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>5.84452</td>
+<td>48.6231</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>572</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GrLivArea</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1515.46</td>
+<td>525.48</td>
+<td>334</td>
+<td>1129.5</td>
+<td>1464</td>
+<td>1776.75</td>
+<td>5642</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BsmtFullBath</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.425342</td>
+<td>0.518911</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">BsmtHalfBath</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0575342</td>
+<td>0.238753</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">FullBath</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.56507</td>
+<td>0.550916</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">HalfBath</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.382877</td>
+<td>0.502885</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">BedroomAbvGr</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2.86644</td>
+<td>0.815778</td>
+<td>0</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">KitchenAbvGr</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.04658</td>
+<td>0.220338</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">KitchenQual</td>
+<td>1460</td>
+<td>4</td>
+<td>TA</td>
+<td>735</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">TotRmsAbvGrd</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>6.51781</td>
+<td>1.62539</td>
+<td>2</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>14</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Functional</td>
+<td>1460</td>
+<td>7</td>
+<td>Typ</td>
+<td>1360</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Fireplaces</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.613014</td>
+<td>0.644666</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">FireplaceQu</td>
+<td>770</td>
+<td>5</td>
+<td>Gd</td>
+<td>380</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageType</td>
+<td>1379</td>
+<td>6</td>
+<td>Attchd</td>
+<td>870</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageYrBlt</td>
+<td>1379</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1978.51</td>
+<td>24.6897</td>
+<td>1900</td>
+<td>1961</td>
+<td>1980</td>
+<td>2002</td>
+<td>2010</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageFinish</td>
+<td>1379</td>
+<td>3</td>
+<td>Unf</td>
+<td>605</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageCars</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.76712</td>
+<td>0.747315</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageArea</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>472.98</td>
+<td>213.805</td>
+<td>0</td>
+<td>334.5</td>
+<td>480</td>
+<td>576</td>
+<td>1418</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">GarageQual</td>
+<td>1379</td>
+<td>5</td>
+<td>TA</td>
+<td>1311</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">GarageCond</td>
+<td>1379</td>
+<td>5</td>
+<td>TA</td>
+<td>1326</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">PavedDrive</td>
+<td>1460</td>
+<td>3</td>
+<td>Y</td>
+<td>1340</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">WoodDeckSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>94.2445</td>
+<td>125.339</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>168</td>
+<td>857</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">OpenPorchSF</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>46.6603</td>
+<td>66.256</td>
+<td>0</td>
+<td>0</td>
+<td>25</td>
+<td>68</td>
+<td>547</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">EnclosedPorch</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>21.9541</td>
+<td>61.1191</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>552</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3SsnPorch</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>3.40959</td>
+<td>29.3173</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>508</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">ScreenPorch</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>15.061</td>
+<td>55.7574</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>480</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">PoolArea</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2.7589</td>
+<td>40.1773</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>738</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">PoolQC</td>
+<td>7</td>
+<td>3</td>
+<td>Gd</td>
+<td>3</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Fence</td>
+<td>281</td>
+<td>4</td>
+<td>MnPrv</td>
+<td>157</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MiscFeature</td>
+<td>54</td>
+<td>4</td>
+<td>Shed</td>
+<td>49</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">MiscVal</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>43.489</td>
+<td>496.123</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>15500</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">MoSold</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>6.32192</td>
+<td>2.70363</td>
+<td>1</td>
+<td>5</td>
+<td>6</td>
+<td>8</td>
+<td>12</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">YrSold</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2007.82</td>
+<td>1.3281</td>
+<td>2006</td>
+<td>2007</td>
+<td>2008</td>
+<td>2009</td>
+<td>2010</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">SaleType</td>
+<td>1460</td>
+<td>9</td>
+<td>WD</td>
+<td>1267</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">SaleCondition</td>
+<td>1460</td>
+<td>6</td>
+<td>Normal</td>
+<td>1198</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">SalePrice</td>
+<td>1460</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>180921</td>
+<td>79442.5</td>
+<td>34900</td>
+<td>129975</td>
+<td>163000</td>
+<td>214000</td>
+<td>755000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_raw.SalePrice <span class="op">=</span> np.log(df_raw.SalePrice)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>display_all will display in a tabular format</p></li>
+<li><p>.tail().T implies transpose</p></li>
+<li><p>We cannot fit a random forest directly as all the objects are of different data type, so we must convert all to numeric.Moreover, we need to fill in missing values and inabsurdly select categorical variables.</p></li>
+<li><p>Hence we move to the preprocessing stage</p></li>
+</ul>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>train_cats(df_raw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_raw.LotShape.cat.categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<pre><code>Index(['IR1', 'IR2', 'IR3', 'Reg'], dtype='object')</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_raw.LotShape.cat.set_categories([<span class="st">'IR1'</span>, <span class="st">'IR2'</span>, <span class="st">'IR3'</span>,<span class="st">'Reg'</span>], ordered<span class="op">=</span><span class="va">True</span>, inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_raw.LandContour.cat.categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>Index(['Bnk', 'HLS', 'Low', 'Lvl'], dtype='object')</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>display_all(df_raw.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Id</th>
+<th data-quarto-table-cell-role="th">MSSubClass</th>
+<th data-quarto-table-cell-role="th">MSZoning</th>
+<th data-quarto-table-cell-role="th">LotFrontage</th>
+<th data-quarto-table-cell-role="th">LotArea</th>
+<th data-quarto-table-cell-role="th">Street</th>
+<th data-quarto-table-cell-role="th">Alley</th>
+<th data-quarto-table-cell-role="th">LotShape</th>
+<th data-quarto-table-cell-role="th">LandContour</th>
+<th data-quarto-table-cell-role="th">Utilities</th>
+<th data-quarto-table-cell-role="th">LotConfig</th>
+<th data-quarto-table-cell-role="th">LandSlope</th>
+<th data-quarto-table-cell-role="th">Neighborhood</th>
+<th data-quarto-table-cell-role="th">Condition1</th>
+<th data-quarto-table-cell-role="th">Condition2</th>
+<th data-quarto-table-cell-role="th">BldgType</th>
+<th data-quarto-table-cell-role="th">HouseStyle</th>
+<th data-quarto-table-cell-role="th">OverallQual</th>
+<th data-quarto-table-cell-role="th">OverallCond</th>
+<th data-quarto-table-cell-role="th">YearBuilt</th>
+<th data-quarto-table-cell-role="th">YearRemodAdd</th>
+<th data-quarto-table-cell-role="th">RoofStyle</th>
+<th data-quarto-table-cell-role="th">RoofMatl</th>
+<th data-quarto-table-cell-role="th">Exterior1st</th>
+<th data-quarto-table-cell-role="th">Exterior2nd</th>
+<th data-quarto-table-cell-role="th">MasVnrType</th>
+<th data-quarto-table-cell-role="th">MasVnrArea</th>
+<th data-quarto-table-cell-role="th">ExterQual</th>
+<th data-quarto-table-cell-role="th">ExterCond</th>
+<th data-quarto-table-cell-role="th">Foundation</th>
+<th data-quarto-table-cell-role="th">BsmtQual</th>
+<th data-quarto-table-cell-role="th">BsmtCond</th>
+<th data-quarto-table-cell-role="th">BsmtExposure</th>
+<th data-quarto-table-cell-role="th">BsmtFinType1</th>
+<th data-quarto-table-cell-role="th">BsmtFinSF1</th>
+<th data-quarto-table-cell-role="th">BsmtFinType2</th>
+<th data-quarto-table-cell-role="th">BsmtFinSF2</th>
+<th data-quarto-table-cell-role="th">BsmtUnfSF</th>
+<th data-quarto-table-cell-role="th">TotalBsmtSF</th>
+<th data-quarto-table-cell-role="th">Heating</th>
+<th data-quarto-table-cell-role="th">HeatingQC</th>
+<th data-quarto-table-cell-role="th">CentralAir</th>
+<th data-quarto-table-cell-role="th">Electrical</th>
+<th data-quarto-table-cell-role="th">1stFlrSF</th>
+<th data-quarto-table-cell-role="th">2ndFlrSF</th>
+<th data-quarto-table-cell-role="th">LowQualFinSF</th>
+<th data-quarto-table-cell-role="th">GrLivArea</th>
+<th data-quarto-table-cell-role="th">BsmtFullBath</th>
+<th data-quarto-table-cell-role="th">BsmtHalfBath</th>
+<th data-quarto-table-cell-role="th">FullBath</th>
+<th data-quarto-table-cell-role="th">HalfBath</th>
+<th data-quarto-table-cell-role="th">BedroomAbvGr</th>
+<th data-quarto-table-cell-role="th">KitchenAbvGr</th>
+<th data-quarto-table-cell-role="th">KitchenQual</th>
+<th data-quarto-table-cell-role="th">TotRmsAbvGrd</th>
+<th data-quarto-table-cell-role="th">Functional</th>
+<th data-quarto-table-cell-role="th">Fireplaces</th>
+<th data-quarto-table-cell-role="th">FireplaceQu</th>
+<th data-quarto-table-cell-role="th">GarageType</th>
+<th data-quarto-table-cell-role="th">GarageYrBlt</th>
+<th data-quarto-table-cell-role="th">GarageFinish</th>
+<th data-quarto-table-cell-role="th">GarageCars</th>
+<th data-quarto-table-cell-role="th">GarageArea</th>
+<th data-quarto-table-cell-role="th">GarageQual</th>
+<th data-quarto-table-cell-role="th">GarageCond</th>
+<th data-quarto-table-cell-role="th">PavedDrive</th>
+<th data-quarto-table-cell-role="th">WoodDeckSF</th>
+<th data-quarto-table-cell-role="th">OpenPorchSF</th>
+<th data-quarto-table-cell-role="th">EnclosedPorch</th>
+<th data-quarto-table-cell-role="th">3SsnPorch</th>
+<th data-quarto-table-cell-role="th">ScreenPorch</th>
+<th data-quarto-table-cell-role="th">PoolArea</th>
+<th data-quarto-table-cell-role="th">PoolQC</th>
+<th data-quarto-table-cell-role="th">Fence</th>
+<th data-quarto-table-cell-role="th">MiscFeature</th>
+<th data-quarto-table-cell-role="th">MiscVal</th>
+<th data-quarto-table-cell-role="th">MoSold</th>
+<th data-quarto-table-cell-role="th">YrSold</th>
+<th data-quarto-table-cell-role="th">SaleType</th>
+<th data-quarto-table-cell-role="th">SaleCondition</th>
+<th data-quarto-table-cell-role="th">SalePrice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>60</td>
+<td>RL</td>
+<td>65.0</td>
+<td>8450</td>
+<td>Pave</td>
+<td>NaN</td>
+<td>Reg</td>
+<td>Lvl</td>
+<td>AllPub</td>
+<td>Inside</td>
+<td>Gtl</td>
+<td>CollgCr</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>1Fam</td>
+<td>2Story</td>
+<td>7</td>
+<td>5</td>
+<td>2003</td>
+<td>2003</td>
+<td>Gable</td>
+<td>CompShg</td>
+<td>VinylSd</td>
+<td>VinylSd</td>
+<td>BrkFace</td>
+<td>196.0</td>
+<td>Gd</td>
+<td>TA</td>
+<td>PConc</td>
+<td>Gd</td>
+<td>TA</td>
+<td>No</td>
+<td>GLQ</td>
+<td>706</td>
+<td>Unf</td>
+<td>0</td>
+<td>150</td>
+<td>856</td>
+<td>GasA</td>
+<td>Ex</td>
+<td>Y</td>
+<td>SBrkr</td>
+<td>856</td>
+<td>854</td>
+<td>0</td>
+<td>1710</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>Gd</td>
+<td>8</td>
+<td>Typ</td>
+<td>0</td>
+<td>NaN</td>
+<td>Attchd</td>
+<td>2003.0</td>
+<td>RFn</td>
+<td>2</td>
+<td>548</td>
+<td>TA</td>
+<td>TA</td>
+<td>Y</td>
+<td>0</td>
+<td>61</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0</td>
+<td>2</td>
+<td>2008</td>
+<td>WD</td>
+<td>Normal</td>
+<td>12.247694</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>20</td>
+<td>RL</td>
+<td>80.0</td>
+<td>9600</td>
+<td>Pave</td>
+<td>NaN</td>
+<td>Reg</td>
+<td>Lvl</td>
+<td>AllPub</td>
+<td>FR2</td>
+<td>Gtl</td>
+<td>Veenker</td>
+<td>Feedr</td>
+<td>Norm</td>
+<td>1Fam</td>
+<td>1Story</td>
+<td>6</td>
+<td>8</td>
+<td>1976</td>
+<td>1976</td>
+<td>Gable</td>
+<td>CompShg</td>
+<td>MetalSd</td>
+<td>MetalSd</td>
+<td>None</td>
+<td>0.0</td>
+<td>TA</td>
+<td>TA</td>
+<td>CBlock</td>
+<td>Gd</td>
+<td>TA</td>
+<td>Gd</td>
+<td>ALQ</td>
+<td>978</td>
+<td>Unf</td>
+<td>0</td>
+<td>284</td>
+<td>1262</td>
+<td>GasA</td>
+<td>Ex</td>
+<td>Y</td>
+<td>SBrkr</td>
+<td>1262</td>
+<td>0</td>
+<td>0</td>
+<td>1262</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>3</td>
+<td>1</td>
+<td>TA</td>
+<td>6</td>
+<td>Typ</td>
+<td>1</td>
+<td>TA</td>
+<td>Attchd</td>
+<td>1976.0</td>
+<td>RFn</td>
+<td>2</td>
+<td>460</td>
+<td>TA</td>
+<td>TA</td>
+<td>Y</td>
+<td>298</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0</td>
+<td>5</td>
+<td>2007</td>
+<td>WD</td>
+<td>Normal</td>
+<td>12.109011</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>60</td>
+<td>RL</td>
+<td>68.0</td>
+<td>11250</td>
+<td>Pave</td>
+<td>NaN</td>
+<td>IR1</td>
+<td>Lvl</td>
+<td>AllPub</td>
+<td>Inside</td>
+<td>Gtl</td>
+<td>CollgCr</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>1Fam</td>
+<td>2Story</td>
+<td>7</td>
+<td>5</td>
+<td>2001</td>
+<td>2002</td>
+<td>Gable</td>
+<td>CompShg</td>
+<td>VinylSd</td>
+<td>VinylSd</td>
+<td>BrkFace</td>
+<td>162.0</td>
+<td>Gd</td>
+<td>TA</td>
+<td>PConc</td>
+<td>Gd</td>
+<td>TA</td>
+<td>Mn</td>
+<td>GLQ</td>
+<td>486</td>
+<td>Unf</td>
+<td>0</td>
+<td>434</td>
+<td>920</td>
+<td>GasA</td>
+<td>Ex</td>
+<td>Y</td>
+<td>SBrkr</td>
+<td>920</td>
+<td>866</td>
+<td>0</td>
+<td>1786</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+<td>Gd</td>
+<td>6</td>
+<td>Typ</td>
+<td>1</td>
+<td>TA</td>
+<td>Attchd</td>
+<td>2001.0</td>
+<td>RFn</td>
+<td>2</td>
+<td>608</td>
+<td>TA</td>
+<td>TA</td>
+<td>Y</td>
+<td>0</td>
+<td>42</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0</td>
+<td>9</td>
+<td>2008</td>
+<td>WD</td>
+<td>Normal</td>
+<td>12.317167</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>70</td>
+<td>RL</td>
+<td>60.0</td>
+<td>9550</td>
+<td>Pave</td>
+<td>NaN</td>
+<td>IR1</td>
+<td>Lvl</td>
+<td>AllPub</td>
+<td>Corner</td>
+<td>Gtl</td>
+<td>Crawfor</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>1Fam</td>
+<td>2Story</td>
+<td>7</td>
+<td>5</td>
+<td>1915</td>
+<td>1970</td>
+<td>Gable</td>
+<td>CompShg</td>
+<td>Wd Sdng</td>
+<td>Wd Shng</td>
+<td>None</td>
+<td>0.0</td>
+<td>TA</td>
+<td>TA</td>
+<td>BrkTil</td>
+<td>TA</td>
+<td>Gd</td>
+<td>No</td>
+<td>ALQ</td>
+<td>216</td>
+<td>Unf</td>
+<td>0</td>
+<td>540</td>
+<td>756</td>
+<td>GasA</td>
+<td>Gd</td>
+<td>Y</td>
+<td>SBrkr</td>
+<td>961</td>
+<td>756</td>
+<td>0</td>
+<td>1717</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>1</td>
+<td>Gd</td>
+<td>7</td>
+<td>Typ</td>
+<td>1</td>
+<td>Gd</td>
+<td>Detchd</td>
+<td>1998.0</td>
+<td>Unf</td>
+<td>3</td>
+<td>642</td>
+<td>TA</td>
+<td>TA</td>
+<td>Y</td>
+<td>0</td>
+<td>35</td>
+<td>272</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0</td>
+<td>2</td>
+<td>2006</td>
+<td>WD</td>
+<td>Abnorml</td>
+<td>11.849398</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>60</td>
+<td>RL</td>
+<td>84.0</td>
+<td>14260</td>
+<td>Pave</td>
+<td>NaN</td>
+<td>IR1</td>
+<td>Lvl</td>
+<td>AllPub</td>
+<td>FR2</td>
+<td>Gtl</td>
+<td>NoRidge</td>
+<td>Norm</td>
+<td>Norm</td>
+<td>1Fam</td>
+<td>2Story</td>
+<td>8</td>
+<td>5</td>
+<td>2000</td>
+<td>2000</td>
+<td>Gable</td>
+<td>CompShg</td>
+<td>VinylSd</td>
+<td>VinylSd</td>
+<td>BrkFace</td>
+<td>350.0</td>
+<td>Gd</td>
+<td>TA</td>
+<td>PConc</td>
+<td>Gd</td>
+<td>TA</td>
+<td>Av</td>
+<td>GLQ</td>
+<td>655</td>
+<td>Unf</td>
+<td>0</td>
+<td>490</td>
+<td>1145</td>
+<td>GasA</td>
+<td>Ex</td>
+<td>Y</td>
+<td>SBrkr</td>
+<td>1145</td>
+<td>1053</td>
+<td>0</td>
+<td>2198</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>Gd</td>
+<td>9</td>
+<td>Typ</td>
+<td>1</td>
+<td>TA</td>
+<td>Attchd</td>
+<td>2000.0</td>
+<td>RFn</td>
+<td>3</td>
+<td>836</td>
+<td>TA</td>
+<td>TA</td>
+<td>Y</td>
+<td>192</td>
+<td>84</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0</td>
+<td>12</td>
+<td>2008</td>
+<td>WD</td>
+<td>Normal</td>
+<td>12.429216</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>display_all(df_raw.isnull().<span class="bu">sum</span>().sort_index()<span class="op">/</span><span class="bu">len</span>(df_raw))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Displays the fraction of missing values(Nan) of each feature</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>1stFlrSF         0.000000
+2ndFlrSF         0.000000
+3SsnPorch        0.000000
+Alley            0.937671
+BedroomAbvGr     0.000000
+BldgType         0.000000
+BsmtCond         0.025342
+BsmtExposure     0.026027
+BsmtFinSF1       0.000000
+BsmtFinSF2       0.000000
+BsmtFinType1     0.025342
+BsmtFinType2     0.026027
+BsmtFullBath     0.000000
+BsmtHalfBath     0.000000
+BsmtQual         0.025342
+BsmtUnfSF        0.000000
+CentralAir       0.000000
+Condition1       0.000000
+Condition2       0.000000
+Electrical       0.000685
+EnclosedPorch    0.000000
+ExterCond        0.000000
+ExterQual        0.000000
+Exterior1st      0.000000
+Exterior2nd      0.000000
+Fence            0.807534
+FireplaceQu      0.472603
+Fireplaces       0.000000
+Foundation       0.000000
+FullBath         0.000000
+Functional       0.000000
+GarageArea       0.000000
+GarageCars       0.000000
+GarageCond       0.055479
+GarageFinish     0.055479
+GarageQual       0.055479
+GarageType       0.055479
+GarageYrBlt      0.055479
+GrLivArea        0.000000
+HalfBath         0.000000
+Heating          0.000000
+HeatingQC        0.000000
+HouseStyle       0.000000
+Id               0.000000
+KitchenAbvGr     0.000000
+KitchenQual      0.000000
+LandContour      0.000000
+LandSlope        0.000000
+LotArea          0.000000
+LotConfig        0.000000
+LotFrontage      0.177397
+LotShape         0.000000
+LowQualFinSF     0.000000
+MSSubClass       0.000000
+MSZoning         0.000000
+MasVnrArea       0.005479
+MasVnrType       0.005479
+MiscFeature      0.963014
+MiscVal          0.000000
+MoSold           0.000000
+Neighborhood     0.000000
+OpenPorchSF      0.000000
+OverallCond      0.000000
+OverallQual      0.000000
+PavedDrive       0.000000
+PoolArea         0.000000
+PoolQC           0.995205
+RoofMatl         0.000000
+RoofStyle        0.000000
+SaleCondition    0.000000
+SalePrice        0.000000
+SaleType         0.000000
+ScreenPorch      0.000000
+Street           0.000000
+TotRmsAbvGrd     0.000000
+TotalBsmtSF      0.000000
+Utilities        0.000000
+WoodDeckSF       0.000000
+YearBuilt        0.000000
+YearRemodAdd     0.000000
+YrSold           0.000000
+dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">'data'</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>df_raw.to_feather(<span class="st">'data/HousePrice-raw'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#df_raw = pd.read_feather('data/HousePrice-raw')</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> feather</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df_raw<span class="op">=</span>feather.read_dataframe(<span class="st">'data/HousePrice-raw'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Must do the above just after preprocessing</li>
+</ul>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df, y, nas <span class="op">=</span> proc_df(df_raw, <span class="st">'SalePrice'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>We’ll replace categories with their numeric codes, handle missing continuous values, and split the dependent variable into a separate variable.</li>
+</ul>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(df)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>pd.__version__</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>'0.22.0'</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>m.fit(df, y)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>m.score(df,y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.6/dist-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+  "10 in version 0.20 to 100 in 0.22.", FutureWarning)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>0.9739366309048393</code></pre>
+</div>
+</div>
+<ul>
+<li>R^2</li>
+</ul>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#def split_vals(a,n): return a[:n].copy(), a[n:].copy()</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#n_valid = 300  # same as Kaggle's test set size</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#n_trn = len(df)-n_valid</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#raw_train, raw_valid = split_vals(df_raw, n_trn)</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#X_train, X_valid = split_vals(df, n_trn)</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#y_train, y_valid = split_vals(y, n_trn)</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>X_train,X_valid,y_train,y_valid <span class="op">=</span> train_test_split(df,y,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>X_train.shape, y_train.shape, X_valid.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>((1168, 83), (1168,), (292, 83))</code></pre>
+</div>
+</div>
+<ul>
+<li>We randomly subset the dataset into training and validation set</li>
+</ul>
+</section>
+<section id="setup-evaluation-metric" class="level1">
+<h1>Setup evaluation metric</h1>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rmse(x,y): <span class="cf">return</span> math.sqrt(((x<span class="op">-</span>y)<span class="op">**</span><span class="dv">2</span>).mean())</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_score(m):</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> [rmse(m.predict(X_train), y_train), rmse(m.predict(X_valid), y_valid),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                m.score(X_train, y_train), m.score(X_valid, y_valid)]</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">'oob_score_'</span>): res.append(m.oob_score_)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time m.fit(X_train, y_train)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.6/dist-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+  "10 in version 0.20 to 100 in 0.22.", FutureWarning)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 259 ms, sys: 2.8 ms, total: 262 ms
+Wall time: 214 ms
+[0.0680979172498184, 0.1468061994812014, 0.9712793699377814, 0.8576480666184503]</code></pre>
+</div>
+</div>
+<ul>
+<li>rmsle training set. rmsle validation set. R^2 train. R^2 valid.</li>
+</ul>
+</section>
+<section id="max_depth" class="level1">
+<h1>max_depth</h1>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">1</span>, max_depth<span class="op">=</span><span class="dv">3</span>, bootstrap<span class="op">=</span><span class="va">False</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.21512588405643063, 0.21488707317686184, 0.7133766019597617, 0.6950032863751094]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>draw_tree(m.estimators_[<span class="dv">0</span>], df, precision<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>ExecutableNotFound: failed to execute ['dot', '-Tsvg'], make sure the Graphviz executables are on your systems' PATH</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;graphviz.files.Source at 0x7f41c38df2e8&gt;</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install graphviz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Requirement already satisfied: graphviz in /usr/local/lib/python3.6/dist-packages (0.10.1)</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.06784653702512744, 0.14572966374051144, 0.9714910202483331, 0.8597281567180766]</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time preds <span class="op">=</span> np.stack([t.predict(X_valid) <span class="cf">for</span> t <span class="kw">in</span> m.estimators_])</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>preds[:,<span class="dv">0</span>], np.mean(preds[:,<span class="dv">0</span>]), y_valid[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 19.3 ms, sys: 791 µs, total: 20.1 ms
+Wall time: 19.2 ms</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>(array([12.45877, 11.94665, 12.13726, 12.45877, 12.12811, 12.27839, 12.27839, 12.40492, 12.13619, 12.16003]),
+ 12.23874988137031,
+ 12.209187788430318)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>preds.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>(10, 292)</code></pre>
+</div>
+</div>
+<ul>
+<li>10 trees and 292 validation set</li>
+</ul>
+<div class="cell" hidden="true" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>plt.plot([metrics.r2_score(y_valid, np.mean(preds[:i<span class="op">+</span><span class="dv">1</span>], axis<span class="op">=</span><span class="dv">0</span>)) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>)])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-31-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>,n_estimators<span class="op">=</span><span class="dv">20</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time m.fit(X_train, y_train)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 547 ms, sys: 7.06 ms, total: 554 ms
+Wall time: 326 ms
+[0.059062770036296904, 0.1405220030056154, 0.9783950170839537, 0.8695742803774137]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>,n_estimators<span class="op">=</span><span class="dv">40</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time m.fit(X_train, y_train)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 999 ms, sys: 4.01 ms, total: 1 s
+Wall time: 644 ms
+[0.05608746695400045, 0.13948045866739653, 0.9805169045752153, 0.8715005372017949]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_jobs<span class="op">=-</span><span class="dv">1</span>,n_estimators<span class="op">=</span><span class="dv">80</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time m.fit(X_train, y_train)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 1.9 s, sys: 14.3 ms, total: 1.91 s
+Wall time: 1.08 s
+[0.054780511750726305, 0.13812133094514603, 0.9814143191863508, 0.8739925892628081]</code></pre>
+</div>
+</div>
+</section>
+<section id="oob-score" class="level1">
+<h1>OOB SCORE</h1>
+<div class="cell" hidden="true" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.057592417165998555, 0.13760237811829082, 0.9794573287062557, 0.8749376866715448, 0.8613697938038829]</code></pre>
+</div>
+</div>
+<ul>
+<li>Start with 20-30 trees</li>
+<li>As adding more trees isn’t improving the R2 much</li>
+<li>So we do more hyperparameter tuning and at the end of te project increase the tree to even 1000</li>
+</ul>
+</section>
+<section id="subsampling" class="level1">
+<h1>Subsampling</h1>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>set_rf_samples(<span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-scrolled="true" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.11875127373490586, 0.1482715164933827, 0.9126620774354515, 0.8547921693351554, 0.8527987495121182]</code></pre>
+</div>
+</div>
+<ul>
+<li><p>Subsampling didnt work well because data is smaller. It would be beneficial wer millions of rows are there</p></li>
+<li><p>But we see that diff between R2 of training and valid is very low. So we were overfitting earlier</p></li>
+<li><p>to turn off resampling use. reset_rf_samples()</p></li>
+<li><p>Always use Subsampling and estimators around 30-40 for figuring out insights</p></li>
+</ul>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>reset_rf_samples()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-scrolled="true" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.058059469785404556, 0.1364268241520468, 0.9791227911813437, 0.8770654043202752, 0.8569468287229502]</code></pre>
+</div>
+</div>
+</section>
+<section id="tree-building-parameters" class="level1">
+<h1>Tree Building Parameters</h1>
+<div class="cell" hidden="true" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">7</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.1062221379617009, 0.142577173974198, 0.9301194392989189, 0.8657313621648762, 0.850149530662323]</code></pre>
+</div>
+</div>
+<p>Another way to reduce over-fitting is to grow our trees less deeply. We do this by specifying (with <code>min_samples_leaf</code>) that we require some minimum number of rows in every leaf node. This has two benefits:</p>
+<ul>
+<li>There are less decision rules for each leaf node; simpler models should generalize better</li>
+<li>The predictions are made by averaging more rows in the leaf node, resulting in less volatility</li>
+<li>Good values of min sample leaf are 1,3,5,7,21</li>
+</ul>
+<div class="cell" hidden="true" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">5</span>, max_features<span class="op">=</span><span class="fl">0.5</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.0958694815793622, 0.14316891466142165, 0.9430770941643185, 0.8646145341368245, 0.8610247150121086]</code></pre>
+</div>
+</div>
+<ul>
+<li>good max_features are 0.5,sqrt,log2</li>
+</ul>
+</section>
+<section id="rf-interpretation" class="level1">
+<h1>RF INTERPRETATION</h1>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>set_plot_sizes(<span class="dv">12</span>,<span class="dv">14</span>,<span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Setting the text anf font sizes of the plot</li>
+</ul>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>df, y, nas <span class="op">=</span> proc_df(df_raw, <span class="st">'SalePrice'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>y_df <span class="op">=</span> pd.DataFrame({<span class="st">"SalePrice"</span>:y})<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co">#def split_vals(a,n): return a[:n].copy(), a[n:].copy()</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="co">#n_valid = 300  # same as Kaggle's test set size</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="co">#n_trn = len(df)-n_valid</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="co">#raw_train, raw_valid = split_vals(df_raw, n_trn)</span></span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="co">#X_train, X_valid = split_vals(df, n_trn)</span></span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a><span class="co">#y_train, y_valid = split_vals(y, n_trn)</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>X_train,X_valid,y_train,y_valid <span class="op">=</span> train_test_split(df,y,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>X_train.shape, y_train.shape, X_valid.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>((1168, 83), (1168,), (292, 83))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rmse(x,y): <span class="cf">return</span> math.sqrt(((x<span class="op">-</span>y)<span class="op">**</span><span class="dv">2</span>).mean())</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_score(m):</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> [rmse(m.predict(X_train), y_train), rmse(m.predict(X_valid), y_valid),</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>                m.score(X_train, y_train), m.score(X_valid, y_valid)]</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">'oob_score_'</span>): res.append(m.oob_score_)</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="confidence-based-on-tree-variance" class="level1">
+<h1>Confidence based on tree variance</h1>
+<div class="cell" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>set_rf_samples(<span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">3</span>, max_features<span class="op">=</span><span class="fl">0.5</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.0798225826751453, 0.14019739789575375, 0.9605381124192525, 0.8701761499093422, 0.8611270332802683]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time preds <span class="op">=</span> np.stack([t.predict(X_valid) <span class="cf">for</span> t <span class="kw">in</span> m.estimators_])</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>np.mean(preds[:,<span class="dv">0</span>]), np.std(preds[:,<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 68 ms, sys: 1.75 ms, total: 69.7 ms
+Wall time: 68.9 ms</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>(12.237064539935908, 0.25594230839425275)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_preds(t): <span class="cf">return</span> t.predict(X_valid)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>time preds <span class="op">=</span> np.stack(parallel_trees(m, get_preds))</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>np.mean(preds[:,<span class="dv">0</span>]), np.std(preds[:,<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CPU times: user 26.3 ms, sys: 47.2 ms, total: 73.4 ms
+Wall time: 171 ms</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>(12.260251614319106, 0.19707985968456795)</code></pre>
+</div>
+</div>
+<ul>
+<li>The parallel tree structure is time efficient rather than the above series structure</li>
+<li>parallel_trees takes a random forest model m and some function to call (here, it is get_preds). This calls this function on every tree in parallel.</li>
+</ul>
+<section id="creating-the-df_valid-datframe" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-df_valid-datframe">Creating the df_valid datframe</h2>
+<ul>
+<li>y_valid is ndarray so we create y_valid_df dataframe</li>
+<li>df_valid is dataframe containing the x_valid and y_valid_df columns</li>
+</ul>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co">""""X_valid.head()"""</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating dataframe of the ndarray y_valid</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>y_valid_df <span class="op">=</span> pd.DataFrame({<span class="st">"SalePrice"</span>:y_valid})<span class="op">;</span>y_valid_df.head()</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="co">""""</span></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="co">df_valid = pd.concat([X_valid,y_valid_df], axis=1)"""</span></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Creating dataframe valid having same as X_valid and y_valid_df</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>df_valid <span class="op">=</span> df.sample(frac<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>df_valid.head()</span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>df_valid[<span class="st">'SalePrice'</span>]<span class="op">=</span>y_df.sample(frac<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a>df_valid.head()</span>
+<span id="cb84-14"><a href="#cb84-14" aria-hidden="true" tabindex="-1"></a>X_valid.shape,df_valid.shape,y_valid_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="47">
+<pre><code>((292, 83), (292, 84), (292, 1))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>X_valid.head()</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>y_valid_df.isnull().<span class="bu">sum</span>()</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>df_valid.isnull().<span class="bu">sum</span>()</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>df_valid.head()</span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>y_valid_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>We checked if there is nan value in df_valid and y_valid_df.Then tally the Saleprice column of both datasets</li>
+</ul>
+<div class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> df_valid.copy()</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>x[<span class="st">'pred_std'</span>] <span class="op">=</span> np.std(preds, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>x[<span class="st">'pred'</span>] <span class="op">=</span> np.mean(preds, axis<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="73">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>x.LotShape.value_counts().plot.barh()<span class="op">;</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>df_raw.LotShape.cat.categories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="73">
+<pre><code>Index(['IR1', 'IR2', 'IR3', 'Reg'], dtype='object')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-54-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<ul>
+<li>We see that ‘Reg’ has the most number and ‘IR3’ has least</li>
+</ul>
+<div class="cell" data-execution_count="83">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>x.CentralAir.value_counts().plot.barh()</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>df_raw.CentralAir.dtype</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>We see that There are more number of ‘AC’ than ‘Non Ac’</li>
+</ul>
+<div class="cell" data-execution_count="84">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>flds <span class="op">=</span> [<span class="st">'LotShape'</span>, <span class="st">'SalePrice'</span>, <span class="st">'pred'</span>, <span class="st">'pred_std'</span>]</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>Losh_summ <span class="op">=</span> x[flds].groupby(<span class="st">'LotShape'</span>, as_index<span class="op">=</span><span class="va">False</span>).mean()</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>Losh_summ</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">LotShape</th>
+<th data-quarto-table-cell-role="th">SalePrice</th>
+<th data-quarto-table-cell-role="th">pred</th>
+<th data-quarto-table-cell-role="th">pred_std</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>12.171882</td>
+<td>12.157965</td>
+<td>0.163020</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>12.294675</td>
+<td>12.232013</td>
+<td>0.158221</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>12.122525</td>
+<td>12.468840</td>
+<td>0.187886</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>11.942636</td>
+<td>11.944869</td>
+<td>0.180278</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li>We Grouped by LotShape and checked the Deviation between actual and our predicted model</li>
+<li>We can infer from above that our prediction is not very bad</li>
+</ul>
+<div class="cell" data-execution_count="99">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>Losh_summ <span class="op">=</span> Losh_summ[<span class="op">~</span>pd.isnull(Losh_summ.SalePrice)]</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="co">"""1"""</span>Losh_summ.plot(<span class="st">'LotShape'</span>, <span class="st">'SalePrice'</span>, <span class="st">'barh'</span>, xlim<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">15</span>))<span class="op">;</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="co">"""2"""</span>Losh_summ.plot(<span class="st">'LotShape'</span>, <span class="st">'pred'</span>, <span class="st">'barh'</span>, xerr<span class="op">=</span><span class="st">'pred_std'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, xlim<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">13</span>))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>We use the SD of prediction for our error bars above</li>
+<li>1st plot is the actual and 2nd plot is the predicted salprice with error</li>
+<li>xlim tells the starting and ending point of the x axis</li>
+<li>alpha is the amount of transparency, greater the alpha lesser will be the transparency</li>
+</ul>
+<div class="cell" data-execution_count="111">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>df_valid.Foundation.value_counts().plot.barh()</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>df_raw.Foundation.cat.categories</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>flds <span class="op">=</span> [<span class="st">'Foundation'</span>, <span class="st">'SalePrice'</span>, <span class="st">'pred'</span>, <span class="st">'pred_std'</span>]</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>summ <span class="op">=</span> x[flds].groupby(flds[<span class="dv">0</span>]).mean()</span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>summ</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>(summ.pred_std<span class="op">/</span>summ.pred).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="112">
+<pre><code>Foundation
+1    0.018847
+4    0.017400
+2    0.014721
+6    0.014311
+3    0.013540
+dtype: float64</code></pre>
+</div>
+</div>
+<ul>
+<li>We see that 1 and 4 are worst…because most oftenly or genrally having less data implies a less good model. Since,in the histogram 1 and 4 have less data than 2 and 3, they are less accurate.</li>
+</ul>
+</section>
+</section>
+<section id="feature-importance" class="level1">
+<h1>Feature Importance</h1>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>fi <span class="op">=</span> rf_feat_importance(m, df)<span class="op">;</span> fi[:<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">cols</th>
+<th data-quarto-table-cell-role="th">imp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">17</td>
+<td>OverallQual</td>
+<td>0.367183</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">46</td>
+<td>GrLivArea</td>
+<td>0.155862</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">19</td>
+<td>YearBuilt</td>
+<td>0.050319</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">61</td>
+<td>GarageCars</td>
+<td>0.046644</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">62</td>
+<td>GarageArea</td>
+<td>0.046052</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">38</td>
+<td>TotalBsmtSF</td>
+<td>0.037236</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">43</td>
+<td>1stFlrSF</td>
+<td>0.031000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">59</td>
+<td>GarageYrBlt</td>
+<td>0.025108</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">49</td>
+<td>FullBath</td>
+<td>0.021072</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">4</td>
+<td>LotArea</td>
+<td>0.020515</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>fi.plot(<span class="st">'cols'</span>, <span class="st">'imp'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">6</span>), legend<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f8856088eb8&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-61-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_fi(fi): <span class="cf">return</span> fi.plot(<span class="st">'cols'</span>, <span class="st">'imp'</span>, <span class="st">'barh'</span>, figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">7</span>), legend<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>plot_fi(fi[:<span class="dv">30</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-63-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>to_keep <span class="op">=</span> fi[fi.imp<span class="op">&gt;</span><span class="fl">0.0025</span>].cols<span class="op">;</span><span class="bu">len</span>(to_keep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>33</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>df_keep <span class="op">=</span> df[to_keep].copy()</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="co"># X_train, X_valid = split_vals(df_keep, n_trn)</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>X_train,X_valid,y_train,y_valid <span class="op">=</span> train_test_split(df_keep,y,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a>X_train.shape, y_train.shape, X_valid.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>((1168, 33), (1168,), (292, 33))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">3</span>, max_features<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>                          n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.08208077946420457, 0.13933810302441135, 0.9582737603289586, 0.8717626999301797, 0.8622289399393225]</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>fi <span class="op">=</span> rf_feat_importance(m, df_keep)</span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>plot_fi(fi)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-67-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="one-hot-encoding" class="level1">
+<h1>One Hot Encoding</h1>
+<ul>
+<li>proc_df function is used to do one hot encoding</li>
+</ul>
+<div class="cell" hidden="true" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>df_trn2, y_trn, nas <span class="op">=</span> proc_df(df_raw, <span class="st">'SalePrice'</span>, max_n_cat<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>X_train,X_valid,y_train,y_valid <span class="op">=</span> train_test_split(df_trn2,y,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">3</span>, max_features<span class="op">=</span><span class="fl">0.6</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>, oob_score<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)</span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>print_score(m)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[0.07872308736947681, 0.13873397682923133, 0.9616177402455375, 0.8728722825129304, 0.8644511349044269]</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>fi <span class="op">=</span> rf_feat_importance(m, df_trn2)</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>plot_fi(fi[:<span class="dv">25</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-69-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="removing-redundant-features" class="level1">
+<h1>Removing Redundant Features</h1>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.cluster <span class="im">import</span> hierarchy <span class="im">as</span> hc</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>corr <span class="op">=</span> np.<span class="bu">round</span>(scipy.stats.spearmanr(df_keep).correlation, <span class="dv">4</span>)</span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>corr_condensed <span class="op">=</span> hc.distance.squareform(<span class="dv">1</span><span class="op">-</span>corr)</span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> hc.linkage(corr_condensed, method<span class="op">=</span><span class="st">'average'</span>)</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>,<span class="dv">10</span>))</span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>dendrogram <span class="op">=</span> hc.dendrogram(z, labels<span class="op">=</span>df_keep.columns, </span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>      orientation<span class="op">=</span><span class="st">'left'</span>, leaf_font_size<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-70-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>corr_condensed <span class="op">=</span> hc.distance.squareform(<span class="dv">1</span><span class="op">-</span>corr)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> hc.linkage(corr_condensed, method<span class="op">=</span><span class="st">'average'</span>)</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>dendrogram <span class="op">=</span> hc.dendrogram(z, labels<span class="op">=</span>df_keep.columns, </span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>      orientation<span class="op">=</span><span class="st">'left'</span>, leaf_font_size<span class="op">=</span><span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-71-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<ul>
+<li>We see that there are no remarkably redundant features</li>
+</ul>
+</section>
+<section id="partial-dependance" class="level1">
+<h1>Partial Dependance</h1>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install PDPbox</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Collecting PDPbox
+  Downloading https://files.pythonhosted.org/packages/87/23/ac7da5ba1c6c03a87c412e7e7b6e91a10d6ecf4474906c3e736f93940d49/PDPbox-0.2.0.tar.gz (57.7MB)
+    100% |████████████████████████████████| 57.7MB 657kB/s 
+Requirement already satisfied: pandas in /usr/local/lib/python3.6/dist-packages (from PDPbox) (0.22.0)
+Requirement already satisfied: numpy in /usr/local/lib/python3.6/dist-packages (from PDPbox) (1.14.6)
+Requirement already satisfied: scipy in /usr/local/lib/python3.6/dist-packages (from PDPbox) (1.1.0)
+Requirement already satisfied: matplotlib&gt;=2.1.2 in /usr/local/lib/python3.6/dist-packages (from PDPbox) (2.1.2)
+Requirement already satisfied: joblib in /usr/local/lib/python3.6/dist-packages (from PDPbox) (0.13.0)
+Requirement already satisfied: psutil in /usr/local/lib/python3.6/dist-packages (from PDPbox) (5.4.8)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.6/dist-packages (from PDPbox) (0.20.1)
+Requirement already satisfied: pytz&gt;=2011k in /usr/local/lib/python3.6/dist-packages (from pandas-&gt;PDPbox) (2018.7)
+Requirement already satisfied: python-dateutil&gt;=2 in /usr/local/lib/python3.6/dist-packages (from pandas-&gt;PDPbox) (2.5.3)
+Requirement already satisfied: cycler&gt;=0.10 in /usr/local/lib/python3.6/dist-packages (from matplotlib&gt;=2.1.2-&gt;PDPbox) (0.10.0)
+Requirement already satisfied: six&gt;=1.10 in /usr/local/lib/python3.6/dist-packages (from matplotlib&gt;=2.1.2-&gt;PDPbox) (1.11.0)
+Requirement already satisfied: pyparsing!=2.0.4,!=2.1.2,!=2.1.6,&gt;=2.0.1 in /usr/local/lib/python3.6/dist-packages (from matplotlib&gt;=2.1.2-&gt;PDPbox) (2.3.0)
+Building wheels for collected packages: PDPbox
+  Running setup.py bdist_wheel for PDPbox ... done
+  Stored in directory: /content/.cache/pip/wheels/7d/08/51/63fd122b04a2c87d780464eeffb94867c75bd96a64d500a3fe
+Successfully built PDPbox
+Installing collected packages: PDPbox
+Successfully installed PDPbox-0.2.0</code></pre>
+</div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pdpbox <span class="im">import</span> pdp</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plotnine <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>set_rf_samples(<span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-jupyter="{&quot;outputs_hidden&quot;:true}" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>df_trn2, y_trn, nas <span class="op">=</span> proc_df(df_raw, <span class="st">'SalePrice'</span>, max_n_cat<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a><span class="co">#X_train, X_valid = split_vals(df_trn2, n_trn)</span></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>X_train,X_valid,y_train,y_valid <span class="op">=</span> train_test_split(df_trn2,y_trn,test_size<span class="op">=</span><span class="fl">0.2</span>,random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">40</span>, min_samples_leaf<span class="op">=</span><span class="dv">3</span>, max_features<span class="op">=</span><span class="fl">0.6</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>m.fit(X_train, y_train)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" hidden="true" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>plot_fi(rf_feat_importance(m, df_trn2)[:<span class="dv">10</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-76-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" hidden="true" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>df_raw.plot(<span class="st">'YearMade'</span>, <span class="st">'saleElapsed'</span>, <span class="st">'scatter'</span>, alpha<span class="op">=</span><span class="fl">0.01</span>, figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">8</span>))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="HousePrice_day1_files/figure-html/cell-77-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

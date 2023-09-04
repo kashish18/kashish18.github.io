@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+<meta name="dcterms.date" content="2020-07-04">
+
+<title>kashish18.github.io - Suggestion Mining - NLP using LSTM and tree Ensemble</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">kashish18.github.io</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Suggestion Mining - NLP using LSTM and tree Ensemble</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 4, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div>
+<h3 class="anchored">
+Suggestion Mining
+</h3>
+<p>
+It can be defined as the automatic extraction of suggestions from unstructured text, where the term <i>suggestion</i> refers to the expression of tips, advice, recommendations etc. As proposed by Negi et. al.&nbsp;<a href="#paper1"> [1] </a>, the scope of suggestions is limited to explicit suggestions only. These are the sentences for which the surface structure as well as the context conform to a suggestion.
+</p>
+<h4 class="anchored">
+Problem Statement
+</h4>
+<p>
+Given a sentence <i>s</i>. If <i>s</i> is an explicit suggestion, assign the label <i>‘suggestion’</i>. Otherwise, assign the label <i>‘non-suggestion’</i>.
+</p>
+<h4 class="anchored">
+Data
+</h4>
+<p>
+This notebook uses the <a href="https://github.com/Semeval2019Task9/Subtask-A"> Semeval 2019 Subtask-A</a> dataset, which contains sentences from Microsoft Windows App Studio discussion forum.
+</p>
+<h4 class="anchored">
+Contents
+</h4>
+<ol>
+<li>
+<a href="#eda"> Exploratory Data Analysis </a>
+</li>
+<li>
+<a href="#fe"> Feature Engineering </a>
+</li>
+<li>
+<a href="#statmod"> Statistical Models </a>
+</li>
+<li>
+<a href="#gbdtmod"> Gradient Boosting Decision Tree Ensemble Models </a>
+</li>
+<li>
+<a href="#dlmod"> Deep Learning Model </a>
+</li>
+<li>
+<a href="#stackmod"> Stacking Models </a>
+</li>
+</ol>
+<h4 class="anchored">
+References
+</h4>
+This notebook contains theoretic and implementation ideas from the following research papers:<br>
+<ol>
+<li>
+<a href="https://arxiv.org/abs/1806.02179" id="paper1"> Open Domain Suggestion Mining: Problem Definition and Datasets</a>. Sapna Negi, Maarten de Rijke, and Paul Buitelaar. arXiv preprint arXiv:1806.02179 (2018).
+</li>
+<li>
+<a href="https://aclweb.org/anthology/S/S16/S16-2022.pdf" id="paper2"> A Study of Suggestions in Opinionated Texts and their automatic Detection </a>. Sapna Negi, Kartik Asooja, Shubham Mehrotra, Paul Buitelaar. *SEM 2016, Co-located with ACL 2016, Berlin, Germany.
+</li>
+<li>
+<a href="https://arxiv.org/pdf/1709.07403.pdf" id="paper3"> Inducing Distant Supervision in Suggestion Mining through Part-of-Speech Embeddings </a>. Sapna Negi, and Paul Buitelaar. arXiv preprint arXiv:1709.07403 (2017).
+</li>
+</ol>
+</div>
+<p>::: {.cell _cell_guid=‘b1076dfc-b9ad-4769-8c92-a6c4dae69d19’ _kg_hide-input=‘true’ _uuid=‘8f2839f25d086af736a60e9eeb907d3b93b6e0e5’ execution_count=1}</p>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, gc, time, warnings</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.misc <span class="im">import</span> imread</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> ss</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.sparse <span class="im">import</span> csr_matrix, hstack, vstack</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt, matplotlib.gridspec <span class="im">as</span> gridspec </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wordcloud <span class="im">import</span> WordCloud ,STOPWORDS</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib_venn <span class="im">as</span> venn</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pydot, graphviz</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string, re, nltk, collections</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.util <span class="im">import</span> ngrams</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.corpus <span class="im">import</span> stopwords</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> pos_tag</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.stem <span class="im">import</span> PorterStemmer</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.stem.wordnet <span class="im">import</span> WordNetLemmatizer </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.tokenize <span class="im">import</span> word_tokenize</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk.tokenize <span class="im">import</span> TweetTokenizer   </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer, CountVectorizer, HashingVectorizer</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> TruncatedSVD</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.base <span class="im">import</span> BaseEstimator, ClassifierMixin</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.utils.validation <span class="im">import</span> check_X_y, check_is_fitted</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> SVC</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> metrics</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_selection <span class="im">import</span> SelectFromModel</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> precision_score, recall_score, f1_score</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> StratifiedKFold</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras.backend <span class="im">as</span> K</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> Model</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.utils <span class="im">import</span> plot_model</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> Input, Dense, Embedding, SpatialDropout1D, concatenate</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.layers <span class="im">import</span> GRU, LSTM, Bidirectional, GlobalAveragePooling1D, GlobalMaxPooling1D, Conv1D</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.preprocessing <span class="im">import</span> text, sequence</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.callbacks <span class="im">import</span> Callback</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Using TensorFlow backend.</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _cell_guid=‘79c7e3d0-c299-4dcb-8224-4455121ee9b0’ _kg_hide-input=‘true’ _uuid=‘d629ff2d2480ee46fbb7e2d37f6b5fab8052498a’ execution_count=2}</p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># settings</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'OMP_NUM_THREADS'</span>] <span class="op">=</span> <span class="st">'4'</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>start_time <span class="op">=</span> time.time()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"dark"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>eng_stopwords <span class="op">=</span> <span class="bu">set</span>(stopwords.words(<span class="st">"english"</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>lem <span class="op">=</span> WordNetLemmatizer()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ps <span class="op">=</span> PorterStemmer()</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> TweetTokenizer()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘413525163c3d8d0870200e1da91596e8578f7860’ execution_count=3}</p>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the dataset</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pd.read_csv(<span class="st">"../input/midasiiitd/V1.4_Training.csv"</span>, encoding <span class="op">=</span> <span class="st">'latin-1'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>dev <span class="op">=</span> pd.read_csv(<span class="st">"../input/midasiiitd/SubtaskA_Trial_Test_Labeled.csv"</span>, encoding <span class="op">=</span> <span class="st">'latin-1'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.read_csv(<span class="st">"../input/midasiiitd/SubtaskA_EvaluationData.csv"</span>, encoding <span class="op">=</span> <span class="st">'latin-1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<div>
+<h3 id="eda" class="anchored">
+Exploratory Data Analysis
+</h3>
+</div>
+<div>
+<pre><code>&lt;p&gt; There are three columns in the training data. The first column is 'id' which is a unique identifier for each sentence. The second column 'sentence' contains exactly one sentence as a string of characters. The third column is the target variable 'label', which is an integer that has value 1 if the corresponding sentence is a suggestion, and 0 otherwise. &lt;b&gt;There are no missing values in the entire training set.&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;</code></pre>
+<p>::: {.cell _uuid=‘14036485a842bbdc85443e4fe4d9bbcabb11960a’ execution_count=4}</p>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quick look at a few training examples</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>train.head(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">sentence</th>
+<th data-quarto-table-cell-role="th">label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>663_3</td>
+<td>"Please enable removing language code from the...</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>663_4</td>
+<td>"Note: in your .csproj file, there is a Suppor...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>664_1</td>
+<td>"Wich means the new version not fully replaced...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>664_2</td>
+<td>"Some of my users will still receive the old x...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>664_3</td>
+<td>"The store randomly gives the old xap or the n...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>664_4</td>
+<td>"My app has a WP7 version and a WP8 version XA...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>664_5</td>
+<td>"The wp7 xap works only on WP7 and the wp8 xap...</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>665_1</td>
+<td>"Sometimes the Store gives the wrong wp7 xap v...</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>665_2</td>
+<td>"It should be an option to remove the "ru" lan...</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>665_3</td>
+<td>"Currently if you ever mistakenly selected a "...</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘e1e6686c29472e0142885d37b12a122c50c1f615’ execution_count=5}</p>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Training data..."</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>train.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Training data...
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 8500 entries, 0 to 8499
+Data columns (total 3 columns):
+id          8500 non-null object
+sentence    8500 non-null object
+label       8500 non-null int64
+dtypes: int64(1), object(2)
+memory usage: 199.3+ KB</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘5c942b44b014dac379c6b51735a22328af7e74e8’ execution_count=6}</p>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># class-imbalance in training data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>suggestion_count <span class="op">=</span> (train[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">1</span>).astype(<span class="bu">int</span>).<span class="bu">sum</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>non_suggestion_count <span class="op">=</span> (train[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">0</span>).astype(<span class="bu">int</span>).<span class="bu">sum</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total sentences : "</span> <span class="op">+</span> <span class="bu">str</span>(train.shape[<span class="dv">0</span>]))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total suggestions : "</span> <span class="op">+</span> <span class="bu">str</span>(suggestion_count))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total non_suggestions : "</span> <span class="op">+</span> <span class="bu">str</span>(non_suggestion_count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total sentences : 8500
+Total suggestions : 2085
+Total non_suggestions : 6415</code></pre>
+</div>
+<p>:::</p>
+<div>
+<pre><code>&lt;p&gt; There exists a significant class imbalance in the training data. Paper &lt;a href = "#paper3"&gt; [3] &lt;/a&gt; addresses the issue of class imbalance in data. It suggests oversampling to achieve class balance. In oversampling, multiple copies of instances of the minority class are created till a balance is achieved. The results show that balanced data is better for both domain specific and domain independent training.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+<p>::: {.cell _uuid=‘9a494095fbd0f6e4b9b7fbbf176d9721707d5040’ execution_count=7}</p>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># oversampling to balance the training data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>suggestions <span class="op">=</span> train[train[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> suggestion_count <span class="op">&lt;</span> non_suggestion_count:</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    random_suggestion <span class="op">=</span> suggestions.sample()</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    train <span class="op">=</span> train.append(random_suggestion, ignore_index <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    suggestion_count <span class="op">=</span> suggestion_count <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>train.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 12830 entries, 0 to 12829
+Data columns (total 3 columns):
+id          12830 non-null object
+sentence    12830 non-null object
+label       12830 non-null int64
+dtypes: int64(1), object(2)
+memory usage: 300.8+ KB</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘5afc1b93676d3c90eaff1672d864f932a2cb2afe’ execution_count=8}</p>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># exploring the development/validation data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Development Set..."</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>dev.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Development Set...
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 592 entries, 0 to 591
+Data columns (total 3 columns):
+id          592 non-null object
+sentence    592 non-null object
+label       592 non-null int64
+dtypes: int64(1), object(2)
+memory usage: 14.0+ KB</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘5513e4881d7047721dd24d4b9984b646f9c67daf’ execution_count=9}</p>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># class-imbalance in development data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>suggestion_count <span class="op">=</span> (dev[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">1</span>).astype(<span class="bu">int</span>).<span class="bu">sum</span>()</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>non_suggestion_count <span class="op">=</span> (dev[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">0</span>).astype(<span class="bu">int</span>).<span class="bu">sum</span>()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total sentences : "</span> <span class="op">+</span> <span class="bu">str</span>(dev.shape[<span class="dv">0</span>]))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total suggestions : "</span> <span class="op">+</span> <span class="bu">str</span>(suggestion_count))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total non_suggestions : "</span> <span class="op">+</span> <span class="bu">str</span>(non_suggestion_count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total sentences : 592
+Total suggestions : 296
+Total non_suggestions : 296</code></pre>
+</div>
+<p>:::</p>
+<div>
+<p>
+There is no class imbalance in the development set.
+</p>
+</div>
+<div>
+<h4 class="anchored">
+Word Clouds for the two target classes
+</h4>
+<p>
+Word clouds are a visual representation of the frequency of occurence of several words and phrases in a corpus. The font size of a word or a phrase appearning in a word cloud is directly proportional to its number of occurences in the corpus.
+</p>
+</div>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘1db0439989c4f2ce53a54c7ec96960afc0929b01’ execution_count=10}</p>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>stopword <span class="op">=</span> <span class="bu">set</span>(STOPWORDS)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># wordcloud for sentences with 'suggestion' label</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>subset <span class="op">=</span> train[train.label <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> subset.sentence.values</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>wc <span class="op">=</span> WordCloud(background_color <span class="op">=</span> <span class="st">"black"</span>, max_words <span class="op">=</span> <span class="dv">2000</span>, stopwords <span class="op">=</span> stopword)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>wc.generate(<span class="st">" "</span>.join(content))</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">20</span>,<span class="dv">20</span>))</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">221</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words frequented in 'suggestion' sentences"</span>, fontsize <span class="op">=</span> <span class="dv">20</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>plt.imshow(wc.recolor(colormap <span class="op">=</span> <span class="st">'viridis'</span>, random_state <span class="op">=</span> <span class="dv">17</span>), alpha <span class="op">=</span> <span class="fl">0.98</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># wordcloud for sentences with 'non-suggestion' label</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>subset <span class="op">=</span> train[train.label <span class="op">==</span> <span class="dv">0</span>]</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>content <span class="op">=</span> subset.sentence.values</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>wc <span class="op">=</span> WordCloud(background_color <span class="op">=</span> <span class="st">"black"</span>, max_words <span class="op">=</span> <span class="dv">2000</span>, stopwords <span class="op">=</span> stopword)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>wc.generate(<span class="st">" "</span>.join(content))</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">222</span>)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Words frequented in 'non-suggestion' sentences"</span>, fontsize <span class="op">=</span> <span class="dv">20</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>plt.imshow(wc.recolor(colormap <span class="op">=</span> <span class="st">'viridis'</span>, random_state <span class="op">=</span> <span class="dv">17</span>), alpha <span class="op">=</span> <span class="fl">0.98</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="suggestion-mining_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+</div>
+<p>:::</p>
+<div>
+<p>
+The word clouds do not render any significant difference between the type of words occuring frequently in the two classes. The top unigrams in the ‘suggestion’ class like ‘Window’, ‘app’, ‘user’, ‘developer’, ‘Windows Phone’, ‘use’, ‘need’ and ‘new’ also occur frequently in the ‘non-suggestion’ class.<br> Refering to the description of linguistic observations in explicit suggestions in paper <a href="#paper1"> [1] </a>, in this dataset, the suggestion sentences do not contain frequent occurence of keywords and pharases directly expressing suggestions, like ‘suggest’, ‘suggestion’, ‘recommendation’, ‘advice’, ‘I suggest’, ‘I recommend’, etc. <br> Let’s take a look at the top bigrams in the two classes to further see the difference.
+</p>
+</div>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘3587f7a8647810b5673a9498570e80ffcd8521d2’ execution_count=11}</p>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aphost lookup dict</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>APPO <span class="op">=</span> {</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"aren't"</span> : <span class="st">"are not"</span>,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"can't"</span> : <span class="st">"cannot"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"couldn't"</span> : <span class="st">"could not"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"didn't"</span> : <span class="st">"did not"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"doesn't"</span> : <span class="st">"does not"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"don't"</span> : <span class="st">"do not"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hadn't"</span> : <span class="st">"had not"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hasn't"</span> : <span class="st">"has not"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"haven't"</span> : <span class="st">"have not"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"he'd"</span> : <span class="st">"he would"</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"he'll"</span> : <span class="st">"he will"</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"he's"</span> : <span class="st">"he is"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"i'd"</span> : <span class="st">"I would"</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"i'd"</span> : <span class="st">"I had"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"i'll"</span> : <span class="st">"I will"</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"i'm"</span> : <span class="st">"I am"</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"isn't"</span> : <span class="st">"is not"</span>,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"it's"</span> : <span class="st">"it is"</span>,</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"it'll"</span>:<span class="st">"it will"</span>,</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"i've"</span> : <span class="st">"I have"</span>,</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"let's"</span> : <span class="st">"let us"</span>,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mightn't"</span> : <span class="st">"might not"</span>,</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mustn't"</span> : <span class="st">"must not"</span>,</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shan't"</span> : <span class="st">"shall not"</span>,</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"she'd"</span> : <span class="st">"she would"</span>,</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"she'll"</span> : <span class="st">"she will"</span>,</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"she's"</span> : <span class="st">"she is"</span>,</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shouldn't"</span> : <span class="st">"should not"</span>,</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"that's"</span> : <span class="st">"that is"</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"there's"</span> : <span class="st">"there is"</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">"they'd"</span> : <span class="st">"they would"</span>,</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"they'll"</span> : <span class="st">"they will"</span>,</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"they're"</span> : <span class="st">"they are"</span>,</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"they've"</span> : <span class="st">"they have"</span>,</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"we'd"</span> : <span class="st">"we would"</span>,</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"we're"</span> : <span class="st">"we are"</span>,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"weren't"</span> : <span class="st">"were not"</span>,</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"we've"</span> : <span class="st">"we have"</span>,</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"what'll"</span> : <span class="st">"what will"</span>,</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"what're"</span> : <span class="st">"what are"</span>,</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"what's"</span> : <span class="st">"what is"</span>,</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"what've"</span> : <span class="st">"what have"</span>,</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"where's"</span> : <span class="st">"where is"</span>,</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"who'd"</span> : <span class="st">"who would"</span>,</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"who'll"</span> : <span class="st">"who will"</span>,</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">"who're"</span> : <span class="st">"who are"</span>,</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">"who's"</span> : <span class="st">"who is"</span>,</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"who've"</span> : <span class="st">"who have"</span>,</span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"won't"</span> : <span class="st">"will not"</span>,</span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>    <span class="st">"wouldn't"</span> : <span class="st">"would not"</span>,</span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"you'd"</span> : <span class="st">"you would"</span>,</span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">"you'll"</span> : <span class="st">"you will"</span>,</span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"you're"</span> : <span class="st">"you are"</span>,</span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>    <span class="st">"you've"</span> : <span class="st">"you have"</span>,</span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>    <span class="st">"'re"</span>: <span class="st">" are"</span>,</span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"wasn't"</span>: <span class="st">"was not"</span>,</span>
+<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"we'll"</span>:<span class="st">" will"</span>,</span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"didn't"</span>: <span class="st">"did not"</span>,</span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"tryin'"</span>:<span class="st">"trying"</span></span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘f1b9d5bf4b3adb978a3c1f91c3ae5d1e6b4fc48c’ execution_count=12}</p>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean(sentence):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> sentence.lower()</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> re.sub(<span class="st">'&lt;.*&gt;'</span>, <span class="st">''</span>, sentence)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> re.sub(<span class="st">"</span><span class="ch">\\</span><span class="st">n"</span>, <span class="st">""</span>, sentence)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> re.sub(<span class="st">"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"</span>, <span class="st">""</span>, sentence)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> re.sub(<span class="st">"\[\[.*\]"</span>, <span class="st">""</span>, sentence)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    sentence <span class="op">=</span> re.sub(<span class="st">"["</span> <span class="op">+</span> re.sub(<span class="st">"\."</span>,<span class="st">""</span>,string.punctuation) <span class="op">+</span> <span class="st">"]"</span>, <span class="st">""</span>, sentence)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> tokenizer.tokenize(sentence)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [APPO[word] <span class="cf">if</span> word <span class="kw">in</span> APPO <span class="cf">else</span> word <span class="cf">for</span> word <span class="kw">in</span> words]</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [ps.stem(word) <span class="cf">for</span> word <span class="kw">in</span> words]</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [lem.lemmatize(word, <span class="st">"v"</span>) <span class="cf">for</span> word <span class="kw">in</span> words]</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> words <span class="cf">if</span> <span class="kw">not</span> w <span class="kw">in</span> eng_stopwords]</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    clean_sent <span class="op">=</span> <span class="st">" "</span>.join(words)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(clean_sent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘8cfdf908dc00c55671c03a31cdc5157626131f0f’ execution_count=13}</p>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># obtaining separate clean corpora for suggestion and non-suggestion classes</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>suggestion_corpus <span class="op">=</span> train[train[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">1</span>].sentence</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>suggestion_corpus <span class="op">=</span> suggestion_corpus.append(dev[dev[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">1</span>].sentence)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>clean_suggestion_corpus <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sentence <span class="kw">in</span> suggestion_corpus:</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    clean_suggestion_corpus <span class="op">+=</span> clean(sentence)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>non_suggestion_corpus <span class="op">=</span> train[train[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">0</span>].sentence</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>non_suggestion_corpus <span class="op">=</span> non_suggestion_corpus.append(dev[dev[<span class="st">'label'</span>].values <span class="op">==</span> <span class="dv">0</span>].sentence)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>clean_non_suggestion_corpus <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sentence <span class="kw">in</span> non_suggestion_corpus:</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    clean_non_suggestion_corpus <span class="op">+=</span> clean(sentence)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘bf44113d90119657b9638cb058af73e56d92884d’ execution_count=14}</p>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># top 20 bigrams in suggestion sentences</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>suggestion_bigrams <span class="op">=</span> ngrams(clean_suggestion_corpus.split(), <span class="dv">2</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>suggestion_bigrams_freq <span class="op">=</span> collections.Counter(suggestion_bigrams)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>suggestion_bigrams_freq.most_common(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>[(('window', 'phone'), 270),
+ (('would', 'like'), 122),
+ (('like', 'see'), 93),
+ (('would', 'nice'), 89),
+ (('window', '10'), 85),
+ (('would', 'great'), 81),
+ (('someth', 'like'), 57),
+ (('dev', 'center'), 53),
+ (('like', 'abl'), 53),
+ (('nice', 'abl'), 49),
+ (('great', 'could'), 47),
+ (('app', 'store'), 45),
+ (('provid', 'api'), 41),
+ (('api', 'allow'), 40),
+ (('allow', 'user'), 39),
+ (('allow', 'us'), 38),
+ (('phone', '81'), 35),
+ (('allow', 'develop'), 35),
+ (('app', 'could'), 35),
+ (('window', 'app'), 34)]</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘0fd64cdb36f80caa27efefd99dcf15bab550db81’ execution_count=15}</p>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># top 20 bigrams in non-suggestion sentences</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>non_suggestion_bigrams <span class="op">=</span> ngrams(clean_non_suggestion_corpus.split(), <span class="dv">2</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>non_suggestion_bigrams_freq <span class="op">=</span> collections.Counter(non_suggestion_bigrams)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>non_suggestion_bigrams_freq.most_common(<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>[(('window', 'phone'), 173),
+ (('window', '10'), 90),
+ (('â', '\x80'), 90),
+ (('¢', 'â'), 84),
+ (('\x80', 'â'), 84),
+ (('uwp', 'app'), 45),
+ (('app', 'use'), 33),
+ (('app', 'store'), 30),
+ (('app', 'window'), 29),
+ (('window', 'store'), 27),
+ (('thi', 'issu'), 26),
+ (('would', 'allow'), 26),
+ (('desktop', 'bridg'), 26),
+ (('creator', 'updat'), 25),
+ (('phone', '8'), 23),
+ (('thi', 'featur'), 22),
+ (('phone', '81'), 21),
+ (('would', 'like'), 21),
+ (('phone', '7'), 21),
+ (('win', '10'), 21)]</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-input=‘true’ _kg_hide-output=‘true’ _uuid=‘86c0d4e9c88251fbe79e233cf98f55fae29e8570’ execution_count=16}</p>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(suggestions)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(subset)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(content)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(stopword)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(wc)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(suggestion_corpus)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(clean_suggestion_corpus)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(non_suggestion_corpus)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(clean_non_suggestion_corpus)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>gc.collect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>0</code></pre>
+</div>
+<p>:::</p>
+<div>
+<p>
+The suggestion bigrams have more frequent occurences of indirect suggestion expressing phrases like ‘would like’, ‘would nice’, ‘would great’. These phrases contain an auxiliary verb followed by a verb or an adjective. We may think of extracting some useful feature based on these patterns. However, such constructs also appear in the non-suggestion sentences, as is apparent from the non-suggestion bigrams. Also, given the fact that we have oversampled the positive class to balance the data, it will not be a great idea to extract features based on these bigram patterns. <br> The statistical models cannot learn the syntactic structure of sentences on their own. But, neural networks can. As suggested in paper <a href="#paper3"> [3] </a>, we will use Part Of Speech (POS) embeddings to improve the syntactic structure learning by the deep learning models.
+</p>
+</div>
+<div>
+<pre><code>&lt;p&gt; Finally, let's see how the length of sentences are related to their labels.
+&lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘c80ddf190c5aa410b025d7914a316340af34d151’ execution_count=17}</p>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of sentence length against label</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([train, dev])</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'count_word'</span>] <span class="op">=</span> df[<span class="st">'sentence'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x : <span class="bu">len</span>(x.split()))</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"How is sentence length related to its label?"</span>, fontsize <span class="op">=</span> <span class="dv">15</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>count_word <span class="op">=</span> df[<span class="st">'count_word'</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'count_word'</span>].loc[df[<span class="st">'count_word'</span>] <span class="op">&gt;</span> <span class="dv">100</span>] <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>plt.plot()</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>sns.violinplot(y <span class="op">=</span> <span class="st">'count_word'</span>, x <span class="op">=</span> <span class="st">'label'</span>, data <span class="op">=</span> df, split <span class="op">=</span> <span class="va">True</span>, inner <span class="op">=</span> <span class="st">"quart"</span>)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Suggestion?'</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Number of words in a sentence'</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Number of sentences with a given word length"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(df)</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>gc.collect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="suggestion-mining_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>2100</code></pre>
+</div>
+<p>:::</p>
+<div>
+<pre><code>&lt;p&gt; It can be seen from the above plot that both suggestion and non-suggestion classes have similar frequency distribution of sentences having a given number of words, so it will be unwise to label a sentence as suggestion or non-suggestion based on the number of words in it.
+&lt;/p&gt;</code></pre>
+</div>
+<div>
+<p>
+Another measure that can be checked for is the mean word length. The writers may choose more elegant and longer words for expressing suggestions.
+</p>
+</div>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘1ab4648b8ef4d02d048a280eb4012c561f42fb9b’ execution_count=18}</p>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of mean word length against label</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([train, dev])</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'mean_word_len'</span>] <span class="op">=</span> df[<span class="st">'sentence'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x : np.mean([<span class="bu">len</span>(word) <span class="cf">for</span> word <span class="kw">in</span> x.split()]))</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"How is mean word length in a sentence related to its label?"</span>, fontsize <span class="op">=</span> <span class="dv">15</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>mean_word_len <span class="op">=</span> df[<span class="st">'mean_word_len'</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'mean_word_len'</span>].loc[df[<span class="st">'mean_word_len'</span>] <span class="op">&gt;</span> <span class="dv">10</span>] <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>plt.plot()</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>sns.violinplot(y <span class="op">=</span> <span class="st">'mean_word_len'</span>, x <span class="op">=</span> <span class="st">'label'</span>, data <span class="op">=</span> df, split <span class="op">=</span> <span class="va">True</span>, inner <span class="op">=</span> <span class="st">"quart"</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Suggestion?'</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Mean word length in sentence'</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Number of sentences with a given mean word length"</span>, fontsize <span class="op">=</span> <span class="dv">12</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(df)</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>gc.collect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="suggestion-mining_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>2040</code></pre>
+</div>
+<p>:::</p>
+<div>
+<p>
+Mean word length analysis too does not yield any significant difference between the sentences in the two classes.
+</p>
+</div>
+<div>
+<h3 id="fe" class="anchored">
+Feature Engineering
+</h3>
+<p>
+We extract certain useful features from the data which may improve the prediction performance of our statistical models.<br> As is evident from the above analysis, the features related to the frequency of words may not be useful in this particular case. This may be very domain specific, since users on developers’ forums are often very concise, less verbose and use more technical terms while writing all kind of sentences.<br> Although, the ngram features too do not seem to differentiate between the sentences in the two classes very well, using these to learn syntactic structure of sentences may improve performances of our statistical models.<br> We need not use these additional features, other than the word embeddings for sequence representation, with deep learning models since the neural networks can learn better feature representations on their own.
+</p></div>
+<p>::: {.cell _uuid=‘cb411bd69aa55d40512ad4aff9c85e64cdf1036c’ execution_count=19}</p>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># corpus containing all the sentences in train, development and test data</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>corpus <span class="op">=</span> (pd.concat([train.iloc[:, <span class="dv">0</span>:<span class="dv">2</span>], dev.iloc[:, <span class="dv">0</span>:<span class="dv">2</span>], test.iloc[:, <span class="dv">0</span>:<span class="dv">2</span>]])).sentence</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>clean_corpus <span class="op">=</span> corpus.<span class="bu">apply</span>(<span class="kw">lambda</span> x : clean(x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘a00e0320c8c27eb91e8fcd160c4f97d7a286a9f4’ execution_count=20}</p>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tf-idf vectors with unigram features</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>unigram_tfv <span class="op">=</span> TfidfVectorizer(strip_accents <span class="op">=</span> <span class="st">'unicode'</span>, analyzer <span class="op">=</span> <span class="st">'word'</span>, ngram_range <span class="op">=</span> (<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                              sublinear_tf <span class="op">=</span> <span class="dv">1</span>, stop_words <span class="op">=</span> <span class="st">'english'</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>unigram_tfv.fit(clean_corpus)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>train_unigrams <span class="op">=</span> unigram_tfv.transform(clean_corpus.iloc[:train.shape[<span class="dv">0</span>]])</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>dev_unigrams <span class="op">=</span> unigram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]:train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]])</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>test_unigrams <span class="op">=</span> unigram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]:])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘72a05a6d63f95ace49dbf2aa21825984a1e2ce77’ execution_count=21}</p>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tf-idf vectors with bigram and trigram features</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>btgram_tfv <span class="op">=</span> TfidfVectorizer(strip_accents <span class="op">=</span> <span class="st">'unicode'</span>, analyzer <span class="op">=</span> <span class="st">'word'</span>, ngram_range <span class="op">=</span> (<span class="dv">2</span>,<span class="dv">3</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            sublinear_tf <span class="op">=</span> <span class="dv">1</span>, stop_words <span class="op">=</span> <span class="st">'english'</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>btgram_tfv.fit(clean_corpus)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>train_btgrams <span class="op">=</span> btgram_tfv.transform(clean_corpus.iloc[:train.shape[<span class="dv">0</span>]])</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>dev_btgrams <span class="op">=</span> btgram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]:train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]])</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>test_btgrams <span class="op">=</span> btgram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]:])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘f4d3b7ced16f1280ea7afdf8b554cefe8f1dc715’ execution_count=22}</p>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tf-idf vectors with char n-gram features</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>charngram_tfv <span class="op">=</span> TfidfVectorizer(strip_accents <span class="op">=</span> <span class="st">'unicode'</span>, analyzer <span class="op">=</span> <span class="st">'char'</span>, ngram_range <span class="op">=</span> (<span class="dv">1</span>,<span class="dv">5</span>),</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>                sublinear_tf <span class="op">=</span> <span class="dv">1</span>, stop_words <span class="op">=</span> <span class="st">'english'</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>charngram_tfv.fit(clean_corpus)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>train_charngrams <span class="op">=</span>  charngram_tfv.transform(clean_corpus.iloc[:train.shape[<span class="dv">0</span>]])</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>dev_charngrams <span class="op">=</span> charngram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]:train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]])</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>test_charngrams <span class="op">=</span> charngram_tfv.transform(clean_corpus.iloc[train.shape[<span class="dv">0</span>]<span class="op">+</span>dev.shape[<span class="dv">0</span>]:])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<div>
+<pre><code>&lt;h3&gt;Evaluation Metrics&lt;/h3&gt;
+&lt;p&gt; We will use three different evaluation metrics : Precision score, Recall score and F1 score. The F1 score can be interpreted as a weighted average of the Precision and Recall. These three metrics have been used in paper &lt;a href = "#paper2"&gt; [2] &lt;/a&gt;.  &lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘ff99047f9c7eb21140c61d8b165ab49d83f779ae’ execution_count=23}</p>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># evaluation functions for different models</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lgb_f1_score(preds, train_data):</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    y_train <span class="op">=</span> train_data.get_label()</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> (preds <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'f1_score'</span>, f1_score(y_train, preds), <span class="va">True</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xgb_f1_score(preds, train_data):</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    y_train <span class="op">=</span> train_data.get_label()</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> (preds <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'f1_score'</span>, f1_score(y_train, preds)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nn_f1_score(y_true, y_pred):</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    y_pred <span class="op">=</span> tf.cast((y_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>), tf.float32)</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    tp <span class="op">=</span> K.<span class="bu">sum</span>(K.cast(y_true<span class="op">*</span>y_pred, <span class="st">'float'</span>), axis <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    tn <span class="op">=</span> K.<span class="bu">sum</span>(K.cast((<span class="dv">1</span><span class="op">-</span>y_true)<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>y_pred), <span class="st">'float'</span>), axis <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    fp <span class="op">=</span> K.<span class="bu">sum</span>(K.cast((<span class="dv">1</span><span class="op">-</span>y_true)<span class="op">*</span>y_pred, <span class="st">'float'</span>), axis <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    fn <span class="op">=</span> K.<span class="bu">sum</span>(K.cast(y_true<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>y_pred), <span class="st">'float'</span>), axis <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp <span class="op">+</span> K.epsilon())</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn <span class="op">+</span> K.epsilon())</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    f1 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>p<span class="op">*</span>r <span class="op">/</span> (p<span class="op">+</span>r<span class="op">+</span>K.epsilon())</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>    f1_score <span class="op">=</span> tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> K.mean(f1_score)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<div>
+<pre><code>&lt;h3 id = "statmod"&gt; Statistical Models &lt;/h3&gt;
+&lt;p&gt; We will train two statistical models : Logistic Regression and Support Vector Machine (SVM).&lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _uuid=‘fae85a6e31a97cf83e79591fa4baac3eab8f0a43’ execution_count=24}</p>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># preparing data for statistical and GBDT models</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> hstack((train_unigrams, train_btgrams, train_charngrams)).tocsr()</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">'label'</span>].values</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>x_dev <span class="op">=</span> hstack((dev_unigrams, dev_btgrams, dev_charngrams)).tocsr()</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>y_dev <span class="op">=</span> dev[<span class="st">'label'</span>].values</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> hstack((test_unigrams, test_btgrams, test_charngrams)).tocsr()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘b5f6a7b24ef3a739607a7503c1e3e487e283bd7d’ execution_count=25}</p>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># logistic regression classifier</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> LogisticRegression(C <span class="op">=</span> <span class="fl">0.1</span>, solver <span class="op">=</span> <span class="st">'liblinear'</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>clf.fit(x_train, y_train)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>lr_dev_pred <span class="op">=</span> clf.predict_proba(x_dev)[:, <span class="dv">1</span>]</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>lr_test_pred <span class="op">=</span> clf.predict_proba(x_test)[:, <span class="dv">1</span>]</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (lr_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>lr_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>lr_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>lr_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Logistic Regression..."</span>)</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(lr_precision))</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(lr_recall))</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(lr_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Logistic Regression...
+Precision score : 0.6596306068601583
+Recall score : 0.8445945945945946
+F1 score : 0.7407407407407408</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘01d4a4e807951ecb90fcebe8e70ea811a63fa1b5’ execution_count=26}</p>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SVM classifier</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="co"># reducing the number of features using Singular Value Decomposition</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>svd <span class="op">=</span> TruncatedSVD(n_components <span class="op">=</span> <span class="dv">15</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>svd.fit(vstack((x_train, x_dev, x_test)).tocsr())</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>x_train_svd <span class="op">=</span> svd.transform(x_train)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>x_dev_svd <span class="op">=</span> svd.transform(x_dev)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>x_test_svd <span class="op">=</span> svd.transform(x_test)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co"># scaling the data obtained from SVD</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>scaler.fit(np.concatenate((x_train_svd, x_dev_svd, x_test_svd)))</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>x_train_svd <span class="op">=</span> scaler.transform(x_train_svd)</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>x_dev_svd <span class="op">=</span> scaler.transform(x_dev_svd)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>x_test_svd <span class="op">=</span> scaler.transform(x_test_svd)</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> SVC(C <span class="op">=</span> <span class="fl">0.1</span>, probability <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>clf.fit(x_train_svd, y_train)</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>svm_dev_pred <span class="op">=</span> clf.predict_proba(x_dev_svd)[:, <span class="dv">1</span>]</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>svm_test_pred <span class="op">=</span> clf.predict_proba(x_test_svd)[:, <span class="dv">1</span>]</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (svm_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>svm_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>svm_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>svm_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SVM Classifier..."</span>)</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(svm_precision))</span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(svm_recall))</span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(svm_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SVM Classifier...
+Precision score : 0.6617210682492581
+Recall score : 0.7533783783783784
+F1 score : 0.7045813586097947</code></pre>
+</div>
+<p>:::</p>
+<div>
+<pre><code>&lt;h3 id = "gbdtmod"&gt; Gradient Boosting Decision Tree Ensemble Models &lt;/h3&gt;
+&lt;p&gt;We will train two high performing GBDT models : LGBM and XGBoost.&lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _uuid=‘f307de5bdb325b5e5da388761005b4a25244943e’ execution_count=27}</p>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lgbm classifier</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>d_train <span class="op">=</span> lgb.Dataset(x_train, label <span class="op">=</span> y_train)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>d_dev <span class="op">=</span> lgb.Dataset(x_dev, label <span class="op">=</span> y_dev)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>valid_sets <span class="op">=</span> [d_train, d_dev]</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {<span class="st">'learning_rate'</span>: <span class="fl">0.2</span>,</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>          <span class="st">'application'</span>: <span class="st">'binary'</span>,</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>          <span class="st">'num_leaves'</span>: <span class="dv">31</span>,</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>          <span class="st">'verbosity'</span>: <span class="op">-</span><span class="dv">1</span>,</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>          <span class="st">'bagging_fraction'</span>: <span class="fl">0.8</span>,</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>          <span class="st">'feature_fraction'</span>: <span class="fl">0.6</span>,</span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>          <span class="st">'nthread'</span>: <span class="dv">4</span>,</span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>          <span class="st">'lambda_l1'</span>: <span class="dv">1</span>,</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>          <span class="st">'lambda_l2'</span>: <span class="dv">1</span>}</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> lgb.train(params,</span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>                  train_set <span class="op">=</span> d_train,</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>                  num_boost_round <span class="op">=</span> <span class="dv">25</span>,</span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>                  valid_sets <span class="op">=</span> valid_sets,</span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>                  feval <span class="op">=</span> lgb_f1_score,</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>                  verbose_eval <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a>lgb_dev_pred <span class="op">=</span> model.predict(x_dev)</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>lgb_test_pred <span class="op">=</span> model.predict(x_test)</span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (lgb_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>lgb_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>lgb_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>lgb_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"LGBM Classifier..."</span>)</span>
+<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(lgb_precision))</span>
+<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(lgb_recall))</span>
+<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(lgb_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>LGBM Classifier...
+Precision score : 0.7138364779874213
+Recall score : 0.7668918918918919
+F1 score : 0.739413680781759</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-input=‘true’ _kg_hide-output=‘true’ _uuid=‘dd0d2051da25af11681afc7f40683a993d55b9b7’ execution_count=28}</p>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(d_train)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(d_dev)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(model)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>gc.collect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="28">
+<pre><code>306</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘6eab63774a8f8f0a688f153b3e3acf7c42854c88’ execution_count=29}</p>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># XGBoost classifier</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xgboost <span class="im">as</span> xgb</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>d_train <span class="op">=</span> xgb.DMatrix(x_train, label <span class="op">=</span> y_train)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>d_dev <span class="op">=</span> xgb.DMatrix(x_dev, label <span class="op">=</span> y_dev)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>d_test <span class="op">=</span> xgb.DMatrix(x_test)</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>evallist <span class="op">=</span> [(d_train, <span class="st">'train'</span>), (d_dev, <span class="st">'valid'</span>)]</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {<span class="st">'booster'</span> : <span class="st">'gbtree'</span>,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>          <span class="st">'nthread'</span> : <span class="dv">4</span>,</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>          <span class="st">'eta'</span> : <span class="fl">0.2</span>,</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>          <span class="st">'max_depth'</span> : <span class="dv">6</span>,</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>          <span class="st">'min_child_weight'</span> : <span class="dv">4</span>,</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>          <span class="st">'subsample'</span> : <span class="fl">0.7</span>,</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>          <span class="st">'colsample_bytree'</span> : <span class="fl">0.7</span>,</span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>          <span class="st">'objective'</span> : <span class="st">'binary:logistic'</span>}</span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> xgb.train(params, </span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>                  d_train, </span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>                  num_boost_round <span class="op">=</span> <span class="dv">21</span>,</span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>                  evals <span class="op">=</span> evallist,</span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>                  feval <span class="op">=</span> xgb_f1_score,</span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>                  verbose_eval <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>xgb_dev_pred <span class="op">=</span> model.predict(d_dev, ntree_limit <span class="op">=</span> <span class="dv">21</span>)</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>xgb_test_pred <span class="op">=</span> model.predict(d_test, ntree_limit <span class="op">=</span> <span class="dv">21</span>)</span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-29"><a href="#cb51-29" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (xgb_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb51-30"><a href="#cb51-30" aria-hidden="true" tabindex="-1"></a>xgb_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb51-31"><a href="#cb51-31" aria-hidden="true" tabindex="-1"></a>xgb_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb51-32"><a href="#cb51-32" aria-hidden="true" tabindex="-1"></a>xgb_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb51-33"><a href="#cb51-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-34"><a href="#cb51-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"XGBoost Classifier..."</span>)</span>
+<span id="cb51-35"><a href="#cb51-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(xgb_precision))</span>
+<span id="cb51-36"><a href="#cb51-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(xgb_recall))</span>
+<span id="cb51-37"><a href="#cb51-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(xgb_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>XGBoost Classifier...
+Precision score : 0.7083333333333334
+Recall score : 0.7466216216216216
+F1 score : 0.7269736842105262</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-input=‘true’ _kg_hide-output=‘true’ _uuid=‘1c06b4abad89bd722b693a74db5a672fdd393d77’ execution_count=30}</p>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(x_train)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(y_train)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(x_dev)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(y_dev)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(d_train)</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(d_dev)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span>(model)</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>gc.collect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>232</code></pre>
+</div>
+<p>:::</p>
+<div>
+<pre><code>&lt;h3 id = "dlmod"&gt; Deep Learning Model &lt;/h3&gt;
+&lt;p&gt; Paper &lt;a href = "#paper2"&gt; [2] &lt;/a&gt; uses two different Neural Network models namely Long Short-Term Memory (LSTM), which is a variant of Recurrent Neural Network (RNN), and Convolutional Neural Network (CNN). For learning sequences, they have used word embeddings generated from three different pre-trained models - COMPOSES7, Glove and DEPS. Paper &lt;a href = "#paper3"&gt; [3] &lt;/a&gt; introduced additional Part Of Speech (POS) embeddings, and an increase in prediction performace was observed on using these.&lt;br/&gt;&lt;br/&gt;
+    We will develop a hybrid Deep Neural Network architecture containing Gated Recurrent Unit (GRU) units as well as Convolutional layers. The reason we use GRU and not LSTM is that the lengths of word sequences in our dataset are quite small, average length being 19 words. GRU is faster than LSTM and known to perform better with smaller length sequences. In the recent years, Facebook's &lt;a href = "https://www.kaggle.com/facebook/fasttext-wikinews"&gt; fastText &lt;/a&gt; library has shown better performance at learning word representation than other pre-trained models. So, we will use this library for generating word embeddings and POS embeddings. 
+    
+&lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _uuid=‘87135751e668ef92b5a9c1e9bf90db3e58948908’ execution_count=31}</p>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># preparing data for Neural Network</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>EMBEDDING_FILE <span class="op">=</span> <span class="st">'../input/fasttext/crawl-300d-2M.vec'</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>max_features <span class="op">=</span> <span class="dv">10760</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>maxlen <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>embed_size <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>pos_tags_train <span class="op">=</span> train[<span class="st">'sentence'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x : <span class="st">" "</span>.join(item[<span class="dv">1</span>] <span class="cf">for</span> item <span class="kw">in</span> pos_tag(word_tokenize(x)))).values</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>pos_tags_dev <span class="op">=</span> dev[<span class="st">'sentence'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x : <span class="st">" "</span>.join(item[<span class="dv">1</span>] <span class="cf">for</span> item <span class="kw">in</span> pos_tag(word_tokenize(x)))).values</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>pos_tags_test <span class="op">=</span> test[<span class="st">'sentence'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x : <span class="st">" "</span>.join(item[<span class="dv">1</span>] <span class="cf">for</span> item <span class="kw">in</span> pos_tag(word_tokenize(x)))).values</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> train[<span class="st">'sentence'</span>].values <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> pos_tags_train</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train[<span class="st">'label'</span>].values</span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>x_dev <span class="op">=</span> dev[<span class="st">'sentence'</span>].values <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> pos_tags_dev</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>y_dev <span class="op">=</span> dev[<span class="st">'label'</span>].values</span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> test[<span class="st">'sentence'</span>].values <span class="op">+</span> <span class="st">" "</span> <span class="op">+</span> pos_tags_test</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> text.Tokenizer(num_words <span class="op">=</span> max_features)</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>tokenizer.fit_on_texts(<span class="bu">list</span>(x_train) <span class="op">+</span> <span class="bu">list</span>(x_dev) <span class="op">+</span> <span class="bu">list</span>(x_test))</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> tokenizer.texts_to_sequences(x_train)</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>x_dev <span class="op">=</span> tokenizer.texts_to_sequences(x_dev)</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> tokenizer.texts_to_sequences(x_test)</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> sequence.pad_sequences(x_train, maxlen <span class="op">=</span> maxlen)</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>x_dev <span class="op">=</span> sequence.pad_sequences(x_dev, maxlen <span class="op">=</span> maxlen)</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> sequence.pad_sequences(x_test, maxlen <span class="op">=</span> maxlen)</span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_coefs(word, <span class="op">*</span>arr): </span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> word, np.asarray(arr, dtype <span class="op">=</span> <span class="st">'float32'</span>)</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>embeddings_index <span class="op">=</span> <span class="bu">dict</span>(get_coefs(<span class="op">*</span>o.rstrip().rsplit(<span class="st">' '</span>)) <span class="cf">for</span> o <span class="kw">in</span> <span class="bu">open</span>(EMBEDDING_FILE))</span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>word_index <span class="op">=</span> tokenizer.word_index</span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>nb_words <span class="op">=</span> <span class="bu">min</span>(max_features, <span class="bu">len</span>(word_index))</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>embedding_matrix <span class="op">=</span> np.zeros((nb_words, embed_size))</span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word, i <span class="kw">in</span> word_index.items():</span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">&gt;=</span> max_features:</span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>    embedding_vector <span class="op">=</span> embeddings_index.get(word)</span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> embedding_vector <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb56-41"><a href="#cb56-41" aria-hidden="true" tabindex="-1"></a>        embedding_matrix[i] <span class="op">=</span> embedding_vector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-output=‘true’ _uuid=‘5c08f2975aaf6cd5df7b892d8d40df92e8c25560’ execution_count=32}</p>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hybrid Neural Network classifier</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>inp <span class="op">=</span> Input(shape <span class="op">=</span> (maxlen, ))</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> Embedding(max_features, embed_size, weights <span class="op">=</span> [embedding_matrix])(inp)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> SpatialDropout1D(<span class="fl">0.2</span>)(x)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> Bidirectional(GRU(<span class="dv">100</span>, return_sequences <span class="op">=</span> <span class="va">True</span>))(x)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> Conv1D(<span class="dv">50</span>, kernel_size <span class="op">=</span> <span class="dv">2</span>, padding <span class="op">=</span> <span class="st">"valid"</span>, kernel_initializer <span class="op">=</span> <span class="st">"he_uniform"</span>)(x)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>avg_pool <span class="op">=</span> GlobalAveragePooling1D()(x)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>max_pool <span class="op">=</span> GlobalMaxPooling1D()(x)</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>conc <span class="op">=</span> concatenate([avg_pool, max_pool])</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>outp <span class="op">=</span> Dense(<span class="dv">1</span>, activation <span class="op">=</span> <span class="st">"sigmoid"</span>)(conc)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(inputs <span class="op">=</span> inp, outputs <span class="op">=</span> outp)</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss <span class="op">=</span> <span class="st">'binary_crossentropy'</span>, optimizer <span class="op">=</span> <span class="st">'adam'</span>, metrics <span class="op">=</span> [nn_f1_score])</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>model.fit(x_train, y_train, batch_size <span class="op">=</span> <span class="dv">128</span>, epochs <span class="op">=</span> <span class="dv">1</span>, validation_data <span class="op">=</span> (x_dev, y_dev), verbose <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>WARNING:tensorflow:From /opt/conda/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /opt/conda/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
+WARNING:tensorflow:From /opt/conda/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING:tensorflow:From /opt/conda/lib/python3.6/site-packages/tensorflow/python/ops/math_grad.py:102: div (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Deprecated in favor of operator or tf.math.divide.
+Train on 12830 samples, validate on 592 samples
+Epoch 1/1
+12830/12830 [==============================] - 201s 16ms/step - loss: 0.4549 - nn_f1_score: 0.7987 - val_loss: 0.4416 - val_nn_f1_score: 0.8145</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>&lt;keras.callbacks.History at 0x7f042414ef60&gt;</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _uuid=‘95468df192416a05faf9a31dcaa40f20f06f65e0’ execution_count=33}</p>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>nn_dev_pred <span class="op">=</span> model.predict(x_dev, batch_size <span class="op">=</span> <span class="dv">128</span>, verbose <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>nn_test_pred <span class="op">=</span> model.predict(x_test, batch_size <span class="op">=</span> <span class="dv">128</span>, verbose <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (nn_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>nn_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>nn_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>nn_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hybrid Neural Network Classifier..."</span>)</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(nn_precision))</span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(nn_recall))</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(nn_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>592/592 [==============================] - 4s 7ms/step
+833/833 [==============================] - 5s 7ms/step
+Hybrid Neural Network Classifier...
+Precision score : 0.8065573770491803
+Recall score : 0.831081081081081
+F1 score : 0.8186356073211315</code></pre>
+</div>
+<p>:::</p>
+<p>::: {.cell _kg_hide-input=‘true’ _uuid=‘3d2b548726105b7a8dc03ca58662bbfa59d8d914’ execution_count=34}</p>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>plot_model(model, to_file <span class="op">=</span> <span class="st">'model.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+<div>
+<pre><code>&lt;h3 id = "stackmod"&gt; Stacking Models &lt;/h3&gt;
+&lt;p&gt; In the recent years, stacked models or model ensembles have been able to outperform all the base learners by a significant margin. Top solutions in most of the Kaggle competitions mostly use blends of several models. Here, we will create an ensemble of all the models we have trained till now, by performing weighted average of their outputs.&lt;/p&gt;</code></pre>
+</div>
+<p>::: {.cell _uuid=‘4fd115bc41a971ca3a59ee12e1befa705fb99737’ execution_count=35}</p>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stacking all the models</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>stack_dev_pred <span class="op">=</span> (<span class="dv">20</span><span class="op">*</span>lr_dev_pred <span class="op">+</span> <span class="dv">20</span><span class="op">*</span>svm_dev_pred <span class="op">+</span> <span class="dv">50</span><span class="op">*</span>lgb_dev_pred <span class="op">+</span> <span class="dv">45</span><span class="op">*</span>xgb_dev_pred <span class="op">+</span> <span class="dv">80</span><span class="op">*</span>nn_dev_pred[:,<span class="dv">0</span>])<span class="op">/</span><span class="dv">215</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> (stack_dev_pred <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>stack_precision <span class="op">=</span> precision_score(y_dev, y_pred)</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>stack_recall <span class="op">=</span> recall_score(y_dev, y_pred)</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>stack_f1 <span class="op">=</span> f1_score(y_dev, y_pred)</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Stacked Models Classifier..."</span>)</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precision score : "</span> <span class="op">+</span> <span class="bu">str</span>(stack_precision))</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Recall score : "</span> <span class="op">+</span> <span class="bu">str</span>(stack_recall))</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"F1 score : "</span> <span class="op">+</span> <span class="bu">str</span>(stack_f1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stacked Models Classifier...
+Precision score : 0.7685459940652819
+Recall score : 0.875
+F1 score : 0.8183254344391785</code></pre>
+</div>
+<p>:::</p>
+<div>
+<p>
+Since blending does not seem to improve on the prediction performance of our deep learning model, we will use the predictions of the hybrid neural network on the test data for submission.
+</p>
+</div>
+<p>::: {.cell _uuid=‘f58ee5535464d14c3904e07f6fba01e907df9788’ execution_count=36}</p>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># saving the test labels to output csv file</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> (nn_test_pred[:, <span class="dv">0</span>] <span class="op">&gt;=</span> <span class="fl">0.4</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.read_csv(<span class="st">"../input/midasiiitd/SubtaskA_EvaluationData.csv"</span>)</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>submission.drop([<span class="st">'label'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>submission[<span class="st">'label'</span>] <span class="op">=</span> y_test</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">"sanket_rai.csv"</span>, index <span class="op">=</span> <span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>:::</p>
+
+
+
+</div></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

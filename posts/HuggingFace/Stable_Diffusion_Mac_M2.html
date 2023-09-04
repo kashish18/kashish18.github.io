@@ -209,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>As already stated, I’m using Mac M2 for running the Stable Diffusion Model, it is imporant that we assign <em>device</em> to <em>mps</em>. MPS device enables high-performance training on GPU for MacOS devices with Metal programming framework. Learn more about it on the official <a href="https://pytorch.org/docs/stable/notes/mps.html">Pytorch docs</a>.</p>
-<div class="cell" data-tags="[]" data-execution_count="3">
+<div class="cell" data-tags="[]" data-execution_count="8">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">"mps"</span> <span class="cf">if</span> torch.backends.mps.is_built() <span class="cf">else</span> <span class="st">"cpu"</span></span>
@@ -218,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>In PyTorch, the <code>torch.float16</code> command is used to convert tensor data to the 16-bit floating-point format, also known as “half-precision” or “float16.” Half-precision floating-point numbers occupy 16 bits of memory, which is half the size of the standard 32-bit single-precision floating-point format (torch.float32). The primary purpose of using torch.float16 is to reduce the memory footprint and improve computation speed, especially when working with deep learning models on hardware that supports hardware-accelerated float16 operations.</p>
 <p><em>Note:</em> I also tried not to use <code>torch.float16</code>, however, that made the Pipeline execution extremely slow.</p>
-<div class="cell" data-tags="[]" data-execution_count="4">
+<div class="cell" data-tags="[]" data-execution_count="9">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'device: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">, torch_dtype: </span><span class="sc">{</span>torch_dtype<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>[1]. Many Hugging Face libraries (along with other libraries such as scikit-learn) use the concept of a “pipeline” to indicate a sequence of steps that when combined complete some task.</p>
 <p>[2]. Inference means, using the model to generate output (i.e., images here), as opposed to <em>training</em> (or fine-tuning) models using new data.</p>
 <p>Here, we will be using <a href="https://huggingface.co/CompVis/stable-diffusion-v1-4">CompVis/stable-diffusion-v1-4</a> model to generate our image from the text prompt.</p>
-<div class="cell" data-tags="[]" data-execution_count="5">
+<div class="cell" data-tags="[]" data-execution_count="10">
 <details open="">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_id <span class="op">=</span> <span class="st">"CompVis/stable-diffusion-v1-4"</span></span>
@@ -267,26 +267,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It is recommended at multiple places including the official huggingface docs, that if your GPU is not big enough to use <code>pipe</code> command, run <code>pipe.enable_attention_slicing()</code></p>
 <p>As described in the docs: &gt; When this option is enabled, the attention module will split the input tensor in slices, to compute attention in several steps. This is useful to save some memory in exchange for a small speed decrease.</p>
 <p>BUT WAITTT!! Running the above command before executing the pipe operation to generate image(s) resulted in a completely blacked-out image. I tried various prompts and seeds to generate an image, however, it wasn’t successful on my machine. Hence, I didn’t use this command. If anyone is successfully able to generate an image by enabling the attention slicing mechanism, pls feel free to provide me information on how did you achieve that :)</p>
-<div class="cell" data-tags="[]" data-execution_count="6">
+<div class="cell" data-tags="[]" data-execution_count="11">
 <details open="">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">1024</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> [<span class="st">"European interior design room"</span>]</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> pipe(prompt, num_images_per_prompt<span class="op">=</span><span class="dv">1</span>)[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pipe.device</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>device(type='mps', index=0)</code></pre>
+</div>
+</div>
+<div class="cell" data-tags="[]" data-execution_count="12">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">1024</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> [<span class="st">"European interior design room"</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> pipe(prompt, num_images_per_prompt<span class="op">=</span><span class="dv">1</span>)[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ff0707eadb1840b1aab78461241538fc","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"3f51fee74ee1400e87f53081d3660989","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>RuntimeError: MPS backend out of memory (MPS allocated: 8.29 GB, other allocations: 664.11 MB, max allowed: 9.07 GB). Tried to allocate 512.00 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure).</code></pre>
 </div>
 </div>
 <div class="cell" data-tags="[]" data-execution_count="7">
 <details open="">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>display(images[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>display(images[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<p><img src="Stable_Diffusion_Mac_M2_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
+<p><img src="Stable_Diffusion_Mac_M2_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>As you can see it took less than 3 minutes to generate the image. Albiet, the best I have reached so far is ~1:30 minutes when I had most of applications closed. I know, folks have been able to successfully generate images in under 30 seconds on Mac M1/M2 chips, but for me, this is the best as of today that I could achieve. In my opinion, this machine is the lowest verion of Macbook Air M2, hence, the trade-off. I will keep on updating this blog post as amd when I am able to optimise it further.</p>

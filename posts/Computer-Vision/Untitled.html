@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kashish Mukheja">
-<meta name="dcterms.date" content="2023-07-10">
+<meta name="dcterms.date" content="2023-05-27">
 
-<title>kashish18.github.io - NLP - Introduction</title>
+<title>kashish18.github.io - Computer Vision - Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -95,6 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -141,11 +143,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">NLP - Introduction</h1>
+      <h1 class="title">Computer Vision - Models</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">blogging</div>
                 <div class="quarto-category">jupyter</div>
-                <div class="quarto-category">Natural Language Processing</div>
+                <div class="quarto-category">Computer Vision</div>
               </div>
                   </div>
   </div>
@@ -163,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 10, 2023</p>
+        <p class="date">May 27, 2023</p>
       </div>
     </div>
     
@@ -181,137 +183,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
-<p>Natural Language Processing involves fetching text data in the form of prose or document, and perform classification or other text-based applications. Some top applications include:</p>
+<section id="lenet-5-1998" class="level2">
+<h2 class="anchored" data-anchor-id="lenet-5-1998">LeNet-5 (1998)</h2>
 <ol type="1">
-<li>Sentiment Analysis</li>
-<li>Which author wrote what document</li>
-<li>Legal Document discovery -&gt; Is the legal document in scope or out scope.</li>
-<li>Organising documents -&gt;</li>
-<li>Triaging inbound emails -&gt; This involves routing of the incoming emails to the user or a work queue, to either handle the email, or taking actions in other ways to help address issues reported in the email</li>
+<li>Trying to solve handwritten digit recognizer…MNIST</li>
+<li>Invented by Yen Le Cunn</li>
 </ol>
-<p>We are going to use HuggingFace Transformers library. It has a medium level API, and thus provides flexibility to tweak. The library has really state-of-the-art models (similar to <code>Timm</code> for Computer Vision). For the current blog, we will be using a Kaggle dataset for US Patent Phrase to Phrase matching.</p>
-<p>We will fine tune a pre-trained hugging face model</p>
-<p><strong>Seque</strong>: Huggingface models are different than Timm in the sense that each of the models in hugging face, can be trained on different corpuses for solving different problems.</p>
-<p>Using different libraries, help brush up the same concepts in different ways. For the current blog, we will be using some of the standard python libraries like pandas, numpy, pytorch &amp; for performing NLP specific operations, we will be using Huggingface transformer library. So let’s setup the noteboook first..</p>
-</section>
-<section id="setting-up-the-notebook" class="level1">
-<h1>Setting up the notebook</h1>
-<div class="cell" data-tags="[]" data-execution_count="6">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Since, I’m working on a Mac M2 machine, I’m setting the GPU device to mps. <em>mps</em> enables high-performance training on GPU for MacOS. Refer pytorch <a href="https://pytorch.org/docs/stable/notes/mps.html">docs</a>. If you want to run this on Kaggle, we can check the environment variable using the <code>os</code> module in python.</p>
-<div class="cell" data-tags="[]" data-execution_count="14">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.backends.mps.is_available():</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"mps"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    torch.set_default_device(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="15">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>isKaggleEnv <span class="op">=</span> os.environ.get(<span class="st">'KAGGLE_KERNEL_RUN_TYPE'</span>, <span class="st">''</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Since, we need to download data from kaggle, <code>fastkaggle</code> library provides some seamless functions to download kaggle data in an organised way, and also provides function to push our notebook to Kaggle.</p>
-<div class="cell" data-tags="[]" data-execution_count="9">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install fastkaggle if not available</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="kw">not</span> isKaggleEnv:</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>: <span class="im">import</span> fastkaggle</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ModuleNotFoundError</span>:</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>pip install <span class="op">-</span>Uq fastkaggle</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> fastkaggle <span class="im">import</span> <span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>If we are working on a Kaggle environment, i.e., directly through Kaggle’s compute enginer, data is readily available to us. However, since, I’m using Mac while writing this blog, I’ll be using the <code>setup_comp</code> method to download data for the competition.</p>
-<div class="cell" data-tags="[]" data-execution_count="17">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> isKaggleEnv:</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> Path(<span class="st">'../input/nlp-getting-started'</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    comp <span class="op">=</span> <span class="st">'nlp-getting-started'</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    path <span class="op">=</span> setup_comp(comp, install<span class="op">=</span><span class="st">'fastai "timm&gt;=0.6.2.dev0"'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Downloading nlp-getting-started.zip to /Users/kashmkj/fastai_repo_22/kashish18.github.io/posts/NLP
-</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 593k/593k [00:01&lt;00:00, 472kB/s]</code></pre>
-</div>
-</div>
-<p>For the current blog, we will be using a dataset called glove. It provides details and headlines w.r.t news. The objective would be to classify if the given news headline is sarcastic or not. So, this is a classification problem.</p>
-<p>Sometimes, we directly get a problem which we can easily define as a classification, etc. Sometimes, what you do get a problem is something like : What is the probability that the two headines are similar. So, basically if one headline is sarcastic, we can categorise another similar headline as sarcastic, and a dissimilar headline as non-sarcastic. Hence, we need to tweak the problem statement to suit what the deep learning model might understand.</p>
-<p>We will also need to download the datasets library provided by huggingface transformer. We will get there in a bit on why we need that. Let’s just download it for now..</p>
-<div class="cell" data-tags="[]" data-execution_count="19">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>: <span class="im">import</span> transformers</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ModuleNotFoundError</span>:</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>pip install <span class="op">-</span>q transformers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="12">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>: <span class="im">import</span> datasets</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ModuleNotFoundError</span>:</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>pip install <span class="op">-</span>q datasets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>One last thing to setup, which i prefer to always do is, to allow full display of the dataframe we are dealing with. By default, if there are a whole bunch of rows and columns, pandas crop those for you, when trying to display on screen. We can use <code>pd.set_option()</code> passing <code>display.max_columns</code> &amp; <code>display.max_rows</code> to achieve this..</p>
-<div class="cell" data-tags="[]" data-execution_count="10">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_rows'</span>, <span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Now that we have setup our notebook. Next thing would be to read the data.</p>
-<section id="what-is-a-pre-trained-model" class="level3">
-<h3 class="anchored" data-anchor-id="what-is-a-pre-trained-model">What is a pre-trained model ?</h3>
-<p>pre-trained are a bunch of parameters that have already been fit, where some of them we’re already confident of what they should be, and some of them we don’t have any idea at all. So, fine-tuning is using the ones that we are confident and tweaking the ones that we don’t have any idea at all, and make them right.</p>
-<div class="cell" data-tags="[]" data-execution_count="13">
-<details>
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> Dataset,DatasetDict</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
-<section id="something-about-the-ulm-fit" class="level2">
-<h2 class="anchored" data-anchor-id="something-about-the-ulm-fit">Something about the ULM-Fit</h2>
-<p>The above concept, was first introduced in architecture called ULM-Fit , which was developed by Jeremy Howard. So, the idea of the architecture was:</p>
+<section id="architecture" class="level3">
+<h3 class="anchored" data-anchor-id="architecture">Architecture</h3>
 <ol type="1">
-<li>Train a Language model using wikipedia pages, to predict every next word of every wikipedia article</li>
-<li>Created a second language model, by using the first language model, and ran a few more epochs on IMDB movie reviews.</li>
-<li>Used the model, and finally built a classifier to categorize movie rating</li>
+<li>Contains 3 Conv + 2 Avg Pooling</li>
+<li>1 Fully connected (FC) layer</li>
+<li>1 FC Softmax layer</li>
 </ol>
-<p>Jargon: A language model is something that can predict the next word in a text</p>
+<p>Note: Pooling isn’t counted as a layer</p>
+<section id="sequence" class="level4">
+<h4 class="anchored" data-anchor-id="sequence">Sequence</h4>
+<p>Convolution (tanh) + Pooling + Convolution (tanh) + Pooling + Convolution (tanh) + FC Layer (tanh) + FC Softmax layer (Softmax)</p>
+<p>Trainable Parameters :</p>
+<div class="cell" data-tags="[]" data-execution_count="39">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>latex</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>\begin{align}</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>\ (\mathbf{N} \cdot \mathbf{M} \cdot \mathbf{K} <span class="op">+</span> <span class="dv">1</span>) \cdot \mathbf(NumberOfFilters) <span class="op">&amp;</span> <span class="op">=</span> <span class="dv">4</span> \pi \rho \<span class="op">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>\end{align}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><span class="math display">\[\begin{align}
+\ (\mathbf{N} \cdot \mathbf{M} \cdot \mathbf{K} + 1) \cdot \mathbf(NumberOfFilters) &amp; = 4 \pi \rho \\
+\end{align}\]</span></p>
+</div>
+</div>
 </section>
-<section id="something-about-training-a-text-data" class="level2">
-<h2 class="anchored" data-anchor-id="something-about-training-a-text-data">Something about training a text data</h2>
-<p>Neural networks work with numbers. We take some numbers, multiple with matrices, replace the -ves with 0 (i.e., ReLU activation) and repeat the process a few times. But how would we do that for strings ? This is done in a few steps: 1. Split the text into tokens. Tokens are basically words or single unit of text. 2. After splitting into words, we get a unique number for each unique word (called vocabulary). The bigger the vocabulary, more data we will need to train, and thus more storage will be occupied, leading to reduced computation. We don’t want that right :)</p>
-<p>Furthermore, some languages like Chinese don’t have spaces in between words. So, to overcome this problem, we tokenise into subwords (which is not heavily dependent on spaces). So, instead of dividing the corpuse based on <em>spaces</em>, subwords tokenization perform seperation based on group of characters that occur frequently together, and these become the vocabulary.</p>
-<p>Now, this tokenisation has different algorithms depending on the pre-trained models we use. Basically, how we tokenise a data ? -&gt; Every model has its own unique way to tokenise.</p>
 </section>
 </section>
-<section id="tokenisation" class="level1">
-<h1>Tokenisation</h1>
-<p>We will be using <code>xuz</code> model provided by hugging face. We use the <code>small</code> architecture for our training purposes, because we want to train and iterate quickly during our expirementation phase.</p>
-<section id="tbc.." class="level2">
-<h2 class="anchored" data-anchor-id="tbc..">TBC..</h2>
+<section id="alexnet-2012" class="level2">
+<h2 class="anchored" data-anchor-id="alexnet-2012">AlexNet (2012)</h2>
+<ol type="1">
+<li>Introduced ReLU Non-linearity</li>
+<li>Used Data Augmentation, Dropout, L2 Weight decay</li>
+<li>Improved top-5 error from 26% to 15%.</li>
+<li>Used 2 GPUs for training (GTX-580)</li>
+</ol>
+<section id="architecture-1" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-1">Architecture</h3>
+<ol type="1">
+<li>5 Conv layers</li>
+<li>3 Max Pool layers</li>
+<li>2 FC layers</li>
+<li>1 FC-softmax layer</li>
+</ol>
+<ul>
+<li>Started with 4 stride, 0 Padding, 96 (11 * 11) filters</li>
+</ul>
+</section>
+</section>
+<section id="vgg-net-2014" class="level2">
+<h2 class="anchored" data-anchor-id="vgg-net-2014">VGG Net (2014)</h2>
+<ol type="1">
+<li>Two variants: VGG-16, VGG-19</li>
+<li>Simple 3 * 3 filters</li>
+<li>L2 Regularisation used with weight decay of 5e-4</li>
+<li>Dropout Reg for the first 2 FC layer (Dropout=0.5)</li>
+</ol>
+<section id="architecture-2" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-2">Architecture</h3>
+<ol type="1">
+<li>13 Conv Layer</li>
+<li>5 Max Pooling</li>
+<li>3 FC Layer</li>
+</ol>
 
 
 </section>
