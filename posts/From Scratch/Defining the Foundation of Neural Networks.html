@@ -191,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="what-is-a-neural-network">What is a Neural Network</h2>
 <p>Machine Learning models are functions that fit to a particular data. So, we start with an infinitely flexible function called neural network and then get it to perform a specific task. In this notebook, we will try to define the neural network, specifically gradient descent concept by developing our own mathematical functions.</p>
 <p>Let’s start with importing the necessary libraries and creating a user-defined function to plot graph.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-tags="[]" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing necessary libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ipywidgets <span class="im">import</span> interact</span>
@@ -205,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># [Docs here.](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.rc.html)</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.rc(<span class="st">'figure'</span>, dpi<span class="op">=</span><span class="dv">90</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">The below function will create a 2 dimensional tensor (x) and plot the function (f) passed as argument.</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">`torch.linspace(min, max, 100)`: generates a one-dimensional tensor of 100 equally spaced values between min and max.</span></span>
@@ -234,7 +234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We will start with fitting a quadratic equation(function) to some datapoints that we will generate randomnly..</p>
 <section id="the-simple-function-quadratic" class="level3">
 <h3 class="anchored" data-anchor-id="the-simple-function-quadratic">The Simple Function … Quadratic</h3>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">5</span><span class="op">*</span>x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">4</span><span class="op">*</span>x <span class="op">+</span> <span class="dv">3</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -244,31 +244,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Here 5, 4 and 3 are the parameters or coeffecients for the quadratic function. So, a function <span class="math inline">\(ax^4 + bx^3 + .. + e\)</span> has a,b,..e as the <em>parameters</em> . All things will get cleared out in sometime. For now, let’s create a python function which takes in parameters and returns value of the function f(x).</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> func_quadratic(a, b, c, x):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a<span class="op">*</span>x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> b<span class="op">*</span>x <span class="op">+</span> c</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>func_quadratic(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="fl">2.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>33.75</code></pre>
 </div>
 </div>
 <section id="fix-parameters-using-partial" class="level4">
 <h4 class="anchored" data-anchor-id="fix-parameters-using-partial">Fix Parameters using Partial</h4>
 <p>If we fix some particular values of a, b, and c, then we’ll have made a quadratic. To fix values passed to a function in python, we use the <code>partial</code> function. So, what happens is, you fix the values of a,b and c to pass to the function <code>func_quadratic</code> and assign it to a variable say <code>f</code>. We can then call <code>f</code> with whatever values we want to pass to <code>x</code>. Refer below:</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mk_quad(a, b, c):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> partial(func_quadratic, a, b, c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> mk_quad(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>) <span class="co"># Pass values of a,b,c</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>f(<span class="fl">2.5</span>) <span class="co"># Pass value of x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>33.75</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot_function(f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="Defining the Foundation of Neural Networks_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
@@ -279,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="add-noise-to-random-data" class="level3">
 <h3 class="anchored" data-anchor-id="add-noise-to-random-data">Add Noise to random data</h3>
 <p>We now try to simulate making some noisy data for our quadratic function <code>f</code>. We can then use gradient descent to see if we can recreate the original function from the data.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.random <span class="im">import</span> normal, seed, uniform</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> noise(x, scale): <span class="cf">return</span> normal(scale<span class="op">=</span>scale, size<span class="op">=</span>x.shape)</span>
@@ -289,15 +289,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Used normal distributed random numbers to generate noise</li>
 <li>Used a custom function to add noise using <code>multiplier</code> and <code>add</code> argument</li>
 </ul>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>seed(<span class="dv">42</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.linspace(start<span class="op">=-</span><span class="dv">2</span>, end<span class="op">=</span><span class="dv">2</span>, steps<span class="op">=</span><span class="dv">20</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> add_noise(f(x), <span class="fl">0.4</span>, <span class="fl">1.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x[:<span class="dv">5</span>], y[:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>(tensor([-2.0000, -1.7895, -1.5789, -1.3684, -1.1579]),
  tensor([12.9866,  6.6981,  7.8615,  6.1407,  3.1628], dtype=torch.float64))</code></pre>
 </div>
@@ -322,16 +322,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    plot_function(mk_quad(a,b,c), ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">13</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"9f14313af717482591797c6e514d62a8","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"a043529f9bc244fdbaab8fe940eaf9f7","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
 <p>Now we can try on tweaking <em>a, b,&amp; c</em> but this is a tedious task, maybe fun, lol. We defintely would have more than 3 parameters (or coeff) in a real world data and it’s gonna take a lot of time. So, we use Gradient descent to achieve the same. Before creating our gradient descent algorithm, it is notable that one thing that’s making this tricky is that we don’t really have a great sense of whether our fit is really better or worse. It would be easier if we had a numeric measure of that. On easy metric we could use is <em>mean absolute error</em> – which is the distance from each data point to the curve: Solet’s define a loss function, which would be MSE (Mean Squared Error) in this case.</p>
-<div class="cell" data-execution_count="19">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mae(preds, acts):</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (torch.<span class="bu">abs</span>(preds<span class="op">-</span>acts)).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="20">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="at">@interact</span>(a<span class="op">=</span><span class="fl">1.1</span>, b<span class="op">=</span><span class="fl">1.1</span>, c<span class="op">=</span><span class="fl">1.1</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_quad(a, b, c):</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> mk_quad(a,b,c)</span>
@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    plot_function(f, ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">12</span>), title<span class="op">=</span><span class="ss">f"MAE: </span><span class="sc">{</span>loss<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"557a49d12a1749eaa8302025baf034e7","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"1f8ad3af7baa4c8eb904cc4c4471b704","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -353,14 +353,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If we know the <em>gradient</em> of our <code>mae()</code> function <em>with respect to</em> our parameters, <code>a</code>, <code>b</code>, and <code>c</code>, then we know how adjusting (for instance) <code>a</code> will change the value of <code>mae()</code>. If, say, <code>a</code> has a <em>negative</em> gradient, then we know that increasing <code>a</code> will decrease <code>mae()</code>. Then we know that’s what we need to do, since we trying to make <code>mae()</code> as low as possible.</p>
 <p>So, we find the gradient of <code>mae()</code> for each of our parameters, and then adjust our parameters a bit in the <strong>opposite direction to the sign of the gradient</strong>.</p>
 <p>To do this, first we need a function that takes all the parameters <code>a</code>, <code>b</code>, and <code>c</code> as a single vector input, and returns the value <code>mae()</code> based on those parameters:</p>
-<div class="cell" data-execution_count="21">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> quad_mae(params):</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> mk_quad(<span class="op">*</span>params)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mae(f(x), y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="22">
+<div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>quad_mae([<span class="fl">1.1</span>, <span class="fl">1.1</span>, <span class="fl">1.1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>tensor(4.6392, dtype=torch.float64)</code></pre>
 </div>
 </div>
@@ -373,36 +373,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="doing-it-from-scratch" class="level2">
 <h2 class="anchored" data-anchor-id="doing-it-from-scratch">Doing it from Scratch</h2>
 <p>Let’s create a randomly initialized parameters with no meaning whatsoever, and store it as a rank-1 tensor.</p>
-<div class="cell" data-execution_count="25">
+<div class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>abc <span class="op">=</span> torch.tensor([<span class="fl">1.1</span>,<span class="fl">1.2</span>,<span class="fl">1.3</span>])</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>abc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>tensor([1.1000, 1.2000, 1.3000])</code></pre>
 </div>
 </div>
 <p>Our objective is to calculate the gradient, and update the parameters in the direction opposite to the gradient. There’s a very handy way in pytorch to fetch the gradient. We can just simply use <code>requires_grad_()</code> for the tensor to give a heads up! Hey tensor, we will be needing gradient soon :)</p>
-<div class="cell" data-execution_count="27">
+<div class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>abc.requires_grad_()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="27">
+<div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>tensor([1.1000, 1.2000, 1.3000], requires_grad=True)</code></pre>
 </div>
 </div>
 <p>Let’s now calculate the loss for the provided parameters through our function defined before.</p>
-<div class="cell" data-execution_count="28">
+<div class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> quad_mae(abc)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>loss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>tensor(4.4666, dtype=torch.float64, grad_fn=&lt;MeanBackward0&gt;)</code></pre>
 </div>
 </div>
 <p><em>Hey Pytorch…Now go ahead and do the calculation for me to compute the gradient !</em></p>
-<div class="cell" data-execution_count="29">
+<div class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>loss.backward()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The above command adds an attribute called <code>grad</code> which gives the gradient.</p>
-<div class="cell" data-execution_count="30">
+<div class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>abc.grad</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <pre><code>tensor([-1.4194,  0.0737, -0.9000])</code></pre>
 </div>
 </div>
@@ -411,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It simply means.. (1) if I increase <em>a</em>, loss will go down; (2) if I increase <em>b</em>, loss will go up, (3) if I increase c, loss will go down but very less.</p>
 <p>So, now let’s increase a, then increase c and then decrease b.</p>
 <p>But how do we do that ? Turns out, the idea is rather simple! If we subtract the gradient, multiplied by a small number, that should improve the outcome and decrease the loss by a bit.</p>
-<div class="cell" data-execution_count="32">
+<div class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">We are updating the parameters by subtracting the gradient times a small number from initial params</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">'''</span></span>
@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The “small number” we multiply is called the <em>learning rate</em>, and is one of the most important <em>hyper-parameter</em> to set when training a neural network.</p>
 <p>BTW, you’ll see we had to wrap our calculation of the new parameters in <code>with torch.no_grad()</code>. That disables the calculation of gradients for any operations inside that context manager. We have to do that, because <code>abc -= abc.grad*0.01</code> isn’t actually part of our quadratic model, so we don’t want derivitives to include that calculation.</p>
 <p>We can use a loop to do a few more iterations of this:</p>
-<div class="cell" data-execution_count="33">
+<div class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> quad_mae(abc)</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    loss.backward()</span>
@@ -447,9 +447,9 @@ step=6; loss=3.67
 step=7; loss=3.45</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="34">
+<div class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>abc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>tensor([1.7387, 1.1668, 1.7050], requires_grad=True)</code></pre>
 </div>
 </div>
@@ -467,7 +467,7 @@ step=7; loss=3.45</code></pre>
 <li>The function <span class="math inline">\(max(x,0)\)</span>, which replaces all negative numbers with zero.</li>
 </ol>
 <p>The combination of a linear function and this <em>max()</em> is called a <em>rectified linear function</em> (ReLU), and it can be implemented like this:</p>
-<div class="cell" data-execution_count="35">
+<div class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rectified_linear(m,b,x):</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> m<span class="op">*</span>x<span class="op">+</span>b</span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.clip(y, <span class="fl">0.</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -476,7 +476,7 @@ step=7; loss=3.45</code></pre>
 <li>The linear function above is <strong><span class="math inline">\(y=m*x+b\)</span></strong></li>
 <li>In PyTorch, the function <span class="math inline">\(max(x,0)\)</span> is written as <code>torch.clip(x,0)</code>.</li>
 </ul>
-<div class="cell" data-execution_count="39">
+<div class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> partial(rectified_linear, <span class="dv">1</span>, <span class="dv">1</span>) <span class="co"># PRoviding *m* and *b*</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>plot_function(f, title <span class="op">=</span> <span class="st">'Simple ReLU graph'</span>, color <span class="op">=</span> <span class="st">'g'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -484,13 +484,13 @@ step=7; loss=3.45</code></pre>
 </div>
 </div>
 <p><em>Let’s interact the above function</em></p>
-<div class="cell" data-execution_count="42">
+<div class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="at">@interact</span>(m<span class="op">=</span><span class="dv">1</span>, b<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_relu(m, b):</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    plot_function(partial(rectified_linear, m, b), title<span class="op">=</span><span class="st">'Interactive ReLU'</span>, <span class="bu">min</span> <span class="op">=</span> <span class="op">-</span><span class="dv">5</span>, color <span class="op">=</span> <span class="st">'b'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"40ad0d3f17594c498c334f0b4bd1b19b","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"d103eecd807a46ddbb108f8c78f16de0","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -498,7 +498,7 @@ step=7; loss=3.45</code></pre>
 <section id="but-why-is-it-interesting" class="level3">
 <h3 class="anchored" data-anchor-id="but-why-is-it-interesting">But why is it interesting ?</h3>
 <p>It’s not!! It isn’t interesting or poweful on it’s own. However, it is awesomly flexibile when we add another layer of ReLU to this graph. Let’s see how..</p>
-<div class="cell" data-execution_count="43">
+<div class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> double_relu(m1, b1, m2, b2, x):</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rectified_linear(m1, b1, x) <span class="op">+</span> rectified_linear(m2, b2, x)</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -507,12 +507,12 @@ step=7; loss=3.45</code></pre>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    plot_function(partial(double_relu, m1,b1,m2,b2), color <span class="op">=</span> <span class="st">'b'</span>, <span class="bu">min</span> <span class="op">=</span> <span class="op">-</span><span class="dv">5</span>, ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"304b3444f27945ba946f723f622d8c2e","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"840d4ca786334eb5a600d2ffeda0ff3b","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
 <p>Let’s another layer of ReLU and observe..</p>
-<div class="cell" data-execution_count="48">
+<div class="cell" data-tags="[]" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> triple_relu(m1, b1, m2, b2, m3, b3, x):</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rectified_linear(m1, b1, x) <span class="op">+</span> rectified_linear(m2, b2, x) <span class="op">+</span> rectified_linear(m3, b3, x)</span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -521,7 +521,7 @@ step=7; loss=3.45</code></pre>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    plot_function(partial(triple_relu, m1,b1,m2,b2,m3,b3), color <span class="op">=</span> <span class="st">'b'</span>, <span class="bu">min</span> <span class="op">=</span> <span class="op">-</span><span class="dv">5</span>, ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"4626b5130ed141ad8a5bfff1be91140d","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"d902a571f38a42a0ad9b7b28bc005041","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
