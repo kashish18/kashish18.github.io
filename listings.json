@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/Machine Learning/standard_deviation_python.html",
       "/posts/From Scratch/Defining the Foundation of Neural Networks.html",
       "/posts/Computer-Vision/Car_Obj_FasterRCNN.html",
       "/posts/Machine Learning/predicting-customer-transaction.html",

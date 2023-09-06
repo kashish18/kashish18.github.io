@@ -56,6 +56,62 @@
     "text": "Building the RandomForest Model\n\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import log_loss\n\nrf = RandomForestClassifier(100, min_samples_leaf=5)\nrf.fit(trn_xs, trn_y);\nlog_loss(np.array(val_y), rf.predict_proba(val_xs))\n\n0.2200597690773292"
   },
   {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html",
+    "href": "posts/Machine Learning/standard_deviation_python.html",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "",
+    "text": "To have a S.D., we first need a mean of the numbers. So, let’s start with creating our mean function:\n\nimport numpy as np\nimport math\n\n\ndef mean(list_of_numbers):\n    return sum(list_of_numbers)/ len(list_of_numbers)\n\n\ndef std_dev(list_of_numbers):\n    if (len(list_of_numbers)) !=0:\n        avg = mean(list_of_numbers)\n        variance = sum([(i - avg)**2 for i in list_of_numbers])/len(list_of_numbers)\n        standard_dev = math.sqrt(variance)\n        return standard_dev\n    return np.nan\n\nNow that we’ve defined our functions, let’s create a list of length 10 with random integers\n\nlist_of_numbers = np.random.randint(1,30,10)\n\n\nprint(list_of_numbers)\n\n[11  5 12 18 24 11 10  9 21 16]\n\n\n\nprint(f'Standard Deviation for the list of numbers provided = {std_dev(list_of_numbers):0.2f}')\n\nStandard Deviation for the list of numbers provided = 5.59"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#implementing-in-python",
+    "href": "posts/Machine Learning/standard_deviation_python.html#implementing-in-python",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "",
+    "text": "To have a S.D., we first need a mean of the numbers. So, let’s start with creating our mean function:\n\nimport numpy as np\nimport math\n\n\ndef mean(list_of_numbers):\n    return sum(list_of_numbers)/ len(list_of_numbers)\n\n\ndef std_dev(list_of_numbers):\n    if (len(list_of_numbers)) !=0:\n        avg = mean(list_of_numbers)\n        variance = sum([(i - avg)**2 for i in list_of_numbers])/len(list_of_numbers)\n        standard_dev = math.sqrt(variance)\n        return standard_dev\n    return np.nan\n\nNow that we’ve defined our functions, let’s create a list of length 10 with random integers\n\nlist_of_numbers = np.random.randint(1,30,10)\n\n\nprint(list_of_numbers)\n\n[11  5 12 18 24 11 10  9 21 16]\n\n\n\nprint(f'Standard Deviation for the list of numbers provided = {std_dev(list_of_numbers):0.2f}')\n\nStandard Deviation for the list of numbers provided = 5.59"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#using-the-statistics-module",
+    "href": "posts/Machine Learning/standard_deviation_python.html#using-the-statistics-module",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Using the statistics module",
+    "text": "Using the statistics module\n\nimport statistics\n\n\nlist_ = [int(item) for item in list_of_numbers]\nprint(f'Standard Deviation using the statistics module for the list of numbers provided = {statistics.stdev(list_):0.2f}')\n\nStandard Deviation using the statistics module for the list of numbers provided = 5.89\n\n\nNote: Not providing int(item) produces an error AttributeError: ‘numpy.int64’ object has no attribute ‘bit_length’. The bit_length() method is a built-in Python method for regular integer objects, but it’s not available for NumPy data types"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#using-the-pandas-module",
+    "href": "posts/Machine Learning/standard_deviation_python.html#using-the-pandas-module",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Using the pandas module",
+    "text": "Using the pandas module\nOne important thing to mention here is that pandas function require input as a pandas Series or dataframe. Hence, we will need to convert our Numpy list into pandas Series\n\nimport pandas as pd\n\n\nseries_of_numbers_pd = pd.Series(list_of_numbers)\n\n\nprint(f'Standard Deviation using the pandas for the Series of numbers provided = {series_of_numbers_pd.std() :0.2f}')\n\nStandard Deviation using the pandas for the Series of numbers provided = 5.89"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#using-the-numpy-module",
+    "href": "posts/Machine Learning/standard_deviation_python.html#using-the-numpy-module",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Using the numpy module",
+    "text": "Using the numpy module\n\nprint(f'Standard Deviation using numpy for the Series of numbers provided = {np.std(list_of_numbers) :0.2f}')\n\nStandard Deviation using numpy for the Series of numbers provided = 5.59"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#using-pytorch",
+    "href": "posts/Machine Learning/standard_deviation_python.html#using-pytorch",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Using pyTorch",
+    "text": "Using pyTorch\nOne important thing to mention here is that pytorch function require input as a pytorch tensor. Hence, we will need to convert our list into torch tensor. Another thing worth mentioning is that torch functions require floating point numbers as input tensors. Hence, we’ll convert all items in our list to float using list comprehension.\n\nimport torch\n\n\ntensors_of_numbers = torch.tensor([float(x) for x in list_of_numbers])\ntensors_of_numbers\n\ntensor([11.,  5., 12., 18., 24., 11., 10.,  9., 21., 16.])\n\n\n\nprint(f'Standard Deviation using torch for the Series of numbers provided = {torch.std(tensors_of_numbers) :0.2f}')\n\nStandard Deviation using torch for the Series of numbers provided = 5.89"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#notice-any-discrepancies",
+    "href": "posts/Machine Learning/standard_deviation_python.html#notice-any-discrepancies",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Notice any Discrepancies ??",
+    "text": "Notice any Discrepancies ??\nAs observed above, you might have noticed that the S.D for our pure function and numpy function gave a result of 5.59, however for the statistics and pandas in-built function, the result is 5.89. The reason for the difference is the denominator of the Standard Deviation formula. The reason is because statistics and pandas calculate the S.D. based on the sampling distribution and not the population distribution. The Sample Stansard Deviation has N-1 as denominator in it’s formula, while the population SD formula has N.\nPopulation Standard Deviation \\[\\sigma = \\sqrt{\\frac{1}{N} \\sum_{i=1}^{N} (x_i - \\mu)^2}\\]\nSample Standard Deviation \\[s = \\sqrt{\\frac{1}{n-1} \\sum_{i=1}^{n} (x_i - \\bar{x})^2}\\]\nSince, we don’t normally know the population mean, we have to use sample mean to calculate variance, and this introduces bias. We estimate the population variance (sigma²) based on the sample standard deviation (s²). Let Mean for sample be x_bar and population mean be ų. Data points x1, x2..xi will be more closer to x_bar than to ų.\nThis makes \\(\\sum(xi-\\bar{x})²\\) to be smaller than \\(\\sum(x_i-ų)²\\) (Numerator of the formula). To compensate for this loss, the formula has a division of N-1 instead of just N when estimating variance.\nThis is based on the concept of degrees of freedom (df). It represents the number of independent pieces of information available for estimating the population standard deviation when calculating the sample standard deviation. It is “n - 1” for a sample of size “n.”"
+  },
+  {
+    "objectID": "posts/Machine Learning/standard_deviation_python.html#wuhooo-you-should-now-have-a-solid-understanding-of-standard-deviation",
+    "href": "posts/Machine Learning/standard_deviation_python.html#wuhooo-you-should-now-have-a-solid-understanding-of-standard-deviation",
+    "title": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation",
+    "section": "Wuhooo… You should now have a solid understanding of Standard Deviation :)",
+    "text": "Wuhooo… You should now have a solid understanding of Standard Deviation :)"
+  },
+  {
     "objectID": "posts/Machine Learning/HousePrice_day1.html",
     "href": "posts/Machine Learning/HousePrice_day1.html",
     "title": "House Prices Prediction - Random Forest Interpretations",
@@ -732,7 +788,7 @@
     "href": "index.html",
     "title": "kashish18.github.io",
     "section": "",
-    "text": "Defining Foundations of Neural Networks - Python\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nSep 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nIntro to Object Detection using FasterRCNN\n\n\n\n\n\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nSep 3, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nPredicting Customer Transaction Values in Bank - Boosted Trees Ensemble (Yet to be Implemented)\n\n\n\n\n\n\n\nMachine Learning\n\n\njupyter\n\n\nKaggle\n\n\n\n\n\n\n\n\n\n\n\nSep 1, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nTrain Stable Diffusion Model on Mac M1/M2 in under 3 minutes\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nStable Diffusion\n\n\nMacbook\n\n\n\n\n\n\n\n\n\n\n\n\nJul 19, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nICR Predictions - TF RandomForest\n\n\n\n\n\n\n\njupyter\n\n\nKaggle\n\n\nMachine Learning\n\n\n\n\n\n\n\n\n\n\n\nJul 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nEncoding Columns in a DataFrame\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nJun 8, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nCustomer Sentiment Analysis - Using Bidirectional LSTM : PGP Guided Project\n\n\n\n\n\n\n\nNLP\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nJun 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nHandling Missing Values\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nComputer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nEDA and Train Various Classic ML Models (PGP Project)\n\n\n\n\n\n\n\nMachine Learning\n\n\njupyter\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nIntroduction to CV - Face Mood Classifier\n\n\n\n\n\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nSep 27, 2022\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nHouse Prices Prediction - Random Forest Interpretations\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nJul 4, 2022\n\n\nKashish Mukheja\n\n\n\n\n\n\nNo matching items"
+    "text": "Mastering Standard Deviation: A Comprehensive Guide with Python Implementation\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nStatistics\n\n\n\n\n\n\n\n\n\n\n\nSep 5, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nDefining Foundations of Neural Networks - Python\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nSep 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nIntro to Object Detection using FasterRCNN\n\n\n\n\n\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nSep 3, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nPredicting Customer Transaction Values in Bank - Boosted Trees Ensemble (Yet to be Implemented)\n\n\n\n\n\n\n\nMachine Learning\n\n\njupyter\n\n\nKaggle\n\n\n\n\n\n\n\n\n\n\n\nSep 1, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nTrain Stable Diffusion Model on Mac M1/M2 in under 3 minutes\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nStable Diffusion\n\n\nMacbook\n\n\n\n\n\n\n\n\n\n\n\n\nJul 19, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nICR Predictions - TF RandomForest\n\n\n\n\n\n\n\njupyter\n\n\nKaggle\n\n\nMachine Learning\n\n\n\n\n\n\n\n\n\n\n\nJul 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nEncoding Columns in a DataFrame\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nJun 8, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nCustomer Sentiment Analysis - Using Bidirectional LSTM : PGP Guided Project\n\n\n\n\n\n\n\nNLP\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nJun 4, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nHandling Missing Values\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nData Preprocessing\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nComputer Vision - Concepts\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nMay 27, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nEDA and Train Various Classic ML Models (PGP Project)\n\n\n\n\n\n\n\nMachine Learning\n\n\njupyter\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2023\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nIntroduction to CV - Face Mood Classifier\n\n\n\n\n\n\n\njupyter\n\n\nComputer Vision\n\n\n\n\n\n\n\n\n\n\n\nSep 27, 2022\n\n\nKashish Mukheja\n\n\n\n\n\n\n  \n\n\n\n\nHouse Prices Prediction - Random Forest Interpretations\n\n\n\n\n\n\n\nblogging\n\n\njupyter\n\n\nDeep Learning\n\n\n\n\n\n\n\n\n\n\n\nJul 4, 2022\n\n\nKashish Mukheja\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
