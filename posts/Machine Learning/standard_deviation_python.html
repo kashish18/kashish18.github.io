@@ -183,53 +183,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<section id="why-standard-deviation" class="level2">
+<h2 class="anchored" data-anchor-id="why-standard-deviation">Why Standard Deviation</h2>
+<p>We get millions of data which we are required to transform and then create a model for our business use-case. Data Scientists tend to spend ~80% of the time cleaning and transorming the data while only 20% on discovering insights and developing models. This transformation part includes a primitive mathematical concept that we all learned in our high-school, i.e., <em>Standard Deviation.</em></p>
+<p>Before jumping on to transformation part, we need to understand the data in terms of statistics. We have to understand characteristics of data such as statistical features like mean, variance; the distribution it follows like normal, uniform, poisson, etc. Let’s understand S.D through a practical application..</p>
+<section id="understanding-use-case-for-sd" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-use-case-for-sd">Understanding use-case for SD</h3>
+<p>Imagine we have a massive dataset with millions of data points, and some of these data points stand out because they have extremely high or low values. Now, the problem is that these unusual data points can mess up our graphs by making the scales look strange. What makes it tricky is that the number of these unusual data points can change. Sometimes, we might have only regular data, while other times, these strange data points can make up as much as 10% of our data.</p>
+<p>So, the solution here is to get rid of these odd data points before we make our graphs. We can do this by ignoring any values that are way above (Mean + 2SD) or way below (Mean - 2SD) before we start plotting our data.</p>
+</section>
+</section>
 <section id="implementing-in-python" class="level2">
 <h2 class="anchored" data-anchor-id="implementing-in-python">Implementing in Python</h2>
 <p>To have a S.D., we first need a mean of the numbers. So, let’s start with creating our mean function:</p>
-<div class="cell" data-tags="[]" data-execution_count="18">
+<div class="cell" data-tags="[]" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean(list_of_numbers):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(list_of_numbers)<span class="op">/</span> <span class="bu">len</span>(list_of_numbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> std_dev(list_of_numbers):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">len</span>(list_of_numbers)) <span class="op">!=</span><span class="dv">0</span>:</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        avg <span class="op">=</span> mean(list_of_numbers)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        variance <span class="op">=</span> <span class="bu">sum</span>([(i <span class="op">-</span> avg)<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> list_of_numbers])<span class="op">/</span><span class="bu">len</span>(list_of_numbers)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        standard_dev <span class="op">=</span> math.sqrt(variance)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> standard_dev</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.nan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mean(list_of_numbers):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(list_of_numbers)<span class="op">/</span> <span class="bu">len</span>(list_of_numbers)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> std_dev(list_of_numbers):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">len</span>(list_of_numbers)) <span class="op">!=</span><span class="dv">0</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        avg <span class="op">=</span> mean(list_of_numbers)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        variance <span class="op">=</span> <span class="bu">sum</span>([(i <span class="op">-</span> avg)<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> i <span class="kw">in</span> list_of_numbers])<span class="op">/</span><span class="bu">len</span>(list_of_numbers)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        standard_dev <span class="op">=</span> math.sqrt(variance)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> standard_dev</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.nan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now that we’ve defined our functions, let’s create a list of length 10 with random integers</p>
-<div class="cell" data-tags="[]" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>list_of_numbers <span class="op">=</span> np.random.randint(<span class="dv">1</span>,<span class="dv">30</span>,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(list_of_numbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>list_of_numbers <span class="op">=</span> np.random.randint(<span class="dv">1</span>,<span class="dv">30</span>,<span class="dv">10</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(list_of_numbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[11  5 12 18 24 11 10  9 21 16]</code></pre>
+<pre><code>[ 5 27 12  5  2 20 10  8 29 23]</code></pre>
 </div>
 </div>
-<div class="cell" data-tags="[]" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation for the list of numbers provided = </span><span class="sc">{</span>std_dev(list_of_numbers)<span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation for the list of numbers provided = </span><span class="sc">{</span>std_dev(list_of_numbers)<span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard Deviation for the list of numbers provided = 5.59</code></pre>
+<pre><code>Standard Deviation for the list of numbers provided = 9.34</code></pre>
 </div>
 </div>
 </section>
 <section id="using-the-statistics-module" class="level2">
 <h2 class="anchored" data-anchor-id="using-the-statistics-module">Using the <em>statistics</em> module</h2>
-<div class="cell" data-tags="[]" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statistics</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>list_ <span class="op">=</span> [<span class="bu">int</span>(item) <span class="cf">for</span> item <span class="kw">in</span> list_of_numbers]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using the statistics module for the list of numbers provided = </span><span class="sc">{</span>statistics<span class="sc">.</span>stdev(list_)<span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statistics</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>list_ <span class="op">=</span> [<span class="bu">int</span>(item) <span class="cf">for</span> item <span class="kw">in</span> list_of_numbers]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using the statistics module for the list of numbers provided = </span><span class="sc">{</span>statistics<span class="sc">.</span>stdev(list_)<span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard Deviation using the statistics module for the list of numbers provided = 5.89</code></pre>
+<pre><code>Standard Deviation using the statistics module for the list of numbers provided = 9.85</code></pre>
 </div>
 </div>
 <p><em>Note</em>: Not providing <code>int(item)</code> produces an error <strong>AttributeError: ‘numpy.int64’ object has no attribute ‘bit_length’</strong>. The bit_length() method is a built-in Python method for regular integer objects, but it’s not available for NumPy data types</p>
@@ -237,51 +243,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="using-the-pandas-module" class="level2">
 <h2 class="anchored" data-anchor-id="using-the-pandas-module">Using the <em>pandas</em> module</h2>
 <p>One important thing to mention here is that pandas function require input as a pandas Series or dataframe. Hence, we will need to convert our <em>Numpy list into pandas Series</em></p>
-<div class="cell" data-tags="[]" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>series_of_numbers_pd <span class="op">=</span> pd.Series(list_of_numbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using the pandas for the Series of numbers provided = </span><span class="sc">{</span>series_of_numbers_pd<span class="sc">.</span>std() <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>series_of_numbers_pd <span class="op">=</span> pd.Series(list_of_numbers)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using the pandas for the Series of numbers provided = </span><span class="sc">{</span>series_of_numbers_pd<span class="sc">.</span>std() <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard Deviation using the pandas for the Series of numbers provided = 5.89</code></pre>
+<pre><code>Standard Deviation using the pandas for the Series of numbers provided = 9.85</code></pre>
 </div>
 </div>
 </section>
 <section id="using-the-numpy-module" class="level2">
 <h2 class="anchored" data-anchor-id="using-the-numpy-module">Using the <em>numpy</em> module</h2>
-<div class="cell" data-tags="[]" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using numpy for the Series of numbers provided = </span><span class="sc">{</span>np<span class="sc">.</span>std(list_of_numbers) <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using numpy for the Series of numbers provided = </span><span class="sc">{</span>np<span class="sc">.</span>std(list_of_numbers) <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard Deviation using numpy for the Series of numbers provided = 5.59</code></pre>
+<pre><code>Standard Deviation using numpy for the Series of numbers provided = 9.34</code></pre>
 </div>
 </div>
 </section>
 <section id="using-pytorch" class="level2">
 <h2 class="anchored" data-anchor-id="using-pytorch">Using pyTorch</h2>
 <p>One important thing to mention here is that pytorch function require input as a pytorch tensor. Hence, we will need to convert our <em>list into torch tensor</em>. Another thing worth mentioning is that <code>torch</code> functions require floating point numbers as input tensors. Hence, we’ll convert all items in our list to float using list comprehension.</p>
-<div class="cell" data-tags="[]" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>tensors_of_numbers <span class="op">=</span> torch.tensor([<span class="bu">float</span>(x) <span class="cf">for</span> x <span class="kw">in</span> list_of_numbers])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>tensors_of_numbers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>tensor([ 5., 27., 12.,  5.,  2., 20., 10.,  8., 29., 23.])</code></pre>
 </div>
-<div class="cell" data-tags="[]" data-execution_count="49">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tensors_of_numbers <span class="op">=</span> torch.tensor([<span class="bu">float</span>(x) <span class="cf">for</span> x <span class="kw">in</span> list_of_numbers])</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>tensors_of_numbers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="49">
-<pre><code>tensor([11.,  5., 12., 18., 24., 11., 10.,  9., 21., 16.])</code></pre>
 </div>
-</div>
-<div class="cell" data-tags="[]" data-execution_count="50">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using torch for the Series of numbers provided = </span><span class="sc">{</span>torch<span class="sc">.</span>std(tensors_of_numbers) <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-tags="[]" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Standard Deviation using torch for the Series of numbers provided = </span><span class="sc">{</span>torch<span class="sc">.</span>std(tensors_of_numbers) <span class="sc">:0.2f}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Standard Deviation using torch for the Series of numbers provided = 5.89</code></pre>
+<pre><code>Standard Deviation using torch for the Series of numbers provided = 9.85</code></pre>
 </div>
 </div>
 </section>
 <section id="notice-any-discrepancies" class="level2">
 <h2 class="anchored" data-anchor-id="notice-any-discrepancies">Notice any Discrepancies ??</h2>
-<p>As observed above, you might have noticed that the S.D for our pure function and numpy function gave a result of <em>5.59</em>, however for the statistics and pandas in-built function, the result is <em>5.89</em>. The reason for the difference is the denominator of the Standard Deviation formula. The reason is because <em>statistics</em> and <em>pandas</em> calculate the S.D. based on the sampling distribution and not the population distribution. The Sample Stansard Deviation has N-1 as denominator in it’s formula, while the population SD formula has N.</p>
+<p>As observed above, you might have noticed that the S.D for our pure function and numpy function gave a result of <em>9.34</em>, however for the statistics and pandas in-built function, the result is <em>9.85</em>. The reason for the difference is the denominator of the Standard Deviation formula. The reason is because <em>statistics</em> and <em>pandas</em> calculate the S.D. based on the sampling distribution and not the population distribution. The Sample Stansard Deviation has N-1 as denominator in it’s formula, while the population SD formula has N.</p>
 <p><strong><em>Population Standard Deviation</em></strong> <span class="math display">\[\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2}\]</span></p>
 <p><strong><em>Sample Standard Deviation</em></strong> <span class="math display">\[s = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2}\]</span></p>
 <p>Since, we don’t normally know the population mean, we have to use sample mean to calculate variance, and this introduces bias. We estimate the population variance (sigma²) based on the sample standard deviation (s²). Let Mean for sample be x_bar and population mean be ų. Data points x1, x2..xi will be more closer to x_bar than to ų.</p>
