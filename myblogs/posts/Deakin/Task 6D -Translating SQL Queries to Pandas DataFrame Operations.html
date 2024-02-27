@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+
+<title>The Chosen One - SQL-Pandas: A better love story than Twilight</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../cover.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/quarto-contrib/animate-4.1.1/animate.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="The Chosen One - SQL-Pandas: A better love story than Twilight">
+<meta property="og:description" content="The realm of Kashish!">
+<meta property="og:image" content="https://kashish18.github.io/myblogs/posts/Deakin/Kashish_Professional.jpeg">
+<meta property="og:site-name" content="The Chosen One">
+<meta name="twitter:title" content="The Chosen One">
+<meta name="twitter:description" content="The realm of Kashish!">
+<meta name="twitter:image" content="https://kashish18.github.io/myblogs/posts/Deakin/cover.png">
+<meta name="twitter:creator" content="@Kashish18">
+<meta name="twitter:site" content="@Kashish18">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../cover.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">The Chosen One</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-newspaper" role="img">
+</i> 
+ <span class="menu-text">Blogs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-sliders2" role="img">
+</i> 
+ <span class="menu-text">Playground</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Dictionary</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html" rel="" target=""><i class="bi bi-file-person" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+    <a href="https://github.com/kashish18/kashish18.github.io" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-code-slash"></i></a>
+    <a href="../../../myblogs/index.html" title="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}" class="quarto-navigation-tool px-1" aria-label="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}"><i class="bi bi-rss"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">SQL-Pandas: A better love story than Twilight</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">blogging</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Back to Basics</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Saturday, 27 January 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#import-libraries-and-setting-up-the-sqlite-database-connection" id="toc-import-libraries-and-setting-up-the-sqlite-database-connection" class="nav-link" data-scroll-target="#import-libraries-and-setting-up-the-sqlite-database-connection">Import Libraries and Setting up the SQLite Database Connection</a></li>
+  <li><a href="#exporting-csv-files-to-the-database" id="toc-exporting-csv-files-to-the-database" class="nav-link" data-scroll-target="#exporting-csv-files-to-the-database">Exporting CSV Files to the Database</a></li>
+  <li><a href="#performing-data-analysis-in-pandas-using-sql-columns" id="toc-performing-data-analysis-in-pandas-using-sql-columns" class="nav-link" data-scroll-target="#performing-data-analysis-in-pandas-using-sql-columns">Performing Data Analysis in Pandas Using SQL Columns</a>
+  <ul>
+  <li><a href="#reading-unique-engine-value-from-planes" id="toc-reading-unique-engine-value-from-planes" class="nav-link" data-scroll-target="#reading-unique-engine-value-from-planes">Reading Unique Engine Value from Planes</a></li>
+  <li><a href="#reading-unique-type-and-engine-from-planes" id="toc-reading-unique-type-and-engine-from-planes" class="nav-link" data-scroll-target="#reading-unique-type-and-engine-from-planes">Reading Unique Type and Engine from Planes</a></li>
+  <li><a href="#count-occurrences-of-each-engine-type" id="toc-count-occurrences-of-each-engine-type" class="nav-link" data-scroll-target="#count-occurrences-of-each-engine-type">Count Occurrences of Each Engine Type</a></li>
+  <li><a href="#count-occurrences-of-each-engine-and-type-combination" id="toc-count-occurrences-of-each-engine-and-type-combination" class="nav-link" data-scroll-target="#count-occurrences-of-each-engine-and-type-combination">Count Occurrences of Each Engine and Type Combination</a></li>
+  <li><a href="#aggregate-year-statistics-by-engine-and-manufacturer" id="toc-aggregate-year-statistics-by-engine-and-manufacturer" class="nav-link" data-scroll-target="#aggregate-year-statistics-by-engine-and-manufacturer">Aggregate Year Statistics by Engine and Manufacturer</a></li>
+  <li><a href="#filtering-rows-with-non-null-speed-values" id="toc-filtering-rows-with-non-null-speed-values" class="nav-link" data-scroll-target="#filtering-rows-with-non-null-speed-values">Filtering Rows with Non-null Speed Values</a></li>
+  <li><a href="#filtering-planes-by-seat-capacity-and-year" id="toc-filtering-planes-by-seat-capacity-and-year" class="nav-link" data-scroll-target="#filtering-planes-by-seat-capacity-and-year">Filtering Planes by Seat Capacity and Year</a></li>
+  <li><a href="#filtering-planes-by-manufacturer-and-seat-capacity" id="toc-filtering-planes-by-manufacturer-and-seat-capacity" class="nav-link" data-scroll-target="#filtering-planes-by-manufacturer-and-seat-capacity">Filtering Planes by Manufacturer and Seat Capacity</a></li>
+  <li><a href="#selecting-distinct-year-and-seats-with-ordering" id="toc-selecting-distinct-year-and-seats-with-ordering" class="nav-link" data-scroll-target="#selecting-distinct-year-and-seats-with-ordering">Selecting Distinct Year and Seats with Ordering</a></li>
+  <li><a href="#selecting-distinct-year-and-seats-with-ordering-1" id="toc-selecting-distinct-year-and-seats-with-ordering-1" class="nav-link" data-scroll-target="#selecting-distinct-year-and-seats-with-ordering-1">Selecting Distinct Year and Seats with Ordering</a></li>
+  <li><a href="#counting-planes-by-manufacturer-with-seat-capacity-condition" id="toc-counting-planes-by-manufacturer-with-seat-capacity-condition" class="nav-link" data-scroll-target="#counting-planes-by-manufacturer-with-seat-capacity-condition">Counting Planes by Manufacturer with Seat Capacity Condition</a></li>
+  <li><a href="#counting-planes-by-manufacturer-with-count-condition" id="toc-counting-planes-by-manufacturer-with-count-condition" class="nav-link" data-scroll-target="#counting-planes-by-manufacturer-with-count-condition">Counting Planes by Manufacturer with Count Condition</a></li>
+  <li><a href="#counting-planes-by-manufacturer-with-seat-capacity-condition-and-count-condition" id="toc-counting-planes-by-manufacturer-with-seat-capacity-condition-and-count-condition" class="nav-link" data-scroll-target="#counting-planes-by-manufacturer-with-seat-capacity-condition-and-count-condition">Counting Planes by Manufacturer with Seat Capacity Condition and Count Condition</a></li>
+  <li><a href="#top-10-manufacturers-by-plane-count" id="toc-top-10-manufacturers-by-plane-count" class="nav-link" data-scroll-target="#top-10-manufacturers-by-plane-count">Top 10 Manufacturers by Plane Count</a></li>
+  <li><a href="#merging-flights-data-with-plane-information" id="toc-merging-flights-data-with-plane-information" class="nav-link" data-scroll-target="#merging-flights-data-with-plane-information">Merging Flights Data with Plane Information</a></li>
+  <li><a href="#merging-plane-and-airline-data" id="toc-merging-plane-and-airline-data" class="nav-link" data-scroll-target="#merging-plane-and-airline-data">Merging Plane and Airline Data</a></li>
+  <li><a href="#merging-flight-and-weather-data-for-ewr-airport" id="toc-merging-flight-and-weather-data-for-ewr-airport" class="nav-link" data-scroll-target="#merging-flight-and-weather-data-for-ewr-airport">Merging Flight and Weather Data for EWR Airport</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul></li>
+  <li><a href="#thank-you-for-reading-the-report" id="toc-thank-you-for-reading-the-report" class="nav-link" data-scroll-target="#thank-you-for-reading-the-report">Thank You for Reading the Report</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p><em>A Report by …</em></p>
+<pre><code>@Author: Kashish Mukheja</code></pre>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6D -Translating SQL Queries to Pandas DataFrame Operations_files/figure-html/6e705521-1-mysqldatabase.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">mysqldatabase.jpg</figcaption>
+</figure>
+</div>
+<p>In this report, we analyze NYC flight datasets and the project explores the translation of SQL queries into pandas DataFrame operations, aiming to understand the capability and equivalence of pandas in performing tasks traditionally handled by SQL.</p>
+</section>
+<section id="import-libraries-and-setting-up-the-sqlite-database-connection" class="level2">
+<h2 class="anchored" data-anchor-id="import-libraries-and-setting-up-the-sqlite-database-connection">Import Libraries and Setting up the SQLite Database Connection</h2>
+<p>We’ll start by importing the necessary libraries and establishing a connection with the SQLite database</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Establishing a connection with a new SQLite database</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">'nycflights13.db'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exporting-csv-files-to-the-database" class="level2">
+<h2 class="anchored" data-anchor-id="exporting-csv-files-to-the-database">Exporting CSV Files to the Database</h2>
+<p>Next, we’ll export each CSV file to the SQLite database, creating a separate table for each dataset</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define file paths</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>csv_files <span class="op">=</span> {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flights'</span>: <span class="st">'nycflights13_flights.csv'</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'airlines'</span>: <span class="st">'nycflights13_airlines.csv'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'airports'</span>: <span class="st">'nycflights13_airports.csv'</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'planes'</span>: <span class="st">'nycflights13_planes.csv'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'weather'</span>: <span class="st">'nycflights13_weather.csv'</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Exporting CSV files to SQLite database</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table_name, file_path <span class="kw">in</span> csv_files.items():</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read CSV file into a pandas DataFrame</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(file_path)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Export DataFrame to SQLite database</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    df.to_sql(table_name, conn, index<span class="op">=</span><span class="va">False</span>, if_exists<span class="op">=</span><span class="st">'replace'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By executing the code above, we have successfully established a connection with a new SQLite database named <code>nycflights13.db</code> and exported all the provided CSV files into separate tables within this database.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read all CSV files into pandas DataFrames</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>flights_df <span class="op">=</span> pd.read_csv(<span class="st">'nycflights13_flights.csv'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>airlines_df <span class="op">=</span> pd.read_csv(<span class="st">'nycflights13_airlines.csv'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>airports_df <span class="op">=</span> pd.read_csv(<span class="st">'nycflights13_airports.csv'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>planes_df <span class="op">=</span> pd.read_csv(<span class="st">'nycflights13_planes.csv'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>weather_df <span class="op">=</span> pd.read_csv(<span class="st">'nycflights13_weather.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>weather_df.head(<span class="dv">1</span>) <span class="co"># 3rd column is month</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">origin</th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">month</th>
+<th data-quarto-table-cell-role="th">day</th>
+<th data-quarto-table-cell-role="th">hour</th>
+<th data-quarto-table-cell-role="th">temp</th>
+<th data-quarto-table-cell-role="th">dewp</th>
+<th data-quarto-table-cell-role="th">humid</th>
+<th data-quarto-table-cell-role="th">wind_dir</th>
+<th data-quarto-table-cell-role="th">wind_speed</th>
+<th data-quarto-table-cell-role="th">wind_gust</th>
+<th data-quarto-table-cell-role="th">precip</th>
+<th data-quarto-table-cell-role="th">pressure</th>
+<th data-quarto-table-cell-role="th">visib</th>
+<th data-quarto-table-cell-role="th">time_hour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>EWR</td>
+<td>2013</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>37.04</td>
+<td>21.92</td>
+<td>53.97</td>
+<td>230.0</td>
+<td>10.35702</td>
+<td>11.918651</td>
+<td>0.0</td>
+<td>1013.9</td>
+<td>10.0</td>
+<td>2013-01-01 1:00:00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>weather_df.iloc[:,<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>0         1
+1         1
+2         1
+3         1
+4         1
+         ..
+26125    30
+26126    30
+26127    30
+26128    30
+26129    30
+Name: day, Length: 26130, dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0
+2
+4
+6
+8</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>my_tuple <span class="op">=</span> (<span class="dv">1</span>,)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>my_tuple, <span class="bu">len</span>(my_tuple)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>((1,), 1)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>my_tuple_2 <span class="op">=</span> <span class="bu">tuple</span>([<span class="dv">1</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>my_tuple_2, <span class="bu">len</span>(my_tuple_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>((1,), 1)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>my_tuple_3 <span class="op">=</span> (<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="performing-data-analysis-in-pandas-using-sql-columns" class="level2">
+<h2 class="anchored" data-anchor-id="performing-data-analysis-in-pandas-using-sql-columns">Performing Data Analysis in Pandas Using SQL Columns</h2>
+<section id="reading-unique-engine-value-from-planes" class="level3">
+<h3 class="anchored" data-anchor-id="reading-unique-engine-value-from-planes">Reading Unique Engine Value from Planes</h3>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting distinct values of the "engine" column from the "planes" DataFrame</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>task_sql_distinct_engine <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT DISTINCT engine FROM planes;"</span>, conn)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>task_my_distinct_engine <span class="op">=</span> planes_df[<span class="st">'engine'</span>].unique()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>task_my_distinct_engine <span class="op">=</span> pd.DataFrame(task_my_distinct_engine, columns<span class="op">=</span>[<span class="st">'engine'</span>])</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> task_sql_distinct_engine.equals(task_my_distinct_engine):</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<ul>
+<li>The SQL query selects distinct values of the “engine” column from the “planes” table, ensuring that each engine type appears only once in the result.</li>
+<li>The pandas equivalent achieves the same by using the unique() function on the “engine” column of the planes_df DataFrame.</li>
+<li>The comparison checks if the results obtained from the SQL query and the pandas equivalent are identical. If they are, it confirms that the pandas solution produces the same results as the SQL query, and if not, it indicates a discrepancy.</li>
+</ul>
+</section>
+<section id="reading-unique-type-and-engine-from-planes" class="level3">
+<h3 class="anchored" data-anchor-id="reading-unique-type-and-engine-from-planes">Reading Unique Type and Engine from Planes</h3>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting distinct values of the "type" and "engine" columns from the "planes" DataFrame</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>task_sql_distinct_type_engine <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT DISTINCT type, engine FROM planes;"</span>, conn)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>task_my_distinct_type_engine <span class="op">=</span> planes_df[[<span class="st">'type'</span>, <span class="st">'engine'</span>]].drop_duplicates()</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset index of both DataFrames</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>task_sql_distinct_type_engine_reset <span class="op">=</span> task_sql_distinct_type_engine.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>task_my_distinct_type_engine_reset <span class="op">=</span> task_my_distinct_type_engine.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_distinct_type_engine_reset, task_my_distinct_type_engine_reset) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>SQL Query and Pandas Equivalent:</em></p>
+<p>The SQL query selects distinct combinations of values from the <code>type</code> and <code>engine</code> columns of the <code>planes</code> table. The pandas equivalent achieves the same by selecting the same columns from the planes_df DataFrame and then dropping duplicate rows.</p>
+<p><em>Resetting Index:</em> The index of both DataFrames is reset to ensure alignment for accurate comparison.</p>
+<p><em>Comparison:</em> The results obtained from the SQL query and pandas are compared using <code>pd.testing.assert_frame_equal()</code>. If the DataFrames are equal, it prints “Results match with the SQL query!”; otherwise, it prints “Results do not match with the SQL query.”</p>
+</section>
+<section id="count-occurrences-of-each-engine-type" class="level3">
+<h3 class="anchored" data-anchor-id="count-occurrences-of-each-engine-type">Count Occurrences of Each Engine Type</h3>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform group by on 'engine' column and count the occurrences</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>task_sql_count_engine <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT COUNT(*), engine FROM planes GROUP BY engine;"</span>, conn)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent with column renaming and reordering</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>task_my_count_engine <span class="op">=</span> planes_df.groupby(<span class="st">'engine'</span>).size().reset_index(name<span class="op">=</span><span class="st">'COUNT(*)'</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>task_my_count_engine <span class="op">=</span> task_my_count_engine[[<span class="st">'COUNT(*)'</span>, <span class="st">'engine'</span>]]  <span class="co"># Reorder columns to match SQL query result</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_count_engine, task_my_count_engine) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Performing GroupBy and Counting Occurrences:</em></p>
+<p>The SQL query selects the count of occurrences for each unique value in the “engine” column from the “planes” table after grouping by the “engine” column. The pandas equivalent achieves the same result by performing a GroupBy operation on the “engine” column of the planes_df DataFrame and then using the size() function to count the occurrences within each group. The result is stored in a new DataFrame with the column renamed to ’COUNT(*)’.</p>
+<p><em>Column Renaming and Reordering:</em> After renaming the column to ’COUNT(*)’ in the pandas DataFrame, we reorder the columns to match the order in the SQL query result. This ensures consistency in column names and order between the SQL query result and the pandas DataFrame.</p>
+<p><em>Comparison:</em> Finally, we compare the results obtained from the SQL query and the pandas operation using pd.testing.assert_frame_equal(). If the DataFrames are equal, it prints “Results match with the SQL query!”; otherwise, it prints “Results do not match with the SQL query.”</p>
+</section>
+<section id="count-occurrences-of-each-engine-and-type-combination" class="level3">
+<h3 class="anchored" data-anchor-id="count-occurrences-of-each-engine-and-type-combination">Count Occurrences of Each Engine and Type Combination</h3>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform group by on 'engine' and 'type' columns and count the occurrences</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>task_sql_count_engine_type <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT COUNT(*), engine, type FROM planes GROUP BY engine, type;"</span>, conn)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent with column renaming and reordering</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>task_my_count_engine_type <span class="op">=</span> planes_df.groupby([<span class="st">'engine'</span>, <span class="st">'type'</span>]).size().reset_index(name<span class="op">=</span><span class="st">'COUNT(*)'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>task_my_count_engine_type <span class="op">=</span> task_my_count_engine_type[[<span class="st">'COUNT(*)'</span>, <span class="st">'engine'</span>, <span class="st">'type'</span>]]  <span class="co"># Reorder columns to match SQL query result</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_count_engine_type, task_my_count_engine_type) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Performing GroupBy and Counting Occurrences:</em> The SQL query selects the count of occurrences for each unique combination of values in the “engine” and “type” columns from the “planes” table after grouping by both columns. The pandas equivalent achieves the same result by performing a GroupBy operation on both the “engine” and “type” columns of the planes_df DataFrame and then using the size() function to count the occurrences within each group. The result is stored in a new DataFrame with the column renamed to ’COUNT(*)’.</p>
+<p><em>Column Renaming and Reordering:</em> After renaming the column to ’COUNT(*)’ in the pandas DataFrame, we reorder the columns to match the order in the SQL query result. This ensures consistency in column names and order between the SQL query result and the pandas DataFrame.</p>
+<p><em>Comparison:</em> We compare the results obtained from the SQL query and the pandas operation using pd.testing.assert_frame_equal(). If the DataFrames are equal, it prints “Results match with the SQL query!”; otherwise, it prints “Results do not match with the SQL query.”</p>
+</section>
+<section id="aggregate-year-statistics-by-engine-and-manufacturer" class="level3">
+<h3 class="anchored" data-anchor-id="aggregate-year-statistics-by-engine-and-manufacturer">Aggregate Year Statistics by Engine and Manufacturer</h3>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform group by on 'engine' and 'manufacturer' columns and calculate minimum, average, and maximum year</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>task_sql_engine_manufacturer_year <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT MIN(year), AVG(year), MAX(year), engine, manufacturer </span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM planes </span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="st">    GROUP BY engine, manufacturer;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent with groupby and aggregation, and column reordering</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>task_my_engine_manufacturer_year <span class="op">=</span> planes_df.groupby([<span class="st">'engine'</span>, <span class="st">'manufacturer'</span>]).agg(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    min_year<span class="op">=</span>(<span class="st">'year'</span>, <span class="st">'min'</span>),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    avg_year<span class="op">=</span>(<span class="st">'year'</span>, <span class="st">'mean'</span>),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    max_year<span class="op">=</span>(<span class="st">'year'</span>, <span class="st">'max'</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>).reset_index()</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder columns to match desired order</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>task_my_engine_manufacturer_year <span class="op">=</span> task_my_engine_manufacturer_year[[<span class="st">'min_year'</span>, <span class="st">'avg_year'</span>, <span class="st">'max_year'</span>, <span class="st">'engine'</span>, <span class="st">'manufacturer'</span>]]</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>task_my_engine_manufacturer_year.columns <span class="op">=</span> [<span class="st">'MIN(year)'</span>, <span class="st">'AVG(year)'</span>, <span class="st">'MAX(year)'</span>, <span class="st">'engine'</span>, <span class="st">'manufacturer'</span>]</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_engine_manufacturer_year, task_my_engine_manufacturer_year) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Performing GroupBy and Aggregation:</em></p>
+<p>The SQL query groups the data by the <code>engine</code> and <code>manufacturer</code> columns and calculates the minimum, average, and maximum values of the <code>year</code> column within each group. The pandas equivalent achieves the same result by performing a GroupBy operation on the <code>engine</code> and <code>manufacturer</code> columns of the planes_df DataFrame. Then, the agg() function is used to specify the aggregation functions for the <code>year</code> column, including ‘min’, ‘mean’, and ‘max’. The result is stored in a new DataFrame with the specified column names for the aggregated values.</p>
+<p><em>Column Reordering and Renaming:</em> After computing the aggregated statistics, the columns in the pandas DataFrame are reordered to match the desired order of “MIN(year)”, “AVG(year)”, “MAX(year)”, “engine”, and “manufacturer”. Additionally, the column names are renamed to match the specified names.</p>
+<p><em>Comparison:</em> We compare the results obtained from the SQL query and the pandas operation using pd.testing.assert_frame_equal(). If the DataFrames are equal, it prints “Results match with the SQL query!”; otherwise, it prints “Results do not match with the SQL query.”</p>
+</section>
+<section id="filtering-rows-with-non-null-speed-values" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-rows-with-non-null-speed-values">Filtering Rows with Non-null Speed Values</h3>
+<p>The code aims to retrieve rows from a dataset where the ‘speed’ column is not null</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting rows where 'speed' column is not null</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>task_sql_speed_not_null <span class="op">=</span> pd.read_sql_query(<span class="st">"SELECT * FROM planes WHERE speed IS NOT NULL;"</span>, conn)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>task_my_speed_not_null <span class="op">=</span> planes_df[planes_df[<span class="st">'speed'</span>].notnull()].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_speed_not_null, task_my_speed_not_null) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p>This code snippet demonstrates how to filter rows with non-null values in a specific column, both in SQL and pandas, and verifies that the results match.</p>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query selects all columns from the “planes” table where the ‘speed’ column is not null.</li>
+<li>The pandas equivalent achieves the same result by using boolean indexing to filter the DataFrame based on the condition that the ‘speed’ column is not null. The resulting DataFrame’s index is reset to ensure consistency.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+</section>
+<section id="filtering-planes-by-seat-capacity-and-year" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-planes-by-seat-capacity-and-year">Filtering Planes by Seat Capacity and Year</h3>
+<p>The code aims to retrieve the tail numbers (‘tailnum’) of planes from a dataset where the seat capacity (‘seats’) falls within the range of 150 to 210 and the manufacturing year (‘year’) is greater than or equal to 2011.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting 'tailnum' from planes_df where 'seats' are between 150 and 210 and 'year' is greater than or equal to 2011</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>task_sql_filtered_planes <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT tailnum FROM planes</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE seats BETWEEN 150 AND 210 AND year &gt;= 2011;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>task_my_filtered_planes <span class="op">=</span> planes_df[(planes_df[<span class="st">'seats'</span>].between(<span class="dv">150</span>, <span class="dv">210</span>)) <span class="op">&amp;</span> (planes_df[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">2011</span>)][[<span class="st">'tailnum'</span>]].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_filtered_planes, task_my_filtered_planes) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query selects the ‘tailnum’ column from the “planes” table where the ‘seats’ column falls within the range of 150 to 210 and the ‘year’ column is greater than or equal to 2011.</li>
+<li>The pandas equivalent achieves the same result by applying boolean indexing to the <code>planes_df</code> DataFrame. It filters rows where the ‘seats’ column falls within the specified range and where the ‘year’ column is greater than or equal to 2011. Only the ‘tailnum’ column is selected in the resulting DataFrame, and the index is reset for consistency.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to filter rows based on multiple conditions, both in SQL and pandas, and verifies that the results match.</p>
+</section>
+<section id="filtering-planes-by-manufacturer-and-seat-capacity" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-planes-by-manufacturer-and-seat-capacity">Filtering Planes by Manufacturer and Seat Capacity</h3>
+<p>The code aims to retrieve specific information about planes from a dataset, including the tail number (‘tailnum’), manufacturer, and seat capacity (‘seats’). The filtering criteria include selecting planes manufactured by “BOEING”, “AIRBUS”, or “EMBRAER”, with a seat capacity greater than 390.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting 'tailnum', 'manufacturer', and 'seats' from planes_df where 'manufacturer' is in ("BOEING", "AIRBUS", "EMBRAER") and 'seats' is greater than 390</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>task_sql_filtered_planes <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT tailnum, manufacturer, seats FROM planes</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE manufacturer IN ("BOEING", "AIRBUS", "EMBRAER") AND seats &gt; 390;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>manufacturers <span class="op">=</span> [<span class="st">"BOEING"</span>, <span class="st">"AIRBUS"</span>, <span class="st">"EMBRAER"</span>]</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>task_my_filtered_planes <span class="op">=</span> planes_df[(planes_df[<span class="st">'manufacturer'</span>].isin(manufacturers)) <span class="op">&amp;</span> (planes_df[<span class="st">'seats'</span>] <span class="op">&gt;</span> <span class="dv">390</span>)][[<span class="st">'tailnum'</span>, <span class="st">'manufacturer'</span>, <span class="st">'seats'</span>]].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_filtered_planes, task_my_filtered_planes) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em> - The SQL query selects the ‘tailnum’, ‘manufacturer’, and ‘seats’ columns from the “planes” table where the ‘manufacturer’ column is in (“BOEING”, “AIRBUS”, “EMBRAER”) and the ‘seats’ column is greater than 390. - The pandas equivalent achieves the same result by using boolean indexing with the <code>isin()</code> method to filter rows where the ‘manufacturer’ column is in the specified list of manufacturers and the ‘seats’ column is greater than 390. Only the selected columns (‘tailnum’, ‘manufacturer’, and ‘seats’) are retained in the resulting DataFrame, and the index is reset for consistency. - Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</p>
+<p>This code snippet demonstrates how to filter rows based on multiple conditions involving categorical values and numeric values, both in SQL and pandas, and verifies that the results match.</p>
+</section>
+<section id="selecting-distinct-year-and-seats-with-ordering" class="level3">
+<h3 class="anchored" data-anchor-id="selecting-distinct-year-and-seats-with-ordering">Selecting Distinct Year and Seats with Ordering</h3>
+<p>The code aims to retrieve distinct combinations of ‘year’ and ‘seats’ from a dataset of planes, where the ‘year’ is greater than or equal to 2012. Additionally, it orders the results by ‘year’ in ascending order and ‘seats’ in descending order.</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting distinct 'year' and 'seats' from planes_df where 'year' is greater than or equal to 2012</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>task_sql_distinct_year_seats <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT DISTINCT year, seats FROM planes</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE year &gt;= 2012 ORDER BY year ASC, seats DESC;</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>task_my_distinct_year_seats <span class="op">=</span> planes_df[planes_df[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">2012</span>][[<span class="st">'year'</span>, <span class="st">'seats'</span>]].drop_duplicates().sort_values(by<span class="op">=</span>[<span class="st">'year'</span>, <span class="st">'seats'</span>], ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_distinct_year_seats, task_my_distinct_year_seats) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query selects distinct ‘year’ and ‘seats’ values from the “planes” table where the ‘year’ is greater than or equal to 2012. It orders the results by ‘year’ in ascending order and ‘seats’ in descending order.</li>
+<li>The pandas equivalent achieves the same result by first filtering the <code>planes_df</code> DataFrame to include only rows where the ‘year’ is greater than or equal to 2012. Then, it selects only the ‘year’ and ‘seats’ columns, drops duplicate rows, and sorts the DataFrame by ‘year’ in ascending order and ‘seats’ in descending order. The index is reset for consistency.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to select distinct values of multiple columns, filter rows based on a condition, and order the results using both SQL and pandas. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="selecting-distinct-year-and-seats-with-ordering-1" class="level3">
+<h3 class="anchored" data-anchor-id="selecting-distinct-year-and-seats-with-ordering-1">Selecting Distinct Year and Seats with Ordering</h3>
+<p>The code aims to retrieve distinct combinations of ‘year’ and ‘seats’ from a dataset of planes, where the ‘year’ is greater than or equal to 2012. Additionally, it orders the results by ‘seats’ in descending order and ‘year’ in ascending order.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecting distinct 'year' and 'seats' from planes_df where 'year' is greater than or equal to 2012</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>task_sql_distinct_year_seats <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT DISTINCT year, seats FROM planes</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE year &gt;= 2012 ORDER BY seats DESC, year ASC;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>task_my_distinct_year_seats <span class="op">=</span> planes_df[planes_df[<span class="st">'year'</span>] <span class="op">&gt;=</span> <span class="dv">2012</span>][[<span class="st">'year'</span>, <span class="st">'seats'</span>]].drop_duplicates().sort_values(by<span class="op">=</span>[<span class="st">'seats'</span>, <span class="st">'year'</span>], ascending<span class="op">=</span>[<span class="va">False</span>, <span class="va">True</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_distinct_year_seats, task_my_distinct_year_seats) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query selects distinct ‘year’ and ‘seats’ values from the “planes” table where the ‘year’ is greater than or equal to 2012. It orders the results by ‘seats’ in descending order and ‘year’ in ascending order.</li>
+<li>The pandas equivalent achieves the same result by first filtering the <code>planes_df</code> DataFrame to include only rows where the ‘year’ is greater than or equal to 2012. Then, it selects only the ‘year’ and ‘seats’ columns, drops duplicate rows, and sorts the DataFrame by ‘seats’ in descending order and ‘year’ in ascending order. The index is reset for consistency.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to select distinct values of multiple columns, filter rows based on a condition, and order the results using both SQL and pandas. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="counting-planes-by-manufacturer-with-seat-capacity-condition" class="level3">
+<h3 class="anchored" data-anchor-id="counting-planes-by-manufacturer-with-seat-capacity-condition">Counting Planes by Manufacturer with Seat Capacity Condition</h3>
+<p>The code aims to count the number of planes manufactured by each manufacturer where the seat capacity is greater than 200.</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing group by on 'manufacturer' and counting the occurrences where 'seats' is greater than 200</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>task_sql_count_manufacturer <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT manufacturer, COUNT(*) FROM planes</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE seats &gt; 200 GROUP BY manufacturer;</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>task_my_count_manufacturer <span class="op">=</span> planes_df[planes_df[<span class="st">'seats'</span>] <span class="op">&gt;</span> <span class="dv">200</span>].groupby(<span class="st">'manufacturer'</span>).size().reset_index(name<span class="op">=</span><span class="st">'COUNT(*)'</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_count_manufacturer, task_my_count_manufacturer) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query groups the planes by ‘manufacturer’ and counts the occurrences where the seat capacity (‘seats’) is greater than 200.</li>
+<li>The pandas equivalent achieves the same result by first filtering the <code>planes_df</code> DataFrame to include only rows where the seat capacity is greater than 200. Then, it performs a group by on the ‘manufacturer’ column and calculates the size of each group to get the count. The result is stored in a DataFrame with columns ‘manufacturer’ and ’COUNT(*)’.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to perform grouping and aggregation operations in both SQL and pandas to obtain the count of planes by manufacturer, considering a specific condition on the seat capacity. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="counting-planes-by-manufacturer-with-count-condition" class="level3">
+<h3 class="anchored" data-anchor-id="counting-planes-by-manufacturer-with-count-condition">Counting Planes by Manufacturer with Count Condition</h3>
+<p>The code aims to count the number of planes manufactured by each manufacturer and filter the results to include only those manufacturers with a count greater than 10.</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing group by on 'manufacturer', counting the occurrences, and filtering where count is greater than 10</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>task_sql_count_manufacturer <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT manufacturer, COUNT(*) FROM planes</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="st">    GROUP BY manufacturer HAVING COUNT(*) &gt; 10;</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>manufacturer_counts <span class="op">=</span> planes_df.groupby(<span class="st">'manufacturer'</span>).size().reset_index(name<span class="op">=</span><span class="st">'COUNT(*)'</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>task_my_count_manufacturer <span class="op">=</span> manufacturer_counts[manufacturer_counts[<span class="st">'COUNT(*)'</span>] <span class="op">&gt;</span> <span class="dv">10</span>].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_count_manufacturer, task_my_count_manufacturer) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query groups the planes by ‘manufacturer’, counts the occurrences for each group, and filters the results to include only those where the count is greater than 10.</li>
+<li>The pandas equivalent first performs a group by on the ‘manufacturer’ column and calculates the size of each group to get the count of planes for each manufacturer. Then, it filters the resulting DataFrame to include only those manufacturers where the count is greater than 10. The index is reset for consistency.</li>
+<li>Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to perform grouping, aggregation, and filtering operations in both SQL and pandas to obtain the count of planes by manufacturer, considering a condition on the count. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="counting-planes-by-manufacturer-with-seat-capacity-condition-and-count-condition" class="level3">
+<h3 class="anchored" data-anchor-id="counting-planes-by-manufacturer-with-seat-capacity-condition-and-count-condition">Counting Planes by Manufacturer with Seat Capacity Condition and Count Condition</h3>
+<p>The code aims to count the number of planes manufactured by each manufacturer, considering only those with a seat capacity greater than 200, and then filter the results to include only manufacturers with a count greater than 10.</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing group by on 'manufacturer', counting the occurrences, and filtering where count is greater than 10</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>task_sql_count_manufacturer <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT manufacturer, COUNT(*) FROM planes</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE seats &gt; 200 GROUP BY manufacturer HAVING COUNT(*) &gt; 10;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>manufacturer_counts <span class="op">=</span> planes_df[planes_df[<span class="st">'seats'</span>] <span class="op">&gt;</span> <span class="dv">200</span>].groupby(<span class="st">'manufacturer'</span>).size().reset_index(name<span class="op">=</span><span class="st">'COUNT(*)'</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>task_my_count_manufacturer <span class="op">=</span> manufacturer_counts[manufacturer_counts[<span class="st">'COUNT(*)'</span>] <span class="op">&gt;</span> <span class="dv">10</span>].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_count_manufacturer, task_my_count_manufacturer) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li>The SQL query first filters the planes where seat capacity (‘seats’) is greater than 200. Then, it groups the planes by ‘manufacturer’, counts the occurrences for each group, and filters the results to include only those where the count is greater than 10.</li>
+<li>The pandas equivalent achieves the same result by first filtering the <code>planes_df</code> DataFrame to include only rows where the seat capacity is greater than 200. Then, it performs a group by on the ‘manufacturer’ column and calculates the size of each group to get the count of planes for each manufacturer. Finally, it filters the resulting DataFrame to include only those manufacturers where the count is greater than 10. The index is reset for consistency.</li>
+<li>The code then compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to perform grouping, aggregation, and filtering operations in both SQL and pandas to obtain the count of planes by manufacturer, considering both a condition on seat capacity and a count condition. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="top-10-manufacturers-by-plane-count" class="level3">
+<h3 class="anchored" data-anchor-id="top-10-manufacturers-by-plane-count">Top 10 Manufacturers by Plane Count</h3>
+<p>The code aims to identify the top 10 manufacturers based on the count of planes they have produced.</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Performing group by on 'manufacturer', counting the occurrences, and sorting in descending order</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>task_sql_top_manufacturers <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT manufacturer, COUNT(*) AS howmany </span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM planes</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="st">    GROUP BY manufacturer</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="st">    ORDER BY howmany DESC LIMIT 10;</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas equivalent</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>manufacturer_counts <span class="op">=</span> planes_df.groupby(<span class="st">'manufacturer'</span>).size().reset_index(name<span class="op">=</span><span class="st">'howmany'</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>task_my_top_manufacturers <span class="op">=</span> manufacturer_counts.sort_values(by<span class="op">=</span><span class="st">'howmany'</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_top_manufacturers, task_my_top_manufacturers) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em> - The SQL query groups the planes by ‘manufacturer’, counts the occurrences for each group, and sorts the results in descending order of count. It then selects the top 10 manufacturers based on this count. - The pandas equivalent achieves the same result by first performing a group by on the ‘manufacturer’ column and calculating the size of each group to get the count of planes for each manufacturer. The count column is renamed to ‘howmany’. Then, it sorts the DataFrame in descending order of the count and selects the top 10 rows. The index is reset for consistency. - Finally, the code compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</p>
+<p>This code snippet demonstrates how to find the top 10 manufacturers by plane count using both SQL and pandas. It also verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="merging-flights-data-with-plane-information" class="level3">
+<h3 class="anchored" data-anchor-id="merging-flights-data-with-plane-information">Merging Flights Data with Plane Information</h3>
+<p>The code aims to combine information from the <code>flights</code> table with additional data about planes, including <code>year</code>, <code>speed</code>, and <code>seats</code>, obtained from the <code>planes</code> table.</p>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SQL Query</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>task_sql_flights_planes <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="st">        flights.*,</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="st">        planes.year AS plane_year,</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="st">        planes.speed AS plane_speed,</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="st">        planes.seats AS plane_seats</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM flights</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="st">    LEFT JOIN planes ON flights.tailnum=planes.tailnum;</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas Equivalent</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>planes_subset <span class="op">=</span> planes_df[[<span class="st">'tailnum'</span>, <span class="st">'year'</span>, <span class="st">'speed'</span>, <span class="st">'seats'</span>]].copy()</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>planes_subset.columns <span class="op">=</span> [<span class="st">'tailnum'</span>, <span class="st">'plane_year'</span>, <span class="st">'plane_speed'</span>, <span class="st">'plane_seats'</span>]</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>task1_my_flights_planes <span class="op">=</span> pd.merge(flights_df, planes_subset, on<span class="op">=</span><span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_flights_planes, task1_my_flights_planes) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em> - <strong>SQL Query</strong>: The SQL query selects all columns from the ‘flights’ table and adds columns for ‘year’, ‘speed’, and ‘seats’ from the ‘planes’ table using a LEFT JOIN operation. - <strong>Pandas Equivalent</strong>: The pandas equivalent first creates a subset of columns from the ‘planes_df’ DataFrame, including ‘tailnum’, ‘year’, ‘speed’, and ‘seats’. The column names are then renamed to match those specified in the SQL query. This subset is merged with the ‘flights_df’ DataFrame based on the common column ‘tailnum’, using a left join operation. - The code then compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</p>
+<p>This code snippet demonstrates how to merge data from two tables using both SQL and pandas, and it verifies that the results obtained from pandas match those from the SQL query.</p>
+</section>
+<section id="merging-plane-and-airline-data" class="level3">
+<h3 class="anchored" data-anchor-id="merging-plane-and-airline-data">Merging Plane and Airline Data</h3>
+<p>The code aims to combine information from the <code>planes</code> and <code>airlines</code> tables using data from the <code>flights</code> table as a bridge. Additionally, it reorders the columns in the merged DataFrame to match a specified order.</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SQL Query</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>task_sql_planes_airlines <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT planes.*, airlines.* FROM</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="st">    (SELECT DISTINCT carrier, tailnum FROM flights) AS cartail</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="st">    INNER JOIN planes ON cartail.tailnum=planes.tailnum</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="st">    INNER JOIN airlines ON cartail.carrier=airlines.carrier;</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas Equivalent</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>cartail <span class="op">=</span> flights_df[[<span class="st">'carrier'</span>, <span class="st">'tailnum'</span>]].drop_duplicates()</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>merged_data <span class="op">=</span> pd.merge(cartail, planes_df, on<span class="op">=</span><span class="st">'tailnum'</span>, how<span class="op">=</span><span class="st">'inner'</span>)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>task_my_planes_airlines <span class="op">=</span> pd.merge(merged_data, airlines_df, on<span class="op">=</span><span class="st">'carrier'</span>, how<span class="op">=</span><span class="st">'inner'</span>)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Sorting by tailnum</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>task_my_planes_airlines <span class="op">=</span> task_my_planes_airlines.sort_values(by<span class="op">=</span>[<span class="st">'tailnum'</span>, <span class="st">'carrier'</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Reordering columns in task_my_planes_airlines DataFrame</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>task_my_planes_airlines <span class="op">=</span> task_my_planes_airlines[[<span class="st">'tailnum'</span>, <span class="st">'year'</span>, <span class="st">'type'</span>, <span class="st">'manufacturer'</span>, <span class="st">'model'</span>, <span class="st">'engines'</span>, <span class="st">'seats'</span>, <span class="st">'speed'</span>, <span class="st">'engine'</span>, <span class="st">'carrier'</span>, <span class="st">'name'</span>]]</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_planes_airlines, task_my_planes_airlines) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li><strong>SQL Query</strong>: The SQL query selects all columns from the ‘planes’ and ‘airlines’ tables, inner joining them with a subquery that selects distinct combinations of ‘carrier’ and ‘tailnum’ from the ‘flights’ table. The join conditions ensure that ‘tailnum’ matches between ‘cartail’ (the result of the subquery) and ‘planes’, and ‘carrier’ matches between ‘cartail’ and ‘airlines’.</li>
+<li><strong>Pandas Equivalent</strong>: The pandas equivalent first creates a subset of unique combinations of ‘carrier’ and ‘tailnum’ from the ‘flights_df’ DataFrame. This subset is merged with the ‘planes_df’ DataFrame based on ‘tailnum’ and then with the ‘airlines_df’ DataFrame based on ‘carrier’. The resulting DataFrame is sorted by ‘tailnum’ and ‘carrier’. Finally, the columns are reordered to match the specified order.</li>
+<li>The code then compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to merge data from multiple tables using both SQL and pandas, reorder the columns in the resulting DataFrame, and verify the equivalence of results obtained from pandas and SQL queries.</p>
+</section>
+<section id="merging-flight-and-weather-data-for-ewr-airport" class="level3">
+<h3 class="anchored" data-anchor-id="merging-flight-and-weather-data-for-ewr-airport">Merging Flight and Weather Data for EWR Airport</h3>
+<p>The purpose of this code is to combine flight information from the <code>flights</code> table with weather data from the <code>weather</code> table for flights originating from <strong>EWR airport</strong>, and calculating the mean temperature and humidity, and finally comparing the results from the SQL dataframe and pandas dataframe.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SQL Query</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>task_sql_flight_weather <span class="op">=</span> pd.read_sql_query(<span class="st">"""</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT flights2.*, atemp, ahumid</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM (</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="st">        SELECT * FROM flights WHERE origin='EWR'</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="st">    ) AS flights2 </span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="st">    LEFT JOIN (</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="st">        SELECT year, month, day, AVG(temp) AS atemp, AVG(humid) AS ahumid</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="st">        FROM weather</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a><span class="st">        WHERE origin='EWR'</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="st">        GROUP BY year, month, day</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="st">    ) AS weather2</span></span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="st">    ON flights2.year=weather2.year AND flights2.month=weather2.month AND flights2.day=weather2.day</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>, conn)</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas Equivalent with column renaming</span></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>ewr_flights <span class="op">=</span> flights_df[flights_df[<span class="st">'origin'</span>] <span class="op">==</span> <span class="st">'EWR'</span>].copy()</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>weather_ewr <span class="op">=</span> weather_df[weather_df[<span class="st">'origin'</span>] <span class="op">==</span> <span class="st">'EWR'</span>].groupby([<span class="st">'year'</span>, <span class="st">'month'</span>, <span class="st">'day'</span>]).agg({<span class="st">'temp'</span>: <span class="st">'mean'</span>, <span class="st">'humid'</span>: <span class="st">'mean'</span>}).reset_index()</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>weather_ewr.rename(columns<span class="op">=</span>{<span class="st">'temp'</span>: <span class="st">'atemp'</span>, <span class="st">'humid'</span>: <span class="st">'ahumid'</span>}, inplace<span class="op">=</span><span class="va">True</span>)  <span class="co"># Rename columns</span></span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>merged_data <span class="op">=</span> pd.merge(ewr_flights, weather_ewr, on<span class="op">=</span>[<span class="st">'year'</span>, <span class="st">'month'</span>, <span class="st">'day'</span>], how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if the results match with the SQL query</span></span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pd.testing.assert_frame_equal(task_sql_flight_weather, merged_data) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results match with the SQL query!"</span>)</span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Results do not match with the SQL query."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Results match with the SQL query!</code></pre>
+</div>
+</div>
+<p><em>Summary:</em></p>
+<ul>
+<li><strong>SQL Query</strong>: The SQL query selects flight data for flights originating from EWR and left joins it with aggregated weather data for EWR airport, averaging temperature and humidity values by year, month, and day. The resulting columns are named ‘atemp’ and ‘ahumid’.</li>
+<li><strong>Pandas Equivalent with Column Renaming</strong>: In the pandas equivalent, flights and weather data are filtered for EWR airport, and the temperature and humidity columns are averaged by year, month, and day. These columns are then renamed to ‘atemp’ and ‘ahumid’, respectively, using the <code>rename()</code> method. The dataframes are merged based on year, month, and day using a left join operation.</li>
+<li>The code then compares the results obtained from pandas with those from the SQL query using <code>pd.testing.assert_frame_equal()</code> to ensure their equivalence.</li>
+</ul>
+<p>This code snippet demonstrates how to merge flight and weather data using pandas, specifically for flights originating from EWR airport, while renaming the columns, and it verifies the equivalence of results obtained from pandas and SQL queries.</p>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>The translation of SQL queries to pandas DataFrame operations provides valuable insights into pandas’ effectiveness in data manipulation tasks. By ensuring equivalence between SQL and pandas results, we validate pandas as a robust tool for data analysis, offering flexibility and ease of use comparable to traditional SQL queries. This project underscores the importance of understanding pandas’ capabilities for proficient data analysis and reinforces its role as a powerful tool in the data science toolkit.</p>
+</section>
+</section>
+<section id="thank-you-for-reading-the-report" class="level2">
+<h2 class="anchored" data-anchor-id="thank-you-for-reading-the-report">Thank You for Reading the Report</h2>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="kashish18/kashish18.github.io" data-repo-id="646083787" data-category="Giscus Comments" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="dark_dimmed" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left"><a href="https://kashish18.github.io/">The Chosen One</a> © 2024 and Blogs™ by <a href="https://kashish18.github.io/about.html">Kashish Mukheja</a></div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://forums.fast.ai/u/kashish18/summary">
+      <i class="bi bi-file-post-fill" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KashMkj">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/kashmkj18">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/kashish18">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:kash.mkj18@gmail.com">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html"><span class="animate__animated animate__fadeInDown" style="display: inline-block;">Welcome to the realm of Kashish</span></a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right"><a href="https://kashish18.github.io/about.html">Site Version 2.2.1.2</a> | <a href="https://kashish18.github.io/about.html">Site Feedback</a> | Website made by me!</div>
+  </div>
+</footer>
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

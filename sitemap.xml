@@ -1,63 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Machine Learning/icr-prediction-tf-randomforest.html</loc>
-    <lastmod>2023-09-06T15:53:17.756Z</lastmod>
+    <loc>https://kashish18.github.io/index.html</loc>
+    <lastmod>2024-02-27T22:28:12.612Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Machine Learning/standard_deviation_python.html</loc>
-    <lastmod>2023-09-06T15:53:18.094Z</lastmod>
+    <loc>https://kashish18.github.io/about.html</loc>
+    <lastmod>2024-02-27T22:28:12.910Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Machine Learning/HousePrice_day1.html</loc>
-    <lastmod>2023-09-06T15:53:20.650Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Machine Learning/icr-prediction-tf-randomforest.html</loc>
+    <lastmod>2024-02-27T22:28:17.201Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Machine Learning/predicting-customer-transaction.html</loc>
-    <lastmod>2023-09-06T15:53:35.062Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Machine Learning/standard_deviation_python.html</loc>
+    <lastmod>2024-02-27T22:28:19.629Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/From Scratch/Defining the Foundation of Neural Networks.html</loc>
-    <lastmod>2023-09-06T15:53:35.603Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Machine Learning/HousePrice_day1.html</loc>
+    <lastmod>2024-02-27T22:28:22.898Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Data-preprocessing-Feature-Engineering/column_encoding.html</loc>
-    <lastmod>2023-09-06T15:53:35.982Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Machine Learning/predicting-customer-transaction.html</loc>
+    <lastmod>2024-02-27T22:28:37.739Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Data-preprocessing-Feature-Engineering/index.html</loc>
-    <lastmod>2023-09-06T15:53:36.219Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/From Scratch/Defining the Foundation of Neural Networks.html</loc>
+    <lastmod>2024-02-27T22:28:39.181Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Computer-Vision/face_mood_detector.html</loc>
-    <lastmod>2023-09-06T15:53:37.564Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Data-preprocessing-Feature-Engineering/column_encoding.html</loc>
+    <lastmod>2024-02-27T22:28:42.446Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Computer-Vision/Car_Obj_FasterRCNN.html</loc>
-    <lastmod>2023-09-06T15:53:38.084Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Data-preprocessing-Feature-Engineering/index.html</loc>
+    <lastmod>2024-02-27T22:28:43.732Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/Computer-Vision/index.html</loc>
-    <lastmod>2023-09-06T15:53:38.431Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/PromptEngineeringGemini.html</loc>
+    <lastmod>2024-02-27T22:28:47.180Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/HuggingFace/Stable_Diffusion_Mac_M2.html</loc>
-    <lastmod>2023-09-06T15:53:40.375Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Computer-Vision/face_mood_detector.html</loc>
+    <lastmod>2024-02-27T22:28:54.894Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/PGP/Kashish_Project_FMT.html</loc>
-    <lastmod>2023-09-06T15:53:42.158Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Computer-Vision/Car_Obj_FasterRCNN.html</loc>
+    <lastmod>2024-02-27T22:28:56.169Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/posts/PGP/K_Project_NLP.html</loc>
-    <lastmod>2023-09-06T15:53:42.596Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Computer-Vision/index.html</loc>
+    <lastmod>2024-02-27T22:28:57.446Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/index.html</loc>
-    <lastmod>2023-09-06T15:53:45.395Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/BIE/Business Intelligence Jargons.html</loc>
+    <lastmod>2024-02-27T22:28:59.414Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/kashish18/kashish18.github.io/about.html</loc>
-    <lastmod>2023-09-06T15:53:45.621Z</lastmod>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 1P - BMI Analysis and Visualization Report.html</loc>
+    <lastmod>2024-02-27T22:29:03.396Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 8HD - Exploratory Data Analysis of Sound Stack Exchange Community.html</loc>
+    <lastmod>2024-02-27T22:29:05.117Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 4P - Weather (Wind Speed) Analysis at LGA, JFK, and EWR Airports.html</loc>
+    <lastmod>2024-02-27T22:29:06.781Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 7HD - Data Mining and Visualization Exploring Insights and Visualizations.html</loc>
+    <lastmod>2024-02-27T22:29:08.953Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 6D -Translating SQL Queries to Pandas DataFrame Operations.html</loc>
+    <lastmod>2024-02-27T22:29:34.058Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 3P - NHANES Data Anlysis.html</loc>
+    <lastmod>2024-02-27T22:29:35.850Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/Deakin/Task 2P - Analysis of Q3 2023 BTC-USD Exchange Rates.html</loc>
+    <lastmod>2024-02-27T22:29:37.015Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/NLP/suggestion-mining.html</loc>
+    <lastmod>2024-02-27T22:29:38.391Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/HuggingFace/Stable Diffusion Kickoff.html</loc>
+    <lastmod>2024-02-27T22:30:04.283Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/HuggingFace/Stable_Diffusion_Mac_M2.html</loc>
+    <lastmod>2024-02-27T22:30:05.269Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/PGP/Kashish_Project_FMT.html</loc>
+    <lastmod>2024-02-27T22:30:07.821Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/posts/PGP/K_Project_NLP.html</loc>
+    <lastmod>2024-02-27T22:30:09.427Z</lastmod>
+  </url>
+  <url>
+    <loc>https://kashish18.github.io/myblogs/index.html</loc>
+    <lastmod>2024-02-27T22:30:13.175Z</lastmod>
   </url>
 </urlset>

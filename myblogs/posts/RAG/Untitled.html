@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+
+<title>The Chosen One - RAG</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../cover.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/quarto-contrib/animate-4.1.1/animate.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="The Chosen One - RAG">
+<meta property="og:description" content="The realm of Kashish!">
+<meta property="og:image" content="https://kashish18.github.io/myblogs/posts/RAG/Kashish_Professional.jpeg">
+<meta property="og:site-name" content="The Chosen One">
+<meta name="twitter:title" content="The Chosen One">
+<meta name="twitter:description" content="The realm of Kashish!">
+<meta name="twitter:image" content="https://kashish18.github.io/myblogs/posts/RAG/cover.png">
+<meta name="twitter:creator" content="@Kashish18">
+<meta name="twitter:site" content="@Kashish18">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../cover.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">The Chosen One</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-newspaper" role="img">
+</i> 
+ <span class="menu-text">Blogs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-sliders2" role="img">
+</i> 
+ <span class="menu-text">Playground</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-book" role="img">
+</i> 
+ <span class="menu-text">Dictionary</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html" rel="" target=""><i class="bi bi-file-person" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+    <a href="https://github.com/kashish18/kashish18.github.io" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-code-slash"></i></a>
+    <a href="../../../myblogs/index.html" title="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}" class="quarto-navigation-tool px-1" aria-label="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}"><i class="bi bi-rss"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">RAG</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">NLP</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Deep Learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Saturday, 04 February 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#rag-pipeline" id="toc-rag-pipeline" class="nav-link active" data-scroll-target="#rag-pipeline">RAG Pipeline</a>
+  <ul>
+  <li><a href="#what-happens-in-a-typical-llm" id="toc-what-happens-in-a-typical-llm" class="nav-link" data-scroll-target="#what-happens-in-a-typical-llm">What happens in a typical LLM ?</a></li>
+  <li><a href="#build-chatbot-without-rag" id="toc-build-chatbot-without-rag" class="nav-link" data-scroll-target="#build-chatbot-without-rag">Build Chatbot without RAG</a></li>
+  </ul></li>
+  <li><a href="#dealing-with-hallucinations.-reasons-for-hallucination" id="toc-dealing-with-hallucinations.-reasons-for-hallucination" class="nav-link" data-scroll-target="#dealing-with-hallucinations.-reasons-for-hallucination">Dealing with hallucinations. Reasons for Hallucination:</a></li>
+  <li><a href="#importing-the-data" id="toc-importing-the-data" class="nav-link" data-scroll-target="#importing-the-data">Importing the Data</a>
+  <ul>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview">Dataset Overview</a></li>
+  </ul></li>
+  <li><a href="#building-the-knowledge-base" id="toc-building-the-knowledge-base" class="nav-link" data-scroll-target="#building-the-knowledge-base">Building the Knowledge Base</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="rag-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="rag-pipeline">RAG Pipeline</h2>
+<section id="what-happens-in-a-typical-llm" class="level3">
+<h3 class="anchored" data-anchor-id="what-happens-in-a-typical-llm">What happens in a typical LLM ?</h3>
+<p>In a typical LLM, we input a query such as “TODO” and get a response. This is alright in generic Q/A cases or for cases where LLM already has seen the context before, i.e., during training. However not ok for domain specific tasks or for information that they haven’t seen, such as something that is of the latest news.</p>
+<p>So, we use Retriever Augmented Generation Pipeline.</p>
+<p>LLMs inherently don’t have access to outside world but only information/knowledge that they are trained on. Therefore this leads to hallucinations.</p>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>qU <span class="op">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    langchain<span class="op">==</span><span class="fl">0.0.348</span> <span class="op">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    openai<span class="op">==</span><span class="fl">0.28.1</span> <span class="op">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    datasets<span class="op">==</span><span class="fl">2.10.1</span> <span class="op">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    pinecone<span class="op">-</span>client<span class="op">==</span><span class="fl">2.2.4</span> <span class="op">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    tiktoken<span class="op">==</span><span class="fl">0.5.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+embedchain 0.1.59 requires langchain&lt;0.0.337,&gt;=0.0.336, but you have langchain 0.0.348 which is incompatible.
+embedchain 0.1.59 requires openai&gt;=1.1.1, but you have openai 0.28.1 which is incompatible.
+embedchain 0.1.59 requires tiktoken&lt;0.5.0,&gt;=0.4.0, but you have tiktoken 0.5.1 which is incompatible.
+fastai 2.7.12 requires torch&lt;2.1,&gt;=1.7, but you have torch 2.1.0.dev20230720 which is incompatible.
+spacy 3.5.2 requires pydantic!=1.8,!=1.8.1,&lt;1.11.0,&gt;=1.7.4, but you have pydantic 2.5.3 which is incompatible.
+spacy 3.5.2 requires typer&lt;0.8.0,&gt;=0.3.0, but you have typer 0.9.0 which is incompatible.
+thinc 8.1.10 requires pydantic!=1.8,!=1.8.1,&lt;1.11.0,&gt;=1.7.4, but you have pydantic 2.5.3 which is incompatible.
+tensorflow-macos 2.12.0 requires numpy&lt;1.24,&gt;=1.22, but you have numpy 1.26.3 which is incompatible.</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install langchain openai <span class="op">--</span>upgrade</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Requirement already satisfied: langchain in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (0.0.316)
+Collecting langchain
+  Downloading langchain-0.1.0-py3-none-any.whl (797 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 798.0/798.0 kB 7.5 MB/s eta 0:00:00a 0:00:01
+Requirement already satisfied: openai in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (0.28.1)
+Collecting openai
+  Using cached openai-1.7.0-py3-none-any.whl (224 kB)
+Requirement already satisfied: PyYAML&gt;=5.3 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (6.0)
+Requirement already satisfied: SQLAlchemy&lt;3,&gt;=1.4 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (2.0.25)
+Requirement already satisfied: aiohttp&lt;4.0.0,&gt;=3.8.3 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (3.8.4)
+Requirement already satisfied: dataclasses-json&lt;0.7,&gt;=0.5.7 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (0.5.14)
+Requirement already satisfied: jsonpatch&lt;2.0,&gt;=1.33 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (1.33)
+Collecting langchain-community&lt;0.1,&gt;=0.0.9 (from langchain)
+  Downloading langchain_community-0.0.11-py3-none-any.whl (1.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 15.3 MB/s eta 0:00:00a 0:00:01
+Collecting langchain-core&lt;0.2,&gt;=0.1.7 (from langchain)
+  Downloading langchain_core-0.1.8-py3-none-any.whl (215 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 215.5/215.5 kB 18.2 MB/s eta 0:00:00
+Requirement already satisfied: langsmith&lt;0.1.0,&gt;=0.0.77 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (0.0.79)
+Requirement already satisfied: numpy&lt;2,&gt;=1 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (1.26.3)
+Requirement already satisfied: pydantic&lt;3,&gt;=1 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (2.5.3)
+Requirement already satisfied: requests&lt;3,&gt;=2 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (2.29.0)
+Requirement already satisfied: tenacity&lt;9.0.0,&gt;=8.1.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain) (8.2.3)
+Requirement already satisfied: anyio&lt;5,&gt;=3.5.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (3.6.2)
+Requirement already satisfied: distro&lt;2,&gt;=1.7.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (1.9.0)
+Requirement already satisfied: httpx&lt;1,&gt;=0.23.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (0.26.0)
+Requirement already satisfied: sniffio in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (1.3.0)
+Requirement already satisfied: tqdm&gt;4 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (4.65.0)
+Requirement already satisfied: typing-extensions&lt;5,&gt;=4.7 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from openai) (4.9.0)
+Requirement already satisfied: attrs&gt;=17.3.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (23.1.0)
+Requirement already satisfied: charset-normalizer&lt;4.0,&gt;=2.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (3.1.0)
+Requirement already satisfied: multidict&lt;7.0,&gt;=4.5 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (6.0.4)
+Requirement already satisfied: async-timeout&lt;5.0,&gt;=4.0.0a3 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (4.0.2)
+Requirement already satisfied: yarl&lt;2.0,&gt;=1.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (1.9.2)
+Requirement already satisfied: frozenlist&gt;=1.1.1 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (1.3.3)
+Requirement already satisfied: aiosignal&gt;=1.1.2 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from aiohttp&lt;4.0.0,&gt;=3.8.3-&gt;langchain) (1.3.1)
+Requirement already satisfied: idna&gt;=2.8 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from anyio&lt;5,&gt;=3.5.0-&gt;openai) (3.4)
+Requirement already satisfied: marshmallow&lt;4.0.0,&gt;=3.18.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from dataclasses-json&lt;0.7,&gt;=0.5.7-&gt;langchain) (3.20.1)
+Requirement already satisfied: typing-inspect&lt;1,&gt;=0.4.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from dataclasses-json&lt;0.7,&gt;=0.5.7-&gt;langchain) (0.9.0)
+Requirement already satisfied: certifi in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from httpx&lt;1,&gt;=0.23.0-&gt;openai) (2022.12.7)
+Requirement already satisfied: httpcore==1.* in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from httpx&lt;1,&gt;=0.23.0-&gt;openai) (1.0.2)
+Requirement already satisfied: h11&lt;0.15,&gt;=0.13 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from httpcore==1.*-&gt;httpx&lt;1,&gt;=0.23.0-&gt;openai) (0.14.0)
+Requirement already satisfied: jsonpointer&gt;=1.9 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from jsonpatch&lt;2.0,&gt;=1.33-&gt;langchain) (2.4)
+Requirement already satisfied: packaging&lt;24.0,&gt;=23.2 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from langchain-core&lt;0.2,&gt;=0.1.7-&gt;langchain) (23.2)
+Requirement already satisfied: annotated-types&gt;=0.4.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from pydantic&lt;3,&gt;=1-&gt;langchain) (0.6.0)
+Requirement already satisfied: pydantic-core==2.14.6 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from pydantic&lt;3,&gt;=1-&gt;langchain) (2.14.6)
+Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from requests&lt;3,&gt;=2-&gt;langchain) (1.26.15)
+Requirement already satisfied: mypy-extensions&gt;=0.3.0 in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (from typing-inspect&lt;1,&gt;=0.4.0-&gt;dataclasses-json&lt;0.7,&gt;=0.5.7-&gt;langchain) (1.0.0)
+Installing collected packages: openai, langchain-core, langchain-community, langchain
+  Attempting uninstall: openai
+    Found existing installation: openai 0.28.1
+    Uninstalling openai-0.28.1:
+      Successfully uninstalled openai-0.28.1
+  Attempting uninstall: langchain-core
+    Found existing installation: langchain-core 0.0.13
+    Uninstalling langchain-core-0.0.13:
+      Successfully uninstalled langchain-core-0.0.13
+  Attempting uninstall: langchain
+    Found existing installation: langchain 0.0.316
+    Uninstalling langchain-0.0.316:
+      Successfully uninstalled langchain-0.0.316
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+embedchain 0.1.59 requires langchain&lt;0.0.337,&gt;=0.0.336, but you have langchain 0.1.0 which is incompatible.
+embedchain 0.1.59 requires tiktoken&lt;0.5.0,&gt;=0.4.0, but you have tiktoken 0.5.1 which is incompatible.
+Successfully installed langchain-0.1.0 langchain-community-0.0.11 langchain-core-0.1.8 openai-1.7.0</code></pre>
+</div>
+</div>
+</section>
+<section id="build-chatbot-without-rag" class="level3">
+<h3 class="anchored" data-anchor-id="build-chatbot-without-rag">Build Chatbot without RAG</h3>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.chat_models <span class="im">import</span> ChatOpenAI</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"OPENAI_API_KEY"</span>] <span class="op">=</span> <span class="st">"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"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatOpenAI(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    openai_api_key<span class="op">=</span>os.environ[<span class="st">"OPENAI_API_KEY"</span>],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">'gpt-3.5-turbo'</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.schema <span class="im">import</span> (</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    SystemMessage,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    HumanMessage,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    AIMessage</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    SystemMessage(content<span class="op">=</span><span class="st">"You are a helpful assistant."</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    HumanMessage(content<span class="op">=</span><span class="st">"Hi AI, how are you today?"</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    AIMessage(content<span class="op">=</span><span class="st">"I'm great thank you. How can I help you?"</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    HumanMessage(content<span class="op">=</span><span class="st">"I'd like to understand theory of relativity."</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>AIMessage(content="The theory of relativity, formulated by Albert Einstein in the early 20th century, is a fundamental theory in physics that revolutionized our understanding of space, time, and gravity. There are two main components of the theory: the special theory of relativity and the general theory of relativity.\n\nThe special theory of relativity, published by Einstein in 1905, deals with the behavior of objects in the absence of gravitational forces. It's based on two postulates: the laws of physics are the same in all inertial reference frames (i.e., frames of reference moving at constant velocity relative to each other), and the speed of light in a vacuum is constant for all observers, regardless of their motion relative to the source of light.\n\nFrom these postulates, several remarkable consequences follow. One of the most well-known is time dilation, which means that time can appear to pass more slowly for an object moving relative to an observer. Another consequence is length contraction, where an object moving relative to an observer appears shorter in the direction of motion.\n\nThe general theory of relativity, developed by Einstein in 1915, extends the principles of the special theory of relativity to include gravity. It describes gravity not as a force but as the curvature of spacetime caused by the presence of mass and energy. According to this theory, massive objects like stars and planets cause spacetime to curve, and other objects move along the curved paths dictated by this geometry.\n\nGeneral relativity predicts several phenomena that have been observed and confirmed, such as the bending of light around massive objects, the slowing of time in strong gravitational fields, and the existence of black holes.\n\nOverall, the theory of relativity has had a profound impact on our understanding of the universe, challenging our intuitive notions of space, time, and gravity. It has been extensively tested and confirmed through numerous experimental observations and is a cornerstone of modern physics.")</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The theory of relativity, formulated by Albert Einstein in the early 20th century, is a fundamental theory in physics that revolutionized our understanding of space, time, and gravity. There are two main components of the theory: the special theory of relativity and the general theory of relativity.
+
+The special theory of relativity, published by Einstein in 1905, deals with the behavior of objects in the absence of gravitational forces. It's based on two postulates: the laws of physics are the same in all inertial reference frames (i.e., frames of reference moving at constant velocity relative to each other), and the speed of light in a vacuum is constant for all observers, regardless of their motion relative to the source of light.
+
+From these postulates, several remarkable consequences follow. One of the most well-known is time dilation, which means that time can appear to pass more slowly for an object moving relative to an observer. Another consequence is length contraction, where an object moving relative to an observer appears shorter in the direction of motion.
+
+The general theory of relativity, developed by Einstein in 1915, extends the principles of the special theory of relativity to include gravity. It describes gravity not as a force but as the curvature of spacetime caused by the presence of mass and energy. According to this theory, massive objects like stars and planets cause spacetime to curve, and other objects move along the curved paths dictated by this geometry.
+
+General relativity predicts several phenomena that have been observed and confirmed, such as the bending of light around massive objects, the slowing of time in strong gravitational fields, and the existence of black holes.
+
+Overall, the theory of relativity has had a profound impact on our understanding of the universe, challenging our intuitive notions of space, time, and gravity. It has been extensively tested and confirmed through numerous experimental observations and is a cornerstone of modern physics.</code></pre>
+</div>
+</div>
+<p>We append the above AIMessage to the messages list and that is how we build a chatbot</p>
+<div class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add latest AI response to messages</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>messages.append(res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we send this messages list to chatgpt so it will have history of the conversation</p>
+<div class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now create a new user prompt</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span><span class="st">"Why do physicists believe it can explain the laws of time?"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># add to messages</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>messages.append(prompt)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># send to chat-gpt</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Physicists believe that the theory of relativity can explain the laws of time because it provides a consistent framework for understanding how time behaves in different situations. Here are a few reasons why physicists find the theory of relativity compelling in this regard:
+
+1. Time dilation: The special theory of relativity predicts that time can appear to pass differently for objects moving relative to each other. This phenomenon, known as time dilation, has been experimentally confirmed numerous times, including through high-precision atomic clocks. For example, when an object moves at speeds close to the speed of light, time for that object will slow down relative to a stationary observer. This effect has been observed in particle accelerators, where fast-moving particles with short lifetimes can exist longer from the perspective of stationary observers.
+
+2. Relativistic effects: The theory of relativity explains that time can also be affected by gravity. In the presence of a strong gravitational field, time will appear to pass more slowly compared to a weaker gravitational field. This has been confirmed through various experiments and observations, such as the slowing down of time near massive objects like Earth or the Sun.
+
+3. Consistency with other physical laws: The theory of relativity is consistent with other well-established physical laws, such as the laws of electromagnetism. By incorporating relativity into the equations that describe these laws, physicists have been able to make accurate predictions and explain various phenomena.
+
+4. Experimental confirmations: Over the years, numerous experiments and observations have provided strong evidence for the validity of the theory of relativity. For example, the bending of light around massive objects, such as stars, has been observed and confirmed through measurements during solar eclipses. The existence of black holes, predicted by general relativity, has also been indirectly confirmed through various observations.
+
+While the theory of relativity may challenge our intuitive notions of time, its predictions have been repeatedly verified and are consistent with a wide range of experimental evidence. This gives physicists confidence in its ability to explain the laws of time.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="dealing-with-hallucinations.-reasons-for-hallucination" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-hallucinations.-reasons-for-hallucination">Dealing with hallucinations. Reasons for Hallucination:</h2>
+<ol type="1">
+<li>LLM lives in a world that is entirely made of the only things that are there in the training data.</li>
+</ol>
+<p>An LLM essentially compresses the “world” as seen in the training data into the internal parameters of the model. We call this knowledge the parametric knowledge of the model.</p>
+<p>parametric knowledge? Because knowledge stored in the model’s parameters and the parameters are frozen.</p>
+<p>By default, LLMs have no access to the external world.</p>
+<p>Retrieval Augmented Generation (RAG) combines parametric knowledge from the model’s training with source knowledge from external documents, allowing the model to access and update information</p>
+<p>The result of this is very clear when we ask LLMs about more recent information, like about the new (and very popular) Mamba-3B or langchain or RAG pipeline.</p>
+<p>What are the source of information ?</p>
+<ol type="1">
+<li>Any google search; or</li>
+<li>SQL databases; or</li>
+<li>A different RAG pipeline</li>
+</ol>
+<p>What we do through RAG ? - We add memory component that is modifyiable. That external (or source) knowledge or memory is called “Vector database”. Database data structure allows you to add, delete, update and manage the knowledge control to LLMs. - “Source knowldge” is referring to anything that we insert into the LLM via the prompt. - “Source knowldge” also called “contexts”, or “documents” too.</p>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add latest AI response to messages</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>messages.append(res)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># now create a new user prompt</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span><span class="st">"how do I use mamba-3b in langchain?"</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># add to messages</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>messages.append(prompt)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># send to OpenAI</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>I'm sorry, but I couldn't find any information on "mamba-3b" or "langchain." It's possible that these terms are specific to a particular software or domain that I'm not familiar with. Can you please provide more context or clarify your question so that I can better assist you?</code></pre>
+</div>
+</div>
+<ul>
+<li>Earlier OpenAI used to give information that was completely wrong on such questions. They have hacked the hallucination by providing some guardrail responses.</li>
+</ul>
+<p>There is another way of feeding knowledge into LLMs. It is called source knowledge and it refers to any information fed into the LLM via the prompt. We can try that with the LLMChain question. We can take a description of this object from the LangChain documentation.</p>
+<div class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>llmchain_information <span class="op">=</span> [</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"A LLMChain is the most common type of chain. It consists of a PromptTemplate, a model (either an LLM or a ChatModel), and an optional output parser. This chain takes multiple input variables, uses the PromptTemplate to format them into a prompt. It then passes that to the model. Finally, it uses the OutputParser (if provided) to parse the output of the LLM into a final format."</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Chains is an incredibly generic concept which returns to a sequence of modular components (or other chains) combined in a particular way to accomplish a common use case."</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LangChain is a framework for developing applications powered by language models. We believe that the most powerful and differentiated applications will not only call out to a language model via an api, but will also: (1) Be data-aware: connect a language model to other sources of data, (2) Be agentic: Allow a language model to interact with its environment. As such, the LangChain framework is designed with the objective in mind to enable those types of applications."</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>source_knowledge <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join(llmchain_information)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"Can you tell me about the LLMChain in LangChain?"</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>augmented_prompt <span class="op">=</span> <span class="ss">f"""Using the contexts below, answer the query.</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ss">Contexts:</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>source_knowledge<span class="sc">}</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="ss">Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new user prompt</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span>augmented_prompt</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># add to messages</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>messages.append(prompt)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># send to OpenAI</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The LLMChain is a type of chain within the LangChain framework. It stands for Language Learning Model Chain. It is a commonly used chain that consists of a PromptTemplate, a model (either an LLM or a ChatModel), and an optional output parser.
+
+The purpose of an LLMChain is to take multiple input variables and use the PromptTemplate to format them into a prompt. This formatted prompt is then passed to the language model (either an LLM or a ChatModel) for processing. The model generates a response based on the input and the knowledge it has learned from training data.
+
+Optionally, an LLMChain can have an OutputParser. This component is responsible for parsing the output of the language model into a final format that can be presented to the user or used by other parts of the application.
+
+The LLMChain is designed to be a flexible and modular component within the LangChain framework. It allows developers to easily connect a language model to other sources of data and create applications that go beyond simple API calls. By combining different chains and components in various ways, developers can build powerful and differentiated applications powered by language models.</code></pre>
+</div>
+</div>
+<p>What we just did is, that we added context to LLMs</p>
+</section>
+<section id="importing-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-data">Importing the Data</h2>
+<p>In this task, we will be importing our data. We will be using the Hugging Face Datasets library to load our data. Specifically, we will be using the “jamescalam/llama-2-arxiv-papers” dataset. This dataset contains a collection of ArXiv papers which will serve as the external knowledge base for our chatbot.</p>
+<div class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> load_dataset(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"jamescalam/llama-2-arxiv-papers-chunked"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    split<span class="op">=</span><span class="st">"train"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"c8d27eb5dd184851b8c1a782c9727537","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Downloading and preparing dataset json/jamescalam--llama-2-arxiv-papers-chunked to /Users/kashmkj/.cache/huggingface/datasets/jamescalam___json/jamescalam--llama-2-arxiv-papers-chunked-ea255a807f3039a6/0.0.0/0f7e3662623656454fcd2b650f34e886a7db4b9104504885bd462096cc7a9f51...
+Dataset json downloaded and prepared to /Users/kashmkj/.cache/huggingface/datasets/jamescalam___json/jamescalam--llama-2-arxiv-papers-chunked-ea255a807f3039a6/0.0.0/0f7e3662623656454fcd2b650f34e886a7db4b9104504885bd462096cc7a9f51. Subsequent calls will reuse this data.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"dc0edde460ea4a6a9614f5b132e64f67","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"9ba4d298c25c4f34ac15655a7cf81382","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"a4b2acad11b842f5b83e111b5fe03faf","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="48">
+<pre><code>Dataset({
+    features: ['doi', 'chunk-id', 'chunk', 'id', 'title', 'summary', 'source', 'authors', 'categories', 'comment', 'journal_ref', 'primary_category', 'published', 'updated', 'references'],
+    num_rows: 4838
+})</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dataset[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>{'doi': '1102.0183',
+ 'chunk-id': '0',
+ 'chunk': 'High-Performance Neural Networks\nfor Visual Object Classi\x0ccation\nDan C. Cire\x18 san, Ueli Meier, Jonathan Masci,\nLuca M. Gambardella and J\x7f urgen Schmidhuber\nTechnical Report No. IDSIA-01-11\nJanuary 2011\nIDSIA / USI-SUPSI\nDalle Molle Institute for Arti\x0ccial Intelligence\nGalleria 2, 6928 Manno, Switzerland\nIDSIA is a joint institute of both University of Lugano (USI) and University of Applied Sciences of Southern Switzerland (SUPSI),\nand was founded in 1988 by the Dalle Molle Foundation which promoted quality of life.\nThis work was partially supported by the Swiss Commission for Technology and Innovation (CTI), Project n. 9688.1 IFF:\nIntelligent Fill in Form.arXiv:1102.0183v1  [cs.AI]  1 Feb 2011\nTechnical Report No. IDSIA-01-11 1\nHigh-Performance Neural Networks\nfor Visual Object Classi\x0ccation\nDan C. Cire\x18 san, Ueli Meier, Jonathan Masci,\nLuca M. Gambardella and J\x7f urgen Schmidhuber\nJanuary 2011\nAbstract\nWe present a fast, fully parameterizable GPU implementation of Convolutional Neural\nNetwork variants. Our feature extractors are neither carefully designed nor pre-wired, but',
+ 'id': '1102.0183',
+ 'title': 'High-Performance Neural Networks for Visual Object Classification',
+ 'summary': 'We present a fast, fully parameterizable GPU implementation of Convolutional\nNeural Network variants. Our feature extractors are neither carefully designed\nnor pre-wired, but rather learned in a supervised way. Our deep hierarchical\narchitectures achieve the best published results on benchmarks for object\nclassification (NORB, CIFAR10) and handwritten digit recognition (MNIST), with\nerror rates of 2.53%, 19.51%, 0.35%, respectively. Deep nets trained by simple\nback-propagation perform better than more shallow ones. Learning is\nsurprisingly rapid. NORB is completely trained within five epochs. Test error\nrates on MNIST drop to 2.42%, 0.97% and 0.48% after 1, 3 and 17 epochs,\nrespectively.',
+ 'source': 'http://arxiv.org/pdf/1102.0183',
+ 'authors': ['Dan C. Cireşan',
+  'Ueli Meier',
+  'Jonathan Masci',
+  'Luca M. Gambardella',
+  'Jürgen Schmidhuber'],
+ 'categories': ['cs.AI', 'cs.NE'],
+ 'comment': '12 pages, 2 figures, 5 tables',
+ 'journal_ref': None,
+ 'primary_category': 'cs.AI',
+ 'published': '20110201',
+ 'updated': '20110201',
+ 'references': []}</code></pre>
+</div>
+</div>
+<section id="dataset-overview" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h3>
+<p>The dataset we are using is sourced from the Llama 2 ArXiv papers. It is a collection of academic papers from ArXiv, a repository of electronic preprints approved for publication after moderation. Each entry in the dataset represents a “chunk” of text from these papers.</p>
+<p>Because most Large Language Models (LLMs) only contain knowledge of the world as it was during training, they cannot answer our questions about Llama 2 — at least not without this data.</p>
+</section>
+</section>
+<section id="building-the-knowledge-base" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-knowledge-base">Building the Knowledge Base</h2>
+<p>We now have a dataset that can serve as our chatbot knowledge base. Our next task is to transform that dataset into the knowledge base that our chatbot can use. To do this we must use an embedding model and vector database.</p>
+<p>We begin by initializing our connection to Pinecone, this requires a free API key.</p>
+<div class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pinecone</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get API key from app.pinecone.io and environment from console</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>pinecone.init(</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span><span class="st">'602c55af-3fe6-4b88-a6c8-1b226ed71715'</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    environment<span class="op">=</span><span class="st">'gcp-starter'</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then we initialize the index. We will be using OpenAI’s text-embedding-ada-002 model for creating the embeddings, so we set the dimension to 1536.</p>
+<div class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>index_name <span class="op">=</span> <span class="st">'llama-2-rag'</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> index_name <span class="kw">not</span> <span class="kw">in</span> pinecone.list_indexes():</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    pinecone.create_index(</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        index_name,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        dimension<span class="op">=</span><span class="dv">1536</span>,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        metric<span class="op">=</span><span class="st">'cosine'</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># wait for index to finish initialization</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="kw">not</span> pinecone.describe_index(index_name).status[<span class="st">'ready'</span>]:</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="dv">1</span>)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> pinecone.Index(index_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>index.describe_index_stats()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>{'dimension': 1536,
+ 'index_fullness': 0.0,
+ 'namespaces': {},
+ 'total_vector_count': 0}</code></pre>
+</div>
+</div>
+<p>Our index is now ready but it’s empty. It is a vector index, so it needs vectors. As mentioned, to create these vector embeddings we will OpenAI’s text-embedding-ada-002 model — we can access it via LangChain like so:</p>
+<div class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.embeddings.openai <span class="im">import</span> OpenAIEmbeddings</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>embed_model <span class="op">=</span> OpenAIEmbeddings(model<span class="op">=</span><span class="st">"text-embedding-ada-002"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'this is the first chunk of text'</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'then another second chunk of text is here'</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> embed_model.embed_documents(texts)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(res), <span class="bu">len</span>(res[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<pre><code>(2, 1536)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm.auto <span class="im">import</span> tqdm  <span class="co"># for progress bar</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> dataset.to_pandas()  <span class="co"># this makes it easier to iterate over the dataset</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> tqdm(<span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(data), batch_size)):</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    i_end <span class="op">=</span> <span class="bu">min</span>(<span class="bu">len</span>(data), i<span class="op">+</span>batch_size)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get batch of data</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    batch <span class="op">=</span> data.iloc[i:i_end]</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># generate unique ids for each chunk</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    ids <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'doi'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'chunk-id'</span>]<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, x <span class="kw">in</span> batch.iterrows()]</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get text to embed</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    texts <span class="op">=</span> [x[<span class="st">'chunk'</span>] <span class="cf">for</span> _, x <span class="kw">in</span> batch.iterrows()]</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># embed text</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>    embeds <span class="op">=</span> embed_model.embed_documents(texts)</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get metadata to store in Pinecone</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>    metadata <span class="op">=</span> [</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>        {<span class="st">'text'</span>: x[<span class="st">'chunk'</span>],</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>         <span class="st">'source'</span>: x[<span class="st">'source'</span>],</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>         <span class="st">'title'</span>: x[<span class="st">'title'</span>]} <span class="cf">for</span> i, x <span class="kw">in</span> batch.iterrows()</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># add to Pinecone</span></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>    index.upsert(vectors<span class="op">=</span><span class="bu">zip</span>(ids, embeds, metadata))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id":"1f86e2f62c16460cbbf451f15b49a9a5","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+</script>
+</div>
+<div class="cell-output cell-output-error">
+<pre><code>ServiceException: (500)
+Reason: Internal Server Error
+HTTP response headers: HTTPHeaderDict({'content-type': 'application/json', 'Content-Length': '150', 'x-pinecone-request-latency-ms': '213', 'date': 'Tue, 09 Jan 2024 21:50:20 GMT', 'x-envoy-upstream-service-time': '49', 'server': 'envoy', 'Via': '1.1 google', 'Alt-Svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'})
+HTTP response body: {"code":13,"message":"We were unable to process your request. If the problem persists, please contact us at https://support.pinecone.io","details":[]}</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>index.describe_index_stats()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> langchain.vectorstores <span class="im">import</span> Pinecone</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>text_field <span class="op">=</span> <span class="st">"text"</span>  <span class="co"># the metadata field that contains our text</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># initialize the vector store object</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>vectorstore <span class="op">=</span> Pinecone(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    index, embed_model.embed_query, text_field</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"What is so special about Llama 2?"</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>vectorstore.similarity_search(query, k<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> augment_prompt(query: <span class="bu">str</span>):</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get top 3 results from knowledge base</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> vectorstore.similarity_search(query, k<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get the text from the results</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    source_knowledge <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([x.page_content <span class="cf">for</span> x <span class="kw">in</span> results])</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># feed into an augmented prompt</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    augmented_prompt <span class="op">=</span> <span class="ss">f"""Using the contexts below, answer the query.</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    Contexts:</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>source_knowledge<span class="sc">}</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">"""</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> augmented_prompt</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(augment_prompt(query))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new user prompt</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span>augment_prompt(query)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># add to messages</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>messages.append(prompt)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span><span class="st">"what safety measures were used in the development of llama 2?"</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages <span class="op">+</span> [prompt])</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>prompt <span class="op">=</span> HumanMessage(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    content<span class="op">=</span>augment_prompt(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"what safety measures were used in the development of llama 2?"</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> chat(messages <span class="op">+</span> [prompt])</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="kashish18/kashish18.github.io" data-repo-id="646083787" data-category="Giscus Comments" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="dark_dimmed" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left"><a href="https://kashish18.github.io/">The Chosen One</a> © 2024 and Blogs™ by <a href="https://kashish18.github.io/about.html">Kashish Mukheja</a></div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://forums.fast.ai/u/kashish18/summary">
+      <i class="bi bi-file-post-fill" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KashMkj">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/kashmkj18">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/kashish18">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:kash.mkj18@gmail.com">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html"><span class="animate__animated animate__fadeInDown" style="display: inline-block;">Welcome to the realm of Kashish</span></a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right"><a href="https://kashish18.github.io/about.html">Site Version 2.2.1.2</a> | <a href="https://kashish18.github.io/about.html">Site Feedback</a> | Website made by me!</div>
+  </div>
+</footer>
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
