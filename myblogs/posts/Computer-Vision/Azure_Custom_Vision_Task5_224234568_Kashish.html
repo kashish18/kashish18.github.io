@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+
+<title>Kash’s Portfolio - Task 3P: Design and Deploy Model using Azure Machine Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../cover.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/quarto-contrib/animate-4.1.1/animate.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Kash’s Portfolio - Task 3P: Design and Deploy Model using Azure Machine Learning">
+<meta property="og:description" content="My corner of the Web!">
+<meta property="og:image" content="https://kashish18.github.io/myblogs/posts/Computer-Vision/Kashish_Professional.jpeg">
+<meta property="og:site-name" content="Kash's Portfolio">
+<meta name="twitter:title" content="Kash’s Portfolio">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://kashish18.github.io/myblogs/posts/Computer-Vision/cover.png">
+<meta name="twitter:creator" content="@Kashish18">
+<meta name="twitter:site" content="@Kashish18">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../cover.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Kash’s Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-newspaper" role="img">
+</i> 
+ <span class="menu-text">Blogs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html" rel="" target=""><i class="bi bi-file-person" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+    <a href="https://github.com/kashish18/kashish18.github.io" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-code-slash"></i></a>
+    <a href="../../../myblogs/index.html" title="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}" class="quarto-navigation-tool px-1" aria-label="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}"><i class="bi bi-rss"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Task 3P: Design and Deploy Model using Azure Machine Learning</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">blogging</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Computer Vision</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Invalid Date</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#azure-custom-vision-using-python-sdk" id="toc-azure-custom-vision-using-python-sdk" class="nav-link active" data-scroll-target="#azure-custom-vision-using-python-sdk">Azure Custom Vision Using Python SDK</a>
+  <ul>
+  <li><a href="#name-kashish-mukheja" id="toc-name-kashish-mukheja" class="nav-link" data-scroll-target="#name-kashish-mukheja">Name: Kashish Mukheja</a></li>
+  <li><a href="#student-id-224234568" id="toc-student-id-224234568" class="nav-link" data-scroll-target="#student-id-224234568">Student Id: 224234568</a></li>
+  <li><a href="#email-s224234568deakin.edu.au" id="toc-email-s224234568deakin.edu.au" class="nav-link" data-scroll-target="#email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  </ul></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites:</a>
+  <ul>
+  <li><a href="#install-the-necessary-libraries" id="toc-install-the-necessary-libraries" class="nav-link" data-scroll-target="#install-the-necessary-libraries">1. Install the necessary libraries:</a></li>
+  <li><a href="#import-the-required-libraries" id="toc-import-the-required-libraries" class="nav-link" data-scroll-target="#import-the-required-libraries">2. Import the required libraries:</a></li>
+  <li><a href="#create-an-azure-custom-vision-resource-in-your-resource-group-azure-portal" id="toc-create-an-azure-custom-vision-resource-in-your-resource-group-azure-portal" class="nav-link" data-scroll-target="#create-an-azure-custom-vision-resource-in-your-resource-group-azure-portal">3. Create an Azure Custom Vision resource in your resource group (Azure Portal):</a></li>
+  <li><a href="#creating-the-.env-file" id="toc-creating-the-.env-file" class="nav-link" data-scroll-target="#creating-the-.env-file">4. Creating the <em>.env</em> File</a>
+  <ul class="collapse">
+  <li><a href="#custom-vision-resource-client-authentication" id="toc-custom-vision-resource-client-authentication" class="nav-link" data-scroll-target="#custom-vision-resource-client-authentication">Custom Vision Resource Client Authentication</a></li>
+  </ul></li>
+  <li><a href="#converting-videos-to-image-frames-using-opencv" id="toc-converting-videos-to-image-frames-using-opencv" class="nav-link" data-scroll-target="#converting-videos-to-image-frames-using-opencv">Converting Videos to Image Frames Using OpenCV</a></li>
+  <li><a href="#uploading-images-to-azure-custom-vision-for-model-training" id="toc-uploading-images-to-azure-custom-vision-for-model-training" class="nav-link" data-scroll-target="#uploading-images-to-azure-custom-vision-for-model-training">Uploading Images to Azure Custom Vision for Model Training</a></li>
+  <li><a href="#converting-test-video-to-image-frame" id="toc-converting-test-video-to-image-frame" class="nav-link" data-scroll-target="#converting-test-video-to-image-frame">Converting Test Video to Image Frame</a></li>
+  <li><a href="#predicting-object-tags-using-azure-custom-vision-sdk" id="toc-predicting-object-tags-using-azure-custom-vision-sdk" class="nav-link" data-scroll-target="#predicting-object-tags-using-azure-custom-vision-sdk">Predicting Object Tags Using Azure Custom Vision SDK:</a></li>
+  <li><a href="#converting-the-image-frames-back-to-mp4-with-bounding-box" id="toc-converting-the-image-frames-back-to-mp4-with-bounding-box" class="nav-link" data-scroll-target="#converting-the-image-frames-back-to-mp4-with-bounding-box">Converting the Image Frames back to MP4 with Bounding Box</a></li>
+  </ul></li>
+  <li><a href="#closing-the-project---resource-deletion" id="toc-closing-the-project---resource-deletion" class="nav-link" data-scroll-target="#closing-the-project---resource-deletion">Closing the project - resource deletion</a>
+  <ul>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="azure-custom-vision-using-python-sdk" class="level1">
+<h1>Azure Custom Vision Using Python SDK</h1>
+<p>A Report By:</p>
+<section id="name-kashish-mukheja" class="level3">
+<h3 class="anchored" data-anchor-id="name-kashish-mukheja">Name: Kashish Mukheja</h3>
+</section>
+<section id="student-id-224234568" class="level3">
+<h3 class="anchored" data-anchor-id="student-id-224234568">Student Id: 224234568</h3>
+</section>
+<section id="email-s224234568deakin.edu.au" class="level3">
+<h3 class="anchored" data-anchor-id="email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</h3>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This report outlines the development of a near real-time object detection tracking. Leveraging Azure Custom Vision, the notebook analyzes video frames to identify and track various types of vehicles in a provided dataset. The process begins with the collection of video dataset from Kaggle https://www.kaggle.com/datasets/robikscube/driving-video-with-object-tracking comprising different vehicle types, traffic lights, human, etc meticulously labeled with corresponding categories. Subsequently, the dataset is trained using Azure Custom Vision to develop a robust object detection model capable of accurately recognizing vehicles. Following model deployment, the notebook utilizes the deployed model to track vehicles in a 40 second video, optimizing API usage by sending one frame per second for analysis.</p>
+</section>
+</section>
+<section id="prerequisites" class="level1">
+<h1>Prerequisites:</h1>
+<section id="install-the-necessary-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-necessary-libraries">1. Install the necessary libraries:</h2>
+<p>To enable image and video processing capabilities, we install OpenCV for video preprocessing and conversion, along with the Azure Cognitive Services Vision Custom Vision library for advanced image analysis. Additionally, we incorporate the Pillow library for efficient image handling and python-dotenv for environment variable management.</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OpenCV to perform prerocessing on video files to convert to image files</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>Uq opencv<span class="op">-</span>python</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Azure Computervision library:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>Uq azure<span class="op">-</span>cognitiveservices<span class="op">-</span>vision<span class="op">-</span>customvision</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Pillow library: Python Imaging Library (PIL) provides a simple and efficient way to work with images in Python</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pillow</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># dotenv library</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install python<span class="op">-</span>dotenv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Requirement already satisfied: pillow in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (9.4.0)
+Requirement already satisfied: python-dotenv in /Users/kashmkj/micromamba/envs/fastai/lib/python3.11/site-packages (1.0.0)</code></pre>
+</div>
+</div>
+</section>
+<section id="import-the-required-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="import-the-required-libraries">2. Import the required libraries:</h2>
+<div class="cell" data-execution_count="4">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing libraries for image and video display</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image <span class="im">as</span> img</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Video</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing OpenCV for video processing</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing matplotlib for plotting</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing IPython display module for multimedia display</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython.display <span class="im">as</span> ipd</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing libraries for Azure Custom Vision</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.cognitiveservices.vision.customvision.prediction <span class="im">import</span> CustomVisionPredictionClient</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> msrest.authentication <span class="im">import</span> CognitiveServicesCredentials, ApiKeyCredentials</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing PIL for image manipulation</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image, ImageDraw</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Importing os and dotenv for handling secret keys</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython.display <span class="im">as</span> ipd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="12">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To connect to the prediction resource</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.cognitiveservices.vision.customvision.prediction <span class="im">import</span> CustomVisionPredictionClient</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># To authenticate the client</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> msrest.authentication <span class="im">import</span> CognitiveServicesCredentials, ApiKeyCredentials</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># To draw bounding boxes in images</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image, ImageDraw</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># To read the secret keys for Authentication</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="create-an-azure-custom-vision-resource-in-your-resource-group-azure-portal" class="level2">
+<h2 class="anchored" data-anchor-id="create-an-azure-custom-vision-resource-in-your-resource-group-azure-portal">3. Create an Azure Custom Vision resource in your resource group (Azure Portal):</h2>
+<p>Click on the “Create” button to start configuring your Custom Vision resource</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/383b6bd1-1-Screenshot 2024-04-21 at 7.24.20 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%207.24.20%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>You’ll be prompted to provide details such as subscription, resource group, region, and name for your Custom Vision resource. - You can either choose an existing resource group or create a new one. - Select the region closest to your location to optimize performance. Choose the Free / Standard P0 pricing tier based on resource and request requirement. For the current project, I have selected Free pricing tier. - After configuring all the necessary settings, review your selections to ensure everything is correct. Click on the “Review + create” button to proceed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/d3a41011-1-Screenshot 2024-04-21 at 7.21.19 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%207.21.19%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>Wait for a couple of minutes for the deployment to succeed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/d69b8fce-1-Screenshot 2024-04-21 at 6.51.52 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%206.51.52%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>Once the deployment is successful, you can see two resources created, one for training and one for prediction. Each of these resource has their own key and endpoints for us to access through the SDK.</p>
+</section>
+<section id="creating-the-.env-file" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-.env-file">4. Creating the <em>.env</em> File</h2>
+<p>Let’s move on to creating the .env file with the credentials for training and prediction resources.</p>
+<pre><code>CUSTOM_VISION_TRAINING_ENDPOINT= &lt;'your_training_endpoint'&gt;
+CUSTOM_VISION_TRAINING_KEY= &lt;'your_training_key'&gt;
+CUSTOM_VISION_ENDPOINT= &lt;'your_prediction_endpoint'&gt;
+CUSTOM_VISION_PREDICTION_KEY= &lt;'your_prediction_key'&gt;
+CUSTOM_VISION_PROJECT_ID= &lt;'your_project_id'&gt;</code></pre>
+<p>The values for the above can be found from the resource section present here: https://www.customvision.ai/projects#/settings</p>
+<section id="custom-vision-resource-client-authentication" class="level3">
+<h3 class="anchored" data-anchor-id="custom-vision-resource-client-authentication">Custom Vision Resource Client Authentication</h3>
+<p>Let’s read the environment variables to authenticate and access the Custom Vision resource, including the training and prediction key, endpoint, and project ID. This ensures secure interaction with the Custom Vision resource we created.</p>
+<div class="cell" data-execution_count="8">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the environment variables to authenticate to the Computer Vision resource</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>load_dotenv()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>prediction_key <span class="op">=</span> os.environ.get(<span class="st">"CUSTOM_VISION_PREDICTION_KEY"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>custom_vision_endpoint <span class="op">=</span> os.environ.get(<span class="st">"CUSTOM_VISION_ENDPOINT"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>custom_vision_project_id <span class="op">=</span> os.environ.get(<span class="st">"CUSTOM_VISION_PROJECT_ID"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<hr>
+</section>
+</section>
+<section id="converting-videos-to-image-frames-using-opencv" class="level2">
+<h2 class="anchored" data-anchor-id="converting-videos-to-image-frames-using-opencv">Converting Videos to Image Frames Using OpenCV</h2>
+<p>To initiate the object detection process, the first step involves leveraging the OpenCV library to convert the video files into individual image frames.</p>
+<p>Video Conversion: Utilizing the cv2 VideoCapture, the video files are systematically processed to extract each frame as an image.Iterate through the frames of every video, converting each frame into a separate image for subsequent analysis.</p>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to save frames from a video</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_frames_from_video(video_path):</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Open the video file</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    cap <span class="op">=</span> cv2.VideoCapture(video_path)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> cap.isOpened():</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: Couldn't open video file </span><span class="sc">{</span>video_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory if it doesn't exist</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    output_dir <span class="op">=</span> os.path.splitext(os.path.basename(video_path))[<span class="dv">0</span>] <span class="op">+</span> <span class="st">"_frames"</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get total number of frames in the video</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    n_frames <span class="op">=</span> <span class="bu">int</span>(cap.get(cv2.CAP_PROP_FRAME_COUNT))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate through each frame</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> frame <span class="kw">in</span> <span class="bu">range</span>(n_frames):</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        ret, img <span class="op">=</span> cap.read()</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> ret:</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error: Failed to read frame </span><span class="sc">{</span>frame<span class="sc">}</span><span class="ss"> from </span><span class="sc">{</span>video_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> frame <span class="op">%</span> <span class="dv">300</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Save frame as PNG image</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>            frame_path <span class="op">=</span> os.path.join(output_dir, <span class="ss">f"frame_</span><span class="sc">{</span>frame<span class="sc">:06d}</span><span class="ss">.png"</span>)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>            cv2.imwrite(frame_path, img)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    cap.release()</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory containing input video files</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>input_directory <span class="op">=</span> <span class="st">'../input/driving-video-with-object-tracking/bdd100k_videos_train_00/bdd100k/videos/train/'</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate through only the first 10 files in the directory</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>file_counter <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> os.listdir(input_directory):</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> file_counter<span class="op">&gt;=</span><span class="dv">60</span>:</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> filename.endswith(<span class="st">".mov"</span>) <span class="kw">or</span> filename.endswith(<span class="st">".mp4"</span>):</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(file_counter)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        video_path <span class="op">=</span> os.path.join(input_directory, filename)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        save_frames_from_video(video_path)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Frames extracted from </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        file_counter <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"All videos processed."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/19b75b76-1-Screenshot 2024-04-21 at 8.33.29 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%208.33.29%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>This code utilizes OpenCV and OS modules to extract frames from video files:</p>
+<ol type="1">
+<li><p>The <code>save_frames_from_video</code> function opens a video file, creates an output directory for frames, retrieves the total frame count, and iterates through each frame. It saves every 300th frame as a PNG image within the output directory.</p></li>
+<li><p>The script iterates through the first 60 video files in the input directory, extracts frames using the defined function, and prints a message for each video file processed.</p></li>
+</ol>
+<p>NOTE: The above code is run in my Kaggle notebook because it is 20GB of data and Kaggle provides free persistence storage.</p>
+</section>
+<section id="uploading-images-to-azure-custom-vision-for-model-training" class="level2">
+<h2 class="anchored" data-anchor-id="uploading-images-to-azure-custom-vision-for-model-training">Uploading Images to Azure Custom Vision for Model Training</h2>
+<p>Following the extraction of image frames, the next phase involves uploading these frames to an Azure Custom Vision project for model training.</p>
+<ol type="1">
+<li>Labeling Process: Each image frame, I manually labeled with relevant tags, including categories such as “car,” “Car Bonnet,” “Crash Barriers,” “Human,” “Loader Vehicles,” “Road Sign,” and “Traffic Light.” The default labeling provided by Kaggle was incorrect and insufficient.</li>
+<li>Model Training: We then upload labeled image frames to the Azure Custom Vision project, where they are utilized to train the object detection model. This training process ensures that the model can accurately identify and classify objects within the video frames.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/240190da-1-Screenshot 2024-04-21 at 7.56.29 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%207.56.29%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>We got a precision of 80%, which is a good indicator of identifying objects correctly. However, the recall rate of 29% suggests that the model may miss detecting some instances of the specified objects. Despite this, the mean Average Precision (mAP) is at 49.1%, indicating a moderate overall performance.</p>
+<p>Note: 1. I set the probability threshold at 60% so that only predictions with a high confidence level are considered, thus enhancing the reliability of the detected objects.</p>
+<ol start="2" type="1">
+<li>The dataset consists of a total of 71 images, with varying frequencies of labels assigned to each category as previously mentioned.</li>
+</ol>
+<ul>
+<li><em>car</em> is the most prevalent category with 64 occurrences, followed by</li>
+<li><em>Car Bonnet</em> and <em>Loader (Heavy/SUV) Vehicles</em> with 56 and 39 occurrences, respectively.</li>
+<li>Other categories such as <em>bike</em>(includes motorcycle and bicycle), <em>Crash Barriers</em> (Roadside barricades), <em>Human</em>, <em>Road Sign</em>, and <em>Traffic Light</em> exhibit comparatively lower frequencies, ranging from 15 to 35 occurrences.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/cd3b307b-1-Screenshot 2024-04-21 at 7.58.29 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%207.58.29%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>We can view the performance from the Azure Custom Vision UI portal</p>
+</section>
+<section id="converting-test-video-to-image-frame" class="level2">
+<h2 class="anchored" data-anchor-id="converting-test-video-to-image-frame">Converting Test Video to Image Frame</h2>
+<p>I again defined the function <code>save_frames_from_video</code> that extracts frames from a video file in the <strong>prediction/</strong> directory and saves them as PNG images inside a directory with suffix *_frames*.</p>
+<div class="cell" data-execution_count="11">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to save frames from a video</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_frames_from_video(video_path):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Open the video file</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    cap <span class="op">=</span> cv2.VideoCapture(video_path)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> cap.isOpened():</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error: Couldn't open video file </span><span class="sc">{</span>video_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory if it doesn't exist</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    output_dir <span class="op">=</span> os.path.splitext(os.path.basename(video_path))[<span class="dv">0</span>] <span class="op">+</span> <span class="st">"_frames"</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'output_dir = </span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get total number of frames in the video</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    n_frames <span class="op">=</span> <span class="bu">int</span>(cap.get(cv2.CAP_PROP_FRAME_COUNT))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'No. of Frames in the video = </span><span class="sc">{</span>n_frames<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Iterate through each frame</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> frame <span class="kw">in</span> <span class="bu">range</span>(n_frames):</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        ret, img <span class="op">=</span> cap.read()</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> ret:</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Error: Failed to read frame </span><span class="sc">{</span>frame<span class="sc">}</span><span class="ss"> from </span><span class="sc">{</span>video_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#         if frame % 300 == 0:</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Save frame as PNG image</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        frame_path <span class="op">=</span> os.path.join(output_dir, <span class="ss">f"frame_</span><span class="sc">{</span>frame<span class="sc">:06d}</span><span class="ss">.png"</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        cv2.imwrite(frame_path, img)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    cap.release()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory containing input video files</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>input_directory <span class="op">=</span> <span class="st">'prediction/'</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> os.listdir(input_directory):</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> filename.endswith(<span class="st">".mov"</span>) <span class="kw">or</span> filename.endswith(<span class="st">".mp4"</span>):</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        video_path <span class="op">=</span> os.path.join(input_directory, filename)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        save_frames_from_video(video_path)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Frames extracted from </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">."</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"All videos processed."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>output_dir = 00207869-046fa443_frames
+No. of Frames in the video = 1212
+Frames extracted from 00207869-046fa443.mov.
+All videos processed.</code></pre>
+</div>
+</div>
+<p>The images (frames) are stored in <strong>00207869-046fa443_frames</strong> directory. There are 1212 frames. We will pass each frame through the prediction endpoint in the following section.</p>
+</section>
+<section id="predicting-object-tags-using-azure-custom-vision-sdk" class="level2">
+<h2 class="anchored" data-anchor-id="predicting-object-tags-using-azure-custom-vision-sdk">Predicting Object Tags Using Azure Custom Vision SDK:</h2>
+<p>In this section, I utilize the Azure Custom Vision SDK to predict object tags within images extracted from the a test video. The provided code provides the necessary credentials and parameters for prediction which includes the prediction key, endpoint, model name, and threshold for confidence.</p>
+<div class="cell" data-execution_count="12">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create variables for prediction resource</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>prediction_credentials <span class="op">=</span> ApiKeyCredentials(in_headers<span class="op">=</span>{<span class="st">"Prediction-Key"</span>: prediction_key})</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>predictor <span class="op">=</span> CustomVisionPredictionClient(custom_vision_endpoint, prediction_credentials)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>published_model_name <span class="op">=</span> <span class="st">"custom-vision-car-object-detection-model"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-execution_count="13">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>image_directory_for_prediction <span class="op">=</span> <span class="st">"00207869-046fa443_frames"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>output_dir <span class="op">=</span> os.path.join(image_directory_for_prediction, <span class="st">"predictions"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="fl">0.4</span>  <span class="co"># Adjust as needed</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to draw bounding boxes on image</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> draw_boxes(image, predictions):</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    draw <span class="op">=</span> ImageDraw.Draw(image)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> prediction <span class="kw">in</span> predictions:</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> prediction.probability <span class="op">&gt;</span> threshold:</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            left <span class="op">=</span> prediction.bounding_box.left <span class="op">*</span> image.width</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            top <span class="op">=</span> prediction.bounding_box.top <span class="op">*</span> image.height</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>            right <span class="op">=</span> left <span class="op">+</span> (prediction.bounding_box.width <span class="op">*</span> image.width)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            bottom <span class="op">=</span> top <span class="op">+</span> (prediction.bounding_box.height <span class="op">*</span> image.height)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            draw.rectangle([left, top, right, bottom], outline<span class="op">=</span><span class="st">"red"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>            draw.text((left, top), prediction.tag_name, fill<span class="op">=</span><span class="st">"red"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate over images and perform predictions</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> os.listdir(image_directory_for_prediction):</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> filename.endswith(<span class="st">".jpg"</span>) <span class="kw">or</span> filename.endswith(<span class="st">".png"</span>):</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        image_path <span class="op">=</span> os.path.join(image_directory_for_prediction, filename)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(image_path, <span class="st">"rb"</span>) <span class="im">as</span> image_contents:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>            predictions <span class="op">=</span> predictor.detect_image(custom_vision_project_id, published_model_name, image_contents.read())</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Load image</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> Image.<span class="bu">open</span>(image_path).convert(<span class="st">"RGB"</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Draw bounding boxes on image</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        draw_boxes(image, predictions.predictions)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save predicted image with bounding boxes</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>        predicted_image_path <span class="op">=</span> os.path.join(output_dir, filename)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        image.save(predicted_image_path)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"All predictions saved successfully."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>All predictions saved successfully.</code></pre>
+</div>
+</div>
+<p>The above code iterates through each image in the <strong>00207869-046fa443_frames</strong> directory, performs predictions using the trained model, and overlays bounding boxes on the detected objects. Finally, the predicted images with bounding boxes are saved in an output directory <strong>00207869-046fa443_frames/predictions</strong>.</p>
+</section>
+<section id="converting-the-image-frames-back-to-mp4-with-bounding-box" class="level2">
+<h2 class="anchored" data-anchor-id="converting-the-image-frames-back-to-mp4-with-bounding-box">Converting the Image Frames back to MP4 with Bounding Box</h2>
+<p>After predicting object tags in the frames extracted from the test video, the next step involves aggregating these frames and reconstructing the video back, but this time, with the bounding boxes present.</p>
+<div class="cell" data-execution_count="14">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory containing predicted images</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>predicted_dir <span class="op">=</span> <span class="st">"00207869-046fa443_frames/predictions"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Output video file path</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>output_video_path <span class="op">=</span> <span class="st">"predicted_video.mp4"</span>  <span class="co"># You can change the extension to .mov if needed</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the list of predicted image filenames</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>image_files <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> os.listdir(predicted_dir) <span class="cf">if</span> f.endswith(<span class="st">".jpg"</span>) <span class="kw">or</span> f.endswith(<span class="st">".png"</span>)]</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>image_files.sort()  <span class="co"># Ensure the images are sorted properly</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the dimensions of the first image to initialize the video writer</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>first_image <span class="op">=</span> cv2.imread(os.path.join(predicted_dir, image_files[<span class="dv">0</span>]))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>height, width, _ <span class="op">=</span> first_image.shape</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the codec and create VideoWriter object</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>fourcc <span class="op">=</span> cv2.VideoWriter_fourcc(<span class="op">*</span><span class="st">'mp4v'</span>)  <span class="co"># Change 'mp4v' to 'avc1' for .mov format</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>fps <span class="op">=</span> <span class="dv">30</span>  <span class="co"># Adjust as needed</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterate through predicted images and add them to the video</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> image_files:</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    image_path <span class="op">=</span> os.path.join(predicted_dir, filename)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    frame <span class="op">=</span> cv2.imread(image_path)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    out.write(frame)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Release the VideoWriter and close all OpenCV windows</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>out.release()</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Video saved as </span><span class="sc">{</span>output_video_path<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Video saved as predicted_video.mp4</code></pre>
+</div>
+</div>
+<p>The above code iterates through the predicted image files, adds them to the video frame by frame using the <code>VideoWriter</code> module of <code>cv2/opencv</code> library , and finally saves the video file in the specified format (.mp4 in this case).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/128aa81e-1-Screenshot 2024-04-21 at 8.37.51 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%208.37.51%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/337d835a-1-Screenshot 2024-04-21 at 8.38.12 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%208.38.12%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/b18975a6-1-Screenshot 2024-04-21 at 8.38.04 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%208.38.04%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="closing-the-project---resource-deletion" class="level1">
+<h1>Closing the project - resource deletion</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Azure_Custom_Vision_Task5_224234568_Kashish_files/figure-html/081fb0a1-1-Screenshot 2024-04-21 at 8.50.05 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-21%20at%208.50.05%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>PatrickFarley (n.d.). Custom Vision documentation - Quickstarts, Tutorials, API Reference - Azure AI services. [online] learn.microsoft.com. Available at: https://learn.microsoft.com/en-us/azure/ai-services/custom-vision-service/.</p>
+<p>‌</p>
+<p>Mygreatlearning.com. (2024). Greatlearning login. [online] Available at: https://olympus.mygreatlearning.com/courses/109578/files/10124625?module_item_id=5587380.</p>
+<p>‌</p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="kashish18/kashish18.github.io" data-repo-id="646083787" data-category="Giscus Comments" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="dark_dimmed" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left"><a href="https://kashish18.github.io/">Kash’s Portfolio</a> © 2024 and Blogs™ by <a href="https://kashish18.github.io/about.html">Kashish Mukheja</a></div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://forums.fast.ai/u/kashish18/summary">
+      <i class="bi bi-file-post-fill" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KashMkj">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/kashmkj18">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/kashish18">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:kash.mkj18@gmail.com">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html"><span class="animate__animated animate__fadeInDown" style="display: inline-block;">Welcome to the realm of Kashish</span></a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right"><a href="https://kashish18.github.io/about.html">Site Version 2.2.1.2</a> | <a href="https://kashish18.github.io/about.html">Site Feedback</a> | Website made by me!</div>
+  </div>
+</footer>
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

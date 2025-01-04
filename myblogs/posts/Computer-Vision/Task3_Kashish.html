@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+
+<title>Kash’s Portfolio - Task 3P: Design and Deploy Model using Azure Machine Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../cover.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/quarto-contrib/animate-4.1.1/animate.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Kash’s Portfolio - Task 3P: Design and Deploy Model using Azure Machine Learning">
+<meta property="og:description" content="My corner of the Web!">
+<meta property="og:image" content="https://kashish18.github.io/myblogs/posts/Computer-Vision/Kashish_Professional.jpeg">
+<meta property="og:site-name" content="Kash's Portfolio">
+<meta name="twitter:title" content="Kash’s Portfolio">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://kashish18.github.io/myblogs/posts/Computer-Vision/cover.png">
+<meta name="twitter:creator" content="@Kashish18">
+<meta name="twitter:site" content="@Kashish18">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../cover.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Kash’s Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-newspaper" role="img">
+</i> 
+ <span class="menu-text">Blogs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html" rel="" target=""><i class="bi bi-file-person" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+    <a href="https://github.com/kashish18/kashish18.github.io" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-code-slash"></i></a>
+    <a href="../../../myblogs/index.html" title="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}" class="quarto-navigation-tool px-1" aria-label="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}"><i class="bi bi-rss"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Task 3P: Design and Deploy Model using Azure Machine Learning</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">blogging</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Computer Vision</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Invalid Date</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#task-3p-design-and-deploy-model-using-azure-machine-learning" id="toc-task-3p-design-and-deploy-model-using-azure-machine-learning" class="nav-link active" data-scroll-target="#task-3p-design-and-deploy-model-using-azure-machine-learning">Task 3P: Design and Deploy Model using Azure Machine Learning</a>
+  <ul>
+  <li><a href="#name-kashish-mukheja" id="toc-name-kashish-mukheja" class="nav-link" data-scroll-target="#name-kashish-mukheja">Name: Kashish Mukheja</a></li>
+  <li><a href="#student-id-224234568" id="toc-student-id-224234568" class="nav-link" data-scroll-target="#student-id-224234568">Student Id: 224234568</a></li>
+  <li><a href="#email-s224234568deakin.edu.au" id="toc-email-s224234568deakin.edu.au" class="nav-link" data-scroll-target="#email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</a></li>
+  </ul></li>
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a">PART A</a></li>
+  <li><a href="#part-2" id="toc-part-2" class="nav-link" data-scroll-target="#part-2">PART 2</a>
+  <ul>
+  <li><a href="#chronic-kidney-disease-dataset-overview" id="toc-chronic-kidney-disease-dataset-overview" class="nav-link" data-scroll-target="#chronic-kidney-disease-dataset-overview">Chronic Kidney Disease Dataset Overview:</a>
+  <ul class="collapse">
+  <li><a href="#brief-information" id="toc-brief-information" class="nav-link" data-scroll-target="#brief-information">Brief Information:</a></li>
+  <li><a href="#column-details" id="toc-column-details" class="nav-link" data-scroll-target="#column-details">Column Details:</a></li>
+  <li><a href="#data-preprocessing-for-chronic-kidney-disease-dataset-in-azure-notebook" id="toc-data-preprocessing-for-chronic-kidney-disease-dataset-in-azure-notebook" class="nav-link" data-scroll-target="#data-preprocessing-for-chronic-kidney-disease-dataset-in-azure-notebook">Data Preprocessing for Chronic Kidney Disease Dataset in Azure Notebook</a></li>
+  <li><a href="#azure-ml-setup" id="toc-azure-ml-setup" class="nav-link" data-scroll-target="#azure-ml-setup">Azure ML Setup</a></li>
+  <li><a href="#model-training-registring-the-model-through-mlflow" id="toc-model-training-registring-the-model-through-mlflow" class="nav-link" data-scroll-target="#model-training-registring-the-model-through-mlflow">Model Training Registring the Model through MLflow</a></li>
+  <li><a href="#model-look-in-azure" id="toc-model-look-in-azure" class="nav-link" data-scroll-target="#model-look-in-azure">Model Look in Azure</a></li>
+  </ul></li>
+  <li><a href="#model-metrics-inside-azure-portal-inside-jobs-section" id="toc-model-metrics-inside-azure-portal-inside-jobs-section" class="nav-link" data-scroll-target="#model-metrics-inside-azure-portal-inside-jobs-section">Model metrics Inside Azure portal inside jobs section</a></li>
+  <li><a href="#endpoint-creation" id="toc-endpoint-creation" class="nav-link" data-scroll-target="#endpoint-creation">Endpoint Creation</a>
+  <ul class="collapse">
+  <li><a href="#endpoint-creation-and-model-deployment-for-chronic-kidney-disease-detection" id="toc-endpoint-creation-and-model-deployment-for-chronic-kidney-disease-detection" class="nav-link" data-scroll-target="#endpoint-creation-and-model-deployment-for-chronic-kidney-disease-detection">Endpoint Creation and Model Deployment for Chronic Kidney Disease Detection</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a>
+  <ul class="collapse">
+  <li><a href="#olympus.mygreatlearning.com.-n.d..-greatlearning-login.-online-available-at-httpsolympus.mygreatlearning.com." id="toc-olympus.mygreatlearning.com.-n.d..-greatlearning-login.-online-available-at-httpsolympus.mygreatlearning.com." class="nav-link" data-scroll-target="#olympus.mygreatlearning.com.-n.d..-greatlearning-login.-online-available-at-httpsolympus.mygreatlearning.com.">olympus.mygreatlearning.com. (n.d.). Greatlearning login. [online] Available at: https://olympus.mygreatlearning.com.</a></li>
+  <li><a href="#balapv-2024.-azure-machine-learning-cli-sdk-v2---azure-machine-learning.-online-learn.microsoft.com.-available-at-httpslearn.microsoft.comen-usazuremachine-learningconcept-v2viewazureml-api-2-accessed-21-apr.-2024." id="toc-balapv-2024.-azure-machine-learning-cli-sdk-v2---azure-machine-learning.-online-learn.microsoft.com.-available-at-httpslearn.microsoft.comen-usazuremachine-learningconcept-v2viewazureml-api-2-accessed-21-apr.-2024." class="nav-link" data-scroll-target="#balapv-2024.-azure-machine-learning-cli-sdk-v2---azure-machine-learning.-online-learn.microsoft.com.-available-at-httpslearn.microsoft.comen-usazuremachine-learningconcept-v2viewazureml-api-2-accessed-21-apr.-2024.">balapv (2024). Azure Machine Learning CLI &amp; SDK v2 - Azure Machine Learning. [online] learn.microsoft.com. Available at: https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2?view=azureml-api-2 [Accessed 21 Apr.&nbsp;2024].</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="task-3p-design-and-deploy-model-using-azure-machine-learning" class="level1">
+<h1>Task 3P: Design and Deploy Model using Azure Machine Learning</h1>
+<p>A Report By:</p>
+<section id="name-kashish-mukheja" class="level3">
+<h3 class="anchored" data-anchor-id="name-kashish-mukheja">Name: Kashish Mukheja</h3>
+</section>
+<section id="student-id-224234568" class="level3">
+<h3 class="anchored" data-anchor-id="student-id-224234568">Student Id: 224234568</h3>
+</section>
+<section id="email-s224234568deakin.edu.au" class="level3">
+<h3 class="anchored" data-anchor-id="email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</h3>
+</section>
+</section>
+<section id="part-a" class="level1">
+<h1>PART A</h1>
+<p>Q1) What is the Azure Machine Learning SDK for Python? What is Workspace? How to create a workspace for machine learning using Azure Portal? You need to log in using your Deakin email to your Azure portal and create a workspace under your resource group. We have created a resource group using a university subscription and you should be able to see your resource group. Provide a screenshot for this part. Create your computing instance and cluster and explain what those parts are. Provide a screenshot of your created computing instance and cluster.</p>
+<ol type="a">
+<li>Azure Machine Learning SDK for Python: is a powerful tool offered by Microsoft for developing, training, deploying, and managing machine learning models in the Azure cloud environment. This SDK provides a comprehensive set of functions to streamline the entire machine learning process, from data preparation and model training to deployment and monitoring. Here are some key aspects of the Azure Machine Learning SDK for Python:</li>
+</ol>
+<p>Automated Machine Learning (AutoML): The Azure ML SDK includes AutoML capabilities, which automate model selection, feature engineering, and hyperparameter tuning. This feature accelerates the process of prototyping and deploying high-quality machine learning models without requiring extensive manual effort. Experimentation and Versioning: Users can organize their machine learning experiments into projects, run experiments with different setups, and keep track of metrics and results for each run. This ensures that experiments are reproducible and allows for versioning of different model iterations.</p>
+<p>Data Management and Preparation: Azure ML SDK provides tools for ingesting, exploring, and preprocessing data. This makes it easier to work with large datasets stored in Azure Data Lake Storage, Azure Blob Storage, or other data sources. Model Training and Deployment: Users can train machine learning models using popular frameworks like TensorFlow, PyTorch, and Scikit-learn. These models can then be deployed as web services or Docker containers to Azure Kubernetes Service (AKS), Azure Container Instances (ACI), or Azure Functions.</p>
+<p>Monitoring and Management: Azure ML SDK includes capabilities for monitoring model performance, detecting drift, and retraining models as needed to maintain optimal performance over time.</p>
+<p>Scalability and Performance: Azure ML SDK leverages the scalability and performance benefits of Azure infrastructure, allowing users to train and deploy models at scale and optimize resource utilization.</p>
+<p>Integration with Azure Services: The SDK seamlessly integrates with various Azure services such as Azure Databricks, Azure Synapse Analytics, Azure DevOps, and Azure Monitor. This integration allows for end-to-end data science workflows and the creation of model deployment pipelines.</p>
+<ol start="2" type="a">
+<li>What is workspace : Workspace: A workspace in Azure Machine Learning is a foundational resource that allows you to group together related Azure resources for machine learning. It provides a centralized place to work with data, experiments, models, and deployment endpoints. Different tasks can be performed in a workspace such as:</li>
+</ol>
+<ul>
+<li>The creation of jobs for model-building training runs.</li>
+<li>Assists with pipeline and model training for data management.</li>
+</ul>
+<ol start="3" type="a">
+<li>Creating a workspace for machine learning using Azure Portal:</li>
+</ol>
+<ol type="1">
+<li>Log in to the Azure Portal (using your Deakin email).</li>
+<li>Create a Resource Group: <img src="Task3_Kashish_files/figure-html/a2c75a8e-3-317ead90-10bc-4380-aebe-1d1f2c6427b3.png" class="img-fluid" alt="Screenshot 2024-03-31 at 9.15.55 PM.png"></li>
+<li>Navigate to Machine Learning service: Use the search bar or the left-hand navigation menu to find “Machine Learning.”</li>
+<li>Create a workspace: Click “Create a workspace” and fill in details like subscription, resource group, name, and region. Wait for it to get deployed successfully. <img src="Task3_Kashish_files/figure-html/a2c75a8e-4-3aa9a82b-3b24-4cbf-bcd5-66dcfa0eacb9.png" class="img-fluid" alt="Screenshot 2024-03-31 at 9.19.40 PM.png"></li>
+<li>Compute Instance: A compute instance in machine learning refers to a virtual machine (VM) provisioned in the cloud specifically for running compute-intensive tasks related to machine learning workflows. Compute instances provide the necessary computational resources for tasks such as data preprocessing, model training, hyperparameter tuning, and inference.</li>
+</ol>
+<ul>
+<li><img src="Task3_Kashish_files/figure-html/a2c75a8e-1-02be3857-76c0-421a-9212-4c8436bdc3e7.png" class="img-fluid" alt="Screenshot 2024-04-21 at 10.39.18 PM.png"></li>
+<li><img src="Task3_Kashish_files/figure-html/a2c75a8e-6-ccfdfdbc-659e-4378-b46d-21b85a3ebd3b.png" class="img-fluid" alt="Screenshot 2024-03-31 at 9.25.52 PM.png"></li>
+<li><img src="Task3_Kashish_files/figure-html/a2c75a8e-2-2f2a7f66-ae39-401d-851c-8fceca5302a6.png" class="img-fluid" alt="Screenshot 2024-03-31 at 9.31.51 PM.png"></li>
+</ul>
+<ol start="6" type="1">
+<li>Once deployed, access the instance from Azure Machine Learning studio by Launching the studio <img src="Task3_Kashish_files/figure-html/a2c75a8e-5-3e6b4757-2e98-44fc-b0f0-d687794f1282.png" class="img-fluid" alt="Screenshot 2024-03-31 at 9.52.03 PM.png"></li>
+</ol>
+</section>
+<section id="part-2" class="level1">
+<h1>PART 2</h1>
+<p>Q2) You need to use Azure Machine Learning Python SDK to train and deploy your best built model (Decision tree or Random Forest) in part 1. To complete this task you need to login to your Azure Portal and create your workspace for machine learning and then train your model (you can use the model you built in week 2 or train a new model using your selected dataset) and then deploy the model on Azure. You need to provide a screenshot of your built workspace, the built model using Python, and how you have deployed the model using Azure Python SDK and dependencies. Every step of the development and deployment should be explained.</p>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792443440}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="1">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard library imports</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os  <span class="co"># Import os module for working with operating system functionalities</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings  <span class="co"># Import filterwarnings for suppressing warnings</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># External library imports</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd  <span class="co"># Import Pandas for data manipulation and analysis</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np  <span class="co"># Import Numpy for numerical computing</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> KNNImputer  <span class="co"># Import KNNImputer for imputing missing values using KNN</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> LabelEncoder, StandardScaler  <span class="co"># Import LabelEncoder and StandardScaler for preprocessing data</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split  <span class="co"># Import train_test_split for splitting data into training and testing sets</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report  <span class="co"># Import classification_report for evaluating model performance</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier  <span class="co"># Import RandomForestClassifier for classification tasks</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Azure related imports</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.identity <span class="im">import</span> DefaultAzureCredential  <span class="co"># Import DefaultAzureCredential for authenticating Azure services</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azureml.core <span class="im">import</span> Experiment, Workspace  <span class="co"># Import Experiment and Workspace from azureml.core for working with Azure ML</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.ai.ml <span class="im">import</span> MLClient  <span class="co"># Import MLClient for interacting with Azure ML services</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.ai.ml.entities <span class="im">import</span> ManagedOnlineEndpoint, ManagedOnlineDeployment  <span class="co"># Import ManagedOnlineEndpoint and ManagedOnlineDeployment for managing online endpoints</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># MLFlow related imports</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mlflow  <span class="co"># Import mlflow for tracking experiments</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mlflow.sklearn  <span class="co"># Import mlflow.sklearn for logging scikit-learn models with MLFlow</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Set Git Python Refresh to quiet mode</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">"GIT_PYTHON_REFRESH"</span>] <span class="op">=</span> <span class="st">"quiet"</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize KNNImputer for imputing missing values</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>knn_imputer <span class="op">=</span> KNNImputer()</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize LabelEncoder and StandardScaler</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>label_encoder <span class="op">=</span> LabelEncoder()</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="chronic-kidney-disease-dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="chronic-kidney-disease-dataset-overview">Chronic Kidney Disease Dataset Overview:</h2>
+<ol type="1">
+<li><p><strong>Number of Records:</strong> 400</p></li>
+<li><p><strong>Number of Columns:</strong> 25</p></li>
+</ol>
+<section id="brief-information" class="level3">
+<h3 class="anchored" data-anchor-id="brief-information">Brief Information:</h3>
+<p>The Chronic Kidney Disease dataset consists of 400 records and 25 columns. The dataset contains missing values, denoted as ‘?’.</p>
+</section>
+<section id="column-details" class="level3">
+<h3 class="anchored" data-anchor-id="column-details">Column Details:</h3>
+<ol type="1">
+<li><strong>Age (age):</strong> Numerical data in years with missing values.</li>
+<li><strong>Blood Pressure (bp):</strong> Numerical data in mm/Hg with missing values.</li>
+<li><strong>Specific Gravity (sg):</strong> Categorical data with unique values (1.005, 1.010, 1.015, 1.020, 1.025) and missing values.</li>
+<li><strong>Albumin (al):</strong> Categorical data with unique values (0, 1, 2, 3, 4, 5) and missing values.</li>
+<li><strong>Sugar (su):</strong> Categorical data with unique values (0, 1, 2, 3, 4, 5) and missing values.</li>
+<li><strong>Red Blood Cells (rbc):</strong> Categorical data with unique values (‘normal’, ‘abnormal’) and missing values.</li>
+<li><strong>Pus Cell (pc):</strong> Categorical data with unique values (‘normal’, ‘abnormal’) and missing values.</li>
+<li><strong>Pus Cell Clumps (pcc):</strong> Categorical data with unique values (‘present’, ‘notpresent’) and missing values.</li>
+<li><strong>Bacteria (ba):</strong> Categorical data with unique values (‘present’, ‘notpresent’) and missing values.</li>
+<li><strong>Blood Glucose Random (bgr):</strong> Numerical data in mgs/dl with missing values.</li>
+<li><strong>Blood Urea (bu):</strong> Numerical data in mgs/dl with missing values.</li>
+<li><strong>Serum Creatinine (sc):</strong> Numerical data in mgs/dl with missing values.</li>
+<li><strong>Sodium (sod):</strong> Numerical data in mEq/L with missing values.</li>
+<li><strong>Potassium (pot):</strong> Numerical data in mEq/L with missing values.</li>
+<li><strong>Hemoglobin (hemo):</strong> Numerical data in gms with missing values.</li>
+<li><strong>Packed Cell Volume (pcv):</strong> Numerical data with missing values.</li>
+<li><strong>White Blood Cell Count (wbcc):</strong> Numerical data in cells/cmm with missing values.</li>
+<li><strong>Red Blood Cell Count (rbcc):</strong> Numerical data in millions/cmm with missing values.</li>
+<li><strong>Hypertension (htn):</strong> Categorical data with unique values (‘yes’, ‘no’) and missing values.</li>
+<li><strong>Diabetes Mellitus (dm):</strong> Categorical data with unique values (‘yes’, ‘no’) and missing values.</li>
+<li><strong>Coronary Artery Disease (cad):</strong> Categorical data with unique values (‘yes’, ‘no’) and missing values.</li>
+<li><strong>Appetite (appet):</strong> Categorical data with unique values (‘good’, ‘poor’) and missing values.</li>
+<li><strong>Pedal Edema (pe):</strong> Categorical data with unique values (‘yes’, ‘no’) and missing values.</li>
+<li><strong>Anemia (ane):</strong> Categorical data with unique values (‘yes’, ‘no’) and missing values.</li>
+<li><strong>Class (class):</strong> Target class with unique values (‘ckd’, ‘notckd’) and missing values.</li>
+</ol>
+<hr>
+</section>
+<section id="data-preprocessing-for-chronic-kidney-disease-dataset-in-azure-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="data-preprocessing-for-chronic-kidney-disease-dataset-in-azure-notebook">Data Preprocessing for Chronic Kidney Disease Dataset in Azure Notebook</h3>
+<p>Go to Notebooks section on the left pane</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task3_Kashish_files/figure-html/7a4e5d03-1-ddcb01fe-d7ca-4142-84e9-473cd8e92c3e.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot 2024-04-21 at 10.18.57 PM.png</figcaption>
+</figure>
+</div>
+<p>This section outlines the preprocessing steps performed on the Chronic Kidney Disease dataset to prepare it for analysis and modeling. Below are the key preprocessing steps along with explanations:</p>
+<p><strong>1. Reading the Dataset and Selecting Relevant Columns:</strong> - The dataset is read from the CSV file, and only the relevant columns are selected using the <code>usecols</code> parameter.</p>
+<p><strong>2. Defining Categorical and Numerical Columns:</strong> - Categorical columns containing categorical data are listed in <code>categorical_cols</code>. - Numerical columns containing numerical data are listed in <code>numerical_cols</code>.</p>
+<p><strong>3. Encoding Non-null Data:</strong> - The <code>encode</code> function is defined to encode non-null data in categorical columns using <code>LabelEncoder</code>. - It creates a copy of the DataFrame, drops null values, and applies label encoding.</p>
+<p><strong>4. Imputing Null Data:</strong> - The <code>impute</code> function is defined to impute null data using KNN imputation (<code>KNNImputer</code>). - For categorical columns, the result is cast to integer type; otherwise, it’s rounded to two decimal places.</p>
+<p><strong>5. Feature Engineering Column Names and Handling Missing Values:</strong> - Column names containing single quotes are replaced to ensure consistency. - Missing values denoted by ‘?’ are replaced with <code>NaN</code> using <code>replace</code>.</p>
+<p><strong>6. Encoding Categorical Columns and Imputing Missing Values:</strong> - Categorical columns are encoded using the <code>encode</code> function, and their data type is set to <code>category</code>. - Missing values in all columns are imputed using the <code>impute</code> function.</p>
+<p><strong>7. Scaling Numerical Columns:</strong> - Numerical columns are scaled using <code>StandardScaler</code> to ensure all features have the same scale. - The scaler is fitted and applied to the numerical columns.</p>
+<p><strong>8. Displaying Processed Dataset:</strong> - The first few rows of the processed dataset are displayed using the <code>head()</code> function to inspect the changes.</p>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792443794}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="3">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the dataset and select relevant columns</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>chronic_kidney_disease_df <span class="op">=</span> pd.read_csv(<span class="st">"chronic_kidney_disease.csv"</span>, usecols<span class="op">=</span><span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">26</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Columns with categorical data</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>categorical_cols <span class="op">=</span> [</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sg"</span>, <span class="st">"al"</span>, <span class="st">"su"</span>, <span class="st">"rbc"</span>, <span class="st">"pc"</span>, <span class="st">"pcc"</span>, <span class="st">"ba"</span>, <span class="st">"htn"</span>, <span class="st">"dm"</span>, <span class="st">"cad"</span>, <span class="st">"appet"</span>, <span class="st">"pe"</span>, <span class="st">"ane"</span>, <span class="st">"class"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Columns with numerical data</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>numerical_cols <span class="op">=</span> [</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>, <span class="st">"bp"</span>, <span class="st">"ba"</span>, <span class="st">"bgr"</span>, <span class="st">"bu"</span>, <span class="st">"sc"</span>, <span class="st">"sod"</span>, <span class="st">"pot"</span>, <span class="st">"hemo"</span>, <span class="st">"pcv"</span>, <span class="st">"wbcc"</span>, <span class="st">"rbcc"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to encode non-null data</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode(data):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    data_copy <span class="op">=</span> data.copy()  <span class="co"># Create a copy of the DataFrame</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    data_no_null <span class="op">=</span> data_copy.dropna().values</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    encoded_data <span class="op">=</span> label_encoder.fit_transform(data_no_null)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    data_copy.loc[data_copy.notnull()] <span class="op">=</span> encoded_data</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_copy</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to impute null data</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> impute(data, col):</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> knn_imputer.fit_transform(data)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> col <span class="kw">in</span> categorical_cols:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result.astype(<span class="bu">int</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">round</span>(result, <span class="dv">2</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Rectify column names</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>chronic_kidney_disease_df.columns <span class="op">=</span> chronic_kidney_disease_df.columns.<span class="bu">str</span>.replace(<span class="st">"'"</span>, <span class="st">""</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace missing values '?' with NaN</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>chronic_kidney_disease_df <span class="op">=</span> chronic_kidney_disease_df.replace(<span class="st">"?"</span>, np.NaN)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Encode categorical columns</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> categorical_cols:</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    chronic_kidney_disease_df[col] <span class="op">=</span> encode(chronic_kidney_disease_df[col])</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    chronic_kidney_disease_df[col] <span class="op">=</span> chronic_kidney_disease_df[col].astype(<span class="st">"category"</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute missing values for all columns</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> chronic_kidney_disease_df.columns:</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    chronic_kidney_disease_df[[col]] <span class="op">=</span> impute(chronic_kidney_disease_df[[col]], col)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit and transform the scaler to the numerical columns</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>chronic_kidney_disease_df[numerical_cols] <span class="op">=</span> scaler.fit_transform(chronic_kidney_disease_df[numerical_cols])</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows of the processed dataset</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>chronic_kidney_disease_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">bp</th>
+<th data-quarto-table-cell-role="th">sg</th>
+<th data-quarto-table-cell-role="th">al</th>
+<th data-quarto-table-cell-role="th">su</th>
+<th data-quarto-table-cell-role="th">rbc</th>
+<th data-quarto-table-cell-role="th">pc</th>
+<th data-quarto-table-cell-role="th">pcc</th>
+<th data-quarto-table-cell-role="th">ba</th>
+<th data-quarto-table-cell-role="th">bgr</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">pcv</th>
+<th data-quarto-table-cell-role="th">wbcc</th>
+<th data-quarto-table-cell-role="th">rbcc</th>
+<th data-quarto-table-cell-role="th">htn</th>
+<th data-quarto-table-cell-role="th">dm</th>
+<th data-quarto-table-cell-role="th">cad</th>
+<th data-quarto-table-cell-role="th">appet</th>
+<th data-quarto-table-cell-role="th">pe</th>
+<th data-quarto-table-cell-role="th">ane</th>
+<th data-quarto-table-cell-role="th">class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>-0.205459</td>
+<td>0.262336</td>
+<td>3</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>-0.241249</td>
+<td>-0.361993</td>
+<td>...</td>
+<td>0.628470</td>
+<td>-0.240518</td>
+<td>0.585900</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>-2.623805</td>
+<td>-1.966582</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>-0.241249</td>
+<td>0.000042</td>
+<td>...</td>
+<td>-0.108551</td>
+<td>-0.954786</td>
+<td>0.002055</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0.620318</td>
+<td>0.262336</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>-0.241249</td>
+<td>3.681436</td>
+<td>...</td>
+<td>-0.968408</td>
+<td>-0.359563</td>
+<td>0.002055</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>-0.205459</td>
+<td>-0.480637</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-0.241249</td>
+<td>-0.415548</td>
+<td>...</td>
+<td>-0.845571</td>
+<td>-0.677015</td>
+<td>-0.963076</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>-0.028507</td>
+<td>0.262336</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>-0.241249</td>
+<td>-0.562825</td>
+<td>...</td>
+<td>-0.477061</td>
+<td>-0.438926</td>
+<td>-0.129012</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>5 rows × 25 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792444127}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="3">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># split data into train subset and test subset</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    kidney_disease_df.drop(columns<span class="op">=</span><span class="st">"class"</span>, axis<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    kidney_disease_df[<span class="st">"class"</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    stratify<span class="op">=</span>kidney_disease_df[<span class="st">"class"</span>],</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="azure-ml-setup" class="level3">
+<h3 class="anchored" data-anchor-id="azure-ml-setup">Azure ML Setup</h3>
+<p>This section encompasses the steps involved in splitting the dataset into training and testing subsets and setting up Azure Machine Learning (Azure ML) for chronic kidney disease detection. Below are the key steps along with explanations:</p>
+<p><strong>1. Splitting Data into Training and Testing Subsets:</strong> - The dataset is split into training and testing subsets using the <code>train_test_split</code> function from scikit-learn. - <code>X_train</code> and <code>X_test</code> contain the feature variables, while <code>y_train</code> and <code>y_test</code> contain the target variable. - The split ratio is set to 80% for training and 20% for testing, with stratification based on the target variable to maintain class distribution.</p>
+<p><strong>2. Authenticating Azure Credentials and Initializing ML Client:</strong> - Azure credentials are authenticated using the <code>DefaultAzureCredential</code>. - An instance of <code>MLClient</code> is initialized with Azure credentials and workspace details. - Subscription ID, resource group name, and workspace name are provided for Azure configuration.</p>
+<p><strong>3. Loading Workspace Configuration:</strong> - Workspace configuration is loaded from the <code>config.json</code> file using <code>Workspace.from_config</code>. - This ensures connectivity to the Azure ML workspace.</p>
+<p><strong>4. Defining Experiment:</strong> - An experiment is defined within the Azure ML workspace using <code>Experiment</code>. - The experiment is named “s224234568-Task3-chronic-kidney-detection-using-python-sdk”.</p>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792609331}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="5">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data into training and testing subsets</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    chronic_kidney_disease_df.drop(columns<span class="op">=</span><span class="st">"class"</span>, axis<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    chronic_kidney_disease_df[<span class="st">"class"</span>],</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    stratify<span class="op">=</span>chronic_kidney_disease_df[<span class="st">"class"</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Authenticate Azure</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>credential <span class="op">=</span> DefaultAzureCredential()</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize MLClient with Azure credentials and workspace details</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ml_client <span class="op">=</span> MLClient(</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    credential<span class="op">=</span>credential,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    subscription_id<span class="op">=</span><span class="st">"c01738a9-2f1c-41b3-b739-ca22191bef7b"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    resource_group_name<span class="op">=</span><span class="st">"s224234568_tasks"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    workspace_name<span class="op">=</span><span class="st">"ws_task3"</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Load workspace configuration</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>ws <span class="op">=</span> Workspace.from_config(<span class="st">"config.json"</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Define experiment</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>experiment <span class="op">=</span> Experiment(</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    workspace<span class="op">=</span>ws,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"s224234568-Task3-chronic-kidney-detection-using-python-sdk"</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Display experiment</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>experiment</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Name</td>
+<td data-quarto-table-cell-role="th">Workspace</td>
+<td data-quarto-table-cell-role="th">Report Page</td>
+<td data-quarto-table-cell-role="th">Docs Page</td>
+</tr>
+<tr class="even">
+<td>s224234568-Task3-chronic-kidney-detection-using-python-sdk</td>
+<td>ws_task3</td>
+<td><a href="https://ml.azure.com/experiments/id/a199014c-74d3-48ac-8a8f-386caa3164af?wsid=/subscriptions/c01738a9-2f1c-41b3-b739-ca22191bef7b/resourcegroups/s224234568_tasks/workspaces/ws_task3&amp;tid=d02378ec-1688-46d5-8540-1c28b5f470f6" target="_blank" rel="noopener">Link to Azure Machine Learning studio</a></td>
+<td><a href="https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.core.experiment.Experiment?view=azure-ml-py" target="_blank" rel="noopener">Link to Documentation</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792614306}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="6">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set experiment name for logging</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mlflow.set_experiment(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    experiment_name<span class="op">=</span><span class="st">"s224234568-Task3-chronic-kidney-detection-using-python-sdk"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Enable autologging with MLflow for sklearn</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>mlflow.sklearn.autolog()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="model-training-registring-the-model-through-mlflow" class="level3">
+<h3 class="anchored" data-anchor-id="model-training-registring-the-model-through-mlflow">Model Training Registring the Model through MLflow</h3>
+<p>This section describes the process of training a machine learning model for chronic kidney disease detection and logging the experiment metrics using MLflow. Below are the key steps along with explanations:</p>
+<p><strong>1. Starting MLflow Run:</strong> - MLflow run is initiated using <code>mlflow.start_run()</code> to track the experiment’s execution.</p>
+<p><strong>2. Initializing Random Forest Classifier:</strong> - A Random Forest Classifier is initialized with specific hyperparameters (criterion, max_depth, n_estimators, random_state).</p>
+<p><strong>3. Logging Dataset Metrics:</strong> - Metrics related to the dataset are logged, including the number of samples, number of features, and criterion used for model evaluation.</p>
+<p><strong>4. Model Training and Prediction:</strong> - The Random Forest Classifier is trained on the training data (<code>X_train</code>, <code>y_train</code>), and predictions are made on the test data (<code>X_test</code>). - The classification report containing evaluation metrics is printed to assess the model’s performance.</p>
+<p><strong>5. Logging Classification Report Metrics:</strong> - Classification report metrics such as accuracy, precision, recall, and F1-score are logged for evaluation.</p>
+<p><strong>6. Registering the Model via MLflow:</strong> - The trained Random Forest model is registered with MLflow using <code>mlflow.sklearn.log_model</code>. - The model is given a name (“random_forest_model_1_chronic_kidney”) and saved to the specified artifact path.</p>
+<p><strong>7. Saving the Model to a File:</strong> - The trained model is saved to a file using <code>mlflow.sklearn.save_model</code>.</p>
+<p><strong>8. Completing MLflow Run:</strong> - MLflow run is completed, and resources are released using <code>run.complete()</code> and <code>mlflow.end_run()</code>.</p>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792654390}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="7">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start MLflow run</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mlflow.start_run()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>run <span class="op">=</span> experiment.start_logging()</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize Random Forest Classifier</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>random_forest_classifier <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    criterion<span class="op">=</span><span class="st">"gini"</span>, max_depth<span class="op">=</span><span class="dv">7</span>, n_estimators<span class="op">=</span><span class="dv">24</span>, random_state<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Log dataset metrics</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>run.log(<span class="st">"num_samples"</span>, chronic_kidney_disease_df.shape[<span class="dv">0</span>])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>run.log(<span class="st">"num_features"</span>, chronic_kidney_disease_df.shape[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>run.log(<span class="st">"criterion"</span>, <span class="st">"gini"</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>random_forest <span class="op">=</span> random_forest_classifier.fit(X_train, y_train)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> random_forest.predict(X_test)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Print classification report</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Classification Matrix:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred))</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Log classification report metrics</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>cr <span class="op">=</span> classification_report(y_test, y_pred, output_dict<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>run.log(<span class="st">"accuracy"</span>, cr.pop(<span class="st">"accuracy"</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> class_or_avg, metrics_dict <span class="kw">in</span> cr.items():</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> metric, value <span class="kw">in</span> metrics_dict.items():</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        run.log(class_or_avg <span class="op">+</span> <span class="st">"_"</span> <span class="op">+</span> metric, value)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Register the model via MLFlow</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>model_name <span class="op">=</span> <span class="st">"random_forest_model_1_chronic_kidney"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Registering the model now through MLFlow"</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>mlflow.sklearn.log_model(</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    sk_model<span class="op">=</span>random_forest_classifier,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    registered_model_name<span class="op">=</span>model_name,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    artifact_path<span class="op">=</span>model_name,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the model to a file</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>mlflow.sklearn.save_model(</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    sk_model<span class="op">=</span>random_forest_classifier,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    path<span class="op">=</span>os.path.join(model_name, <span class="st">"trained_model"</span>),</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Complete MLflow run</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>run.complete()</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>mlflow.end_run()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>2024/04/21 16:14:21 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/mlflow/data/pandas_dataset.py:116: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values &lt;https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values&gt;`_ for more details."
+2024/04/21 16:14:25 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/mlflow/models/signature.py:144: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values &lt;https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values&gt;`_ for more details."
+2024/04/21 16:14:28 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/_distutils_hack/__init__.py:33: UserWarning: Setuptools is replacing distutils."
+2024/04/21 16:14:31 WARNING mlflow.utils.autologging_utils: MLflow autologging encountered a warning: "/anaconda/envs/azureml_py310_sdkv2/lib/python3.10/site-packages/mlflow/data/pandas_dataset.py:116: UserWarning: Hint: Inferred schema contains integer column(s). Integer columns in Python cannot represent missing values. If your input data contains missing values at inference time, it will be encoded as floats and will cause a schema enforcement error. The best way to avoid this problem is to infer the model schema based on a realistic data sample (training dataset) that includes missing values. Alternatively, you can declare integer columns as doubles (float64) whenever these columns may have missing values. See `Handling Integers With Missing Values &lt;https://www.mlflow.org/docs/latest/models.html#handling-integers-with-missing-values&gt;`_ for more details."
+2024/04/21 16:14:31 WARNING mlflow.sklearn: Failed to log evaluation dataset information to MLflow Tracking. Reason: BAD_REQUEST: Response: {'Error': {'Code': 'UserError', 'Severity': None, 'Message': 'Cannot log the same dataset with different context', 'MessageFormat': None, 'MessageParameters': None, 'ReferenceCode': None, 'DetailsUri': None, 'Target': None, 'Details': [], 'InnerError': None, 'DebugInfo': None, 'AdditionalInfo': None}, 'Correlation': {'operation': '8fb73775d4501789eccb205ccbcfc949', 'request': 'dd3e607f23602c93'}, 'Environment': 'centralindia', 'Location': 'centralindia', 'Time': '2024-04-21T16:14:31.9695178+00:00', 'ComponentName': 'mlflow', 'statusCode': 400, 'error_code': 'BAD_REQUEST'}
+Successfully registered model 'random_forest_model_1_chronic_kidney'.
+2024/04/21 16:14:35 INFO mlflow.tracking._model_registry.client: Waiting up to 300 seconds for model version to finish creation. Model name: random_forest_model_1_chronic_kidney, version 1
+Created version '1' of model 'random_forest_model_1_chronic_kidney'.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Classification Matrix:
+               precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99        50
+           1       1.00      0.97      0.98        30
+
+    accuracy                           0.99        80
+   macro avg       0.99      0.98      0.99        80
+weighted avg       0.99      0.99      0.99        80
+
+Registering the model now through MLFlow</code></pre>
+</div>
+</div>
+<p>The classification report summarizes the model’s performance in predicting chronic kidney disease:</p>
+<ul>
+<li><strong>Precision:</strong> High for both classes, indicating few false positives.</li>
+<li><strong>Recall:</strong> Generally high, indicating good coverage of actual positive cases.</li>
+<li><strong>F1-score:</strong> Balanced measure of precision and recall.</li>
+<li><strong>Accuracy:</strong> Overall high accuracy of 99%.</li>
+</ul>
+<p>In summary, the model demonstrates excellent performance in identifying chronic kidney disease cases.</p>
+</section>
+<section id="model-look-in-azure" class="level3">
+<h3 class="anchored" data-anchor-id="model-look-in-azure">Model Look in Azure</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task3_Kashish_files/figure-html/21000964-1-357690d9-232e-4f36-ac93-54229f97203a.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot 2024-04-21 at 10.26.23 PM.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="model-metrics-inside-azure-portal-inside-jobs-section" class="level2">
+<h2 class="anchored" data-anchor-id="model-metrics-inside-azure-portal-inside-jobs-section">Model metrics Inside Azure portal inside jobs section</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task3_Kashish_files/figure-html/1bcb4c04-1-52c3d82c-d005-4827-ab35-39d1389db175.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot 2024-04-21 at 10.12.53 PM.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task3_Kashish_files/figure-html/0c3f5842-1-edb9af32-ff2d-4f10-9ce1-88ace0bbabf3.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot 2024-04-21 at 10.13.53 PM.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="endpoint-creation" class="level2">
+<h2 class="anchored" data-anchor-id="endpoint-creation">Endpoint Creation</h2>
+<section id="endpoint-creation-and-model-deployment-for-chronic-kidney-disease-detection" class="level3">
+<h3 class="anchored" data-anchor-id="endpoint-creation-and-model-deployment-for-chronic-kidney-disease-detection">Endpoint Creation and Model Deployment for Chronic Kidney Disease Detection</h3>
+<p>In this section, the process of creating an endpoint and deploying a machine learning model for chronic kidney disease detection is detailed. Here’s an overview of the steps and their explanation:</p>
+<p><strong>1. Generating Endpoint Name:</strong> - A random suffix of alphanumeric characters is generated to ensure a unique endpoint name within Azure limits. - The prefix “ckd-endpoint-” is appended to the suffix to form the endpoint name.</p>
+<p><strong>2. Defining Online Endpoint:</strong> - An online endpoint is defined with the generated name and a clear description highlighting its purpose. - Authentication mode is set to “key”, indicating that access to the endpoint requires an API key. - Tags are added to provide metadata, such as the training dataset used.</p>
+<p><strong>3. Creating the Online Endpoint:</strong> - The defined online endpoint is created using <code>ml_client.online_endpoints.begin_create_or_update</code>. - This operation is expected to take approximately 2 minutes.</p>
+<p><strong>4. Retrieving Endpoint Information:</strong> - The created online endpoint is retrieved using its name to confirm its provisioning state. - Information about the retrieved endpoint, including its name and provisioning state, is printed for verification.</p>
+<p><strong>5. Retrieving the Registered Model:</strong> - The name of the registered model for deployment (“random_forest_model_1_chronic_kidney”) is defined. - The latest version of the registered model is retrieved using <code>ml_client.models.list</code>.</p>
+<p><strong>6. Deploying the Model:</strong> - An online deployment configuration (“blue”) is defined, specifying the endpoint name, model, instance type, and instance count. - The online deployment is created or updated using <code>ml_client.online_deployments.begin_create_or_update</code>. - This operation deploys the model to the specified endpoint.</p>
+<p><strong>7. Assigning Traffic to the Deployment:</strong> - Traffic is assigned to the blue deployment, indicating that it receives 100% of the requests. - This is achieved by updating the traffic distribution for the endpoint using <code>ml_client.online_endpoints.begin_create_or_update</code>.</p>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792730226}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="11">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate a random string for the endpoint name</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>random_suffix <span class="op">=</span> <span class="st">''</span>.join(random.choices(string.ascii_lowercase <span class="op">+</span> string.digits, k<span class="op">=</span><span class="dv">5</span>))  <span class="co"># Adjusted length to fit within limits</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>online_endpoint_name <span class="op">=</span> <span class="st">"ckd-endpoint-"</span> <span class="op">+</span> random_suffix  <span class="co"># Adjusted prefix to fit within limits</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an online endpoint with a clear description</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>endpoint <span class="op">=</span> ManagedOnlineEndpoint(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span>online_endpoint_name,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"Endpoint for detecting chronic kidney disease using machine learning model"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    auth_mode<span class="op">=</span><span class="st">"key"</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    tags<span class="op">=</span>{</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"training_dataset"</span>: <span class="st">"kidney_defaults"</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the online endpoint</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Expect the endpoint creation to take approximately 2 minutes.</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>endpoint <span class="op">=</span> ml_client.online_endpoints.begin_create_or_update(endpoint).result()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-gather="{&quot;logged&quot;:1711792826595}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="13">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the online endpoint</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>endpoint <span class="op">=</span> ml_client.online_endpoints.get(name<span class="op">=</span>online_endpoint_name)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print information about the retrieved endpoint</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Endpoint "</span><span class="sc">{</span>endpoint<span class="sc">.</span>name<span class="sc">}</span><span class="ss">" with provisioning state "</span><span class="sc">{</span>endpoint<span class="sc">.</span>provisioning_state<span class="sc">}</span><span class="ss">" is retrieved'</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the name of the registered model</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>registered_model_name <span class="op">=</span> <span class="st">"random_forest_model_1_chronic_kidney"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the latest version of the model</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>model_versions <span class="op">=</span> ml_client.models.<span class="bu">list</span>(name<span class="op">=</span>registered_model_name)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>latest_model_version <span class="op">=</span> <span class="bu">max</span>([<span class="bu">int</span>(m.version) <span class="cf">for</span> m <span class="kw">in</span> model_versions])</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>latest_model_version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Endpoint "ckd-endpoint-d17o6" with provisioning state "Succeeded" is retrieved</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>1</code></pre>
+</div>
+</div>
+<div class="cell" data-gather="{&quot;logged&quot;:1711793447236}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="14">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the latest version of the registered model</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>model_name <span class="op">=</span> <span class="st">"random_forest_model_1_chronic_kidney"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>latest_model_version <span class="op">=</span> <span class="bu">max</span>([<span class="bu">int</span>(m.version) <span class="cf">for</span> m <span class="kw">in</span> ml_client.models.<span class="bu">list</span>(name<span class="op">=</span>model_name)])</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the registered model for deployment</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ml_client.models.get(name<span class="op">=</span>model_name, version<span class="op">=</span>latest_model_version)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the configuration for the online deployment</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>online_blue_deployment <span class="op">=</span> ManagedOnlineDeployment(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"blue"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    endpoint_name<span class="op">=</span>online_endpoint_name,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    instance_type<span class="op">=</span><span class="st">"Standard_F4s_v2"</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    instance_count<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create or update the online deployment</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>blue_deployment <span class="op">=</span> ml_client.online_deployments.begin_create_or_update(online_blue_deployment).result()</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign 100% traffic to the blue deployment</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>endpoint.traffic <span class="op">=</span> {<span class="st">"blue"</span>: <span class="dv">100</span>}</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>ml_client.online_endpoints.begin_create_or_update(endpoint).result()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Check: endpoint ckd-endpoint-d17o6 exists
+Readonly attribute principal_id will be ignored in class &lt;class 'azure.ai.ml._restclient.v2022_05_01.models._models_py3.ManagedServiceIdentity'&gt;
+Readonly attribute tenant_id will be ignored in class &lt;class 'azure.ai.ml._restclient.v2022_05_01.models._models_py3.ManagedServiceIdentity'&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>..........................................................................................................</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>ManagedOnlineEndpoint({'public_network_access': 'Enabled', 'provisioning_state': 'Succeeded', 'scoring_uri': 'https://ckd-endpoint-d17o6.centralindia.inference.ml.azure.com/score', 'openapi_uri': 'https://ckd-endpoint-d17o6.centralindia.inference.ml.azure.com/swagger.json', 'name': 'ckd-endpoint-d17o6', 'description': 'Endpoint for detecting chronic kidney disease using machine learning model', 'tags': {'training_dataset': 'kidney_defaults'}, 'properties': {'azureml.onlineendpointid': '/subscriptions/c01738a9-2f1c-41b3-b739-ca22191bef7b/resourcegroups/s224234568_tasks/providers/microsoft.machinelearningservices/workspaces/ws_task3/onlineendpoints/ckd-endpoint-d17o6', 'AzureAsyncOperationUri': 'https://management.azure.com/subscriptions/c01738a9-2f1c-41b3-b739-ca22191bef7b/providers/Microsoft.MachineLearningServices/locations/centralindia/mfeOperationsStatus/oe:57ce9196-38f3-4712-910d-8a4810db7ca6:4af2d7e4-6184-46b9-86d6-2d78d110f75f?api-version=2022-02-01-preview'}, 'print_as_yaml': True, 'id': '/subscriptions/c01738a9-2f1c-41b3-b739-ca22191bef7b/resourceGroups/s224234568_tasks/providers/Microsoft.MachineLearningServices/workspaces/ws_task3/onlineEndpoints/ckd-endpoint-d17o6', 'Resource__source_path': None, 'base_path': '/mnt/batch/tasks/shared/LS_root/mounts/clusters/s2242345681-t3/code', 'creation_context': None, 'serialize': &lt;msrest.serialization.Serializer object at 0x7f0577348640&gt;, 'auth_mode': 'key', 'location': 'centralindia', 'identity': &lt;azure.ai.ml.entities._credentials.IdentityConfiguration object at 0x7f05779a95a0&gt;, 'traffic': {'blue': 100}, 'mirror_traffic': {}, 'kind': 'Managed'})</code></pre>
+</div>
+</div>
+<div class="cell" data-gather="{&quot;logged&quot;:1711793534192}" data-jupyter="{&quot;outputs_hidden&quot;:false,&quot;source_hidden&quot;:false}" data-nteract="{&quot;transient&quot;:{&quot;deleting&quot;:false}}" data-execution_count="15">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve metadata for the endpoint</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>endpoint <span class="op">=</span> ml_client.online_endpoints.get(name<span class="op">=</span>online_endpoint_name)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Print selected metadata about the endpoint</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Name: </span><span class="sc">{</span>endpoint<span class="sc">.</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">Status: </span><span class="sc">{</span>endpoint<span class="sc">.</span>provisioning_state<span class="sc">}</span><span class="ch">\n</span><span class="ss">Description: </span><span class="sc">{</span>endpoint<span class="sc">.</span>description<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print existing traffic details</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Traffic:"</span>, endpoint.traffic)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the scoring URI</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Scoring URI:"</span>, endpoint.scoring_uri)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Name: ckd-endpoint-d17o6
+Status: Succeeded
+Description: Endpoint for detecting chronic kidney disease using machine learning model
+Traffic: {'blue': 100}
+Scoring URI: https://ckd-endpoint-d17o6.centralindia.inference.ml.azure.com/score</code></pre>
+</div>
+</div>
+<p><strong>Summary:</strong></p>
+<p>The provided code demonstrates the end-to-end process of deploying a machine learning model for chronic kidney disease detection using Azure ML. Here’s a brief conclusion summarizing the key points:</p>
+<ol type="1">
+<li><strong>Data Processing and Model Training:</strong>
+<ul>
+<li>The dataset is preprocessed to handle missing values, encode categorical features, and scale numerical features.</li>
+<li>A Random Forest classifier is trained on the processed data to predict chronic kidney disease.</li>
+</ul></li>
+<li><strong>MLflow Logging:</strong>
+<ul>
+<li>MLflow is utilized to log dataset metrics, model performance metrics, and to register and save the trained model.</li>
+</ul></li>
+<li><strong>Endpoint Creation and Model Deployment:</strong>
+<ul>
+<li>An online endpoint is created with a clear description, and a unique name is generated for it.</li>
+<li>The trained model is deployed to the endpoint, allowing real-time inference on new data.</li>
+</ul></li>
+<li><strong>Endpoint Metadata Retrieval:</strong>
+<ul>
+<li>Metadata about the deployed endpoint, such as name, provisioning state, description, traffic details, and scoring URI, is retrieved and printed.</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="olympus.mygreatlearning.com.-n.d..-greatlearning-login.-online-available-at-httpsolympus.mygreatlearning.com." class="level4">
+<h4 class="anchored" data-anchor-id="olympus.mygreatlearning.com.-n.d..-greatlearning-login.-online-available-at-httpsolympus.mygreatlearning.com.">olympus.mygreatlearning.com. (n.d.). Greatlearning login. [online] Available at: https://olympus.mygreatlearning.com.</h4>
+</section>
+<section id="balapv-2024.-azure-machine-learning-cli-sdk-v2---azure-machine-learning.-online-learn.microsoft.com.-available-at-httpslearn.microsoft.comen-usazuremachine-learningconcept-v2viewazureml-api-2-accessed-21-apr.-2024." class="level4">
+<h4 class="anchored" data-anchor-id="balapv-2024.-azure-machine-learning-cli-sdk-v2---azure-machine-learning.-online-learn.microsoft.com.-available-at-httpslearn.microsoft.comen-usazuremachine-learningconcept-v2viewazureml-api-2-accessed-21-apr.-2024.">balapv (2024). Azure Machine Learning CLI &amp; SDK v2 - Azure Machine Learning. [online] learn.microsoft.com. Available at: https://learn.microsoft.com/en-us/azure/machine-learning/concept-v2?view=azureml-api-2 [Accessed 21 Apr.&nbsp;2024].</h4>
+
+
+</section>
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="kashish18/kashish18.github.io" data-repo-id="646083787" data-category="Giscus Comments" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="dark_dimmed" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left"><a href="https://kashish18.github.io/">Kash’s Portfolio</a> © 2024 and Blogs™ by <a href="https://kashish18.github.io/about.html">Kashish Mukheja</a></div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://forums.fast.ai/u/kashish18/summary">
+      <i class="bi bi-file-post-fill" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KashMkj">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/kashmkj18">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/kashish18">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:kash.mkj18@gmail.com">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html"><span class="animate__animated animate__fadeInDown" style="display: inline-block;">Welcome to the realm of Kashish</span></a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right"><a href="https://kashish18.github.io/about.html">Site Version 2.2.1.2</a> | <a href="https://kashish18.github.io/about.html">Site Feedback</a> | Website made by me!</div>
+  </div>
+</footer>
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

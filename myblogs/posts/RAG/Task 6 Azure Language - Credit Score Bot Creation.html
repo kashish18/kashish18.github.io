@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kashish Mukheja">
+
+<title>Kash’s Portfolio - Chronic Kidney Disease - EDA &amp; Training Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../cover.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/quarto-contrib/animate-4.1.1/animate.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+<style>:root{--animate-duration:3s;--animate-delay:2s;--animate-repeat:1}</style>
+
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Kash’s Portfolio - Chronic Kidney Disease - EDA &amp; Training Models">
+<meta property="og:description" content="My corner of the Web!">
+<meta property="og:image" content="https://kashish18.github.io/myblogs/posts/RAG/Kashish_Professional.jpeg">
+<meta property="og:site-name" content="Kash's Portfolio">
+<meta name="twitter:title" content="Kash’s Portfolio">
+<meta name="twitter:image" content="https://kashish18.github.io/myblogs/posts/RAG/cover.png">
+<meta name="twitter:creator" content="@Kashish18">
+<meta name="twitter:site" content="@Kashish18">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a href="../../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../../cover.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Kash’s Portfolio</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target=""><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html" rel="" target=""><i class="bi bi-newspaper" role="img">
+</i> 
+ <span class="menu-text">Blogs</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html" rel="" target=""><i class="bi bi-file-person" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+    <a href="https://github.com/kashish18/kashish18.github.io" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-code-slash"></i></a>
+    <a href="../../../myblogs/index.html" title="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}" class="quarto-navigation-tool px-1" aria-label="{{< animate fadeInDown &quot;Welcome to the realm of Kashish&quot; >}}"><i class="bi bi-rss"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Chronic Kidney Disease - EDA &amp; Training Models</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">blogging</div>
+                <div class="quarto-category">jupyter</div>
+                <div class="quarto-category">Computer Vision</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kashish Mukheja </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Saturday, 27 April 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#task-6c-d-azure-language---credit-score-bot-creation" id="toc-task-6c-d-azure-language---credit-score-bot-creation" class="nav-link active" data-scroll-target="#task-6c-d-azure-language---credit-score-bot-creation">Task 6C, D: Azure Language - Credit Score Bot Creation</a>
+  <ul>
+  <li><a href="#a-report-by" id="toc-a-report-by" class="nav-link" data-scroll-target="#a-report-by">A Report By:</a></li>
+  <li><a href="#name-kashish-mukheja" id="toc-name-kashish-mukheja" class="nav-link" data-scroll-target="#name-kashish-mukheja">Name: Kashish Mukheja</a></li>
+  <li><a href="#student-id-224234568" id="toc-student-id-224234568" class="nav-link" data-scroll-target="#student-id-224234568">Student Id: 224234568</a></li>
+  <li><a href="#email-s224234568deakin.edu.au" id="toc-email-s224234568deakin.edu.au" class="nav-link" data-scroll-target="#email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites:</a></li>
+  <li><a href="#install-the-necessary-libraries" id="toc-install-the-necessary-libraries" class="nav-link" data-scroll-target="#install-the-necessary-libraries">1. Install the necessary libraries:</a></li>
+  <li><a href="#import-the-required-libraries" id="toc-import-the-required-libraries" class="nav-link" data-scroll-target="#import-the-required-libraries">2. Import the required libraries:</a></li>
+  <li><a href="#create-a-language-resource-in-your-resource-group-azure-portal" id="toc-create-a-language-resource-in-your-resource-group-azure-portal" class="nav-link" data-scroll-target="#create-a-language-resource-in-your-resource-group-azure-portal">3. Create a Language resource in your resource group (Azure Portal):</a>
+  <ul class="collapse">
+  <li><a href="#resource-group" id="toc-resource-group" class="nav-link" data-scroll-target="#resource-group">Resource Group</a></li>
+  <li><a href="#create-language-resource-by-going-to-azure-ai-services" id="toc-create-language-resource-by-going-to-azure-ai-services" class="nav-link" data-scroll-target="#create-language-resource-by-going-to-azure-ai-services">Create Language Resource by going to Azure AI Services</a></li>
+  </ul></li>
+  <li><a href="#azure-language-service" id="toc-azure-language-service" class="nav-link" data-scroll-target="#azure-language-service">Azure Language Service</a>
+  <ul class="collapse">
+  <li><a href="#select-your-resource-to-access-the-studio." id="toc-select-your-resource-to-access-the-studio." class="nav-link" data-scroll-target="#select-your-resource-to-access-the-studio.">Select your resource to access the studio.</a></li>
+  </ul></li>
+  <li><a href="#project-setup" id="toc-project-setup" class="nav-link" data-scroll-target="#project-setup">Project Setup</a>
+  <ul class="collapse">
+  <li><a href="#explanation" id="toc-explanation" class="nav-link" data-scroll-target="#explanation">Explanation:</a></li>
+  </ul></li>
+  <li><a href="#view-the-project-on-the-language-studio" id="toc-view-the-project-on-the-language-studio" class="nav-link" data-scroll-target="#view-the-project-on-the-language-studio">View the project on the Language Studio:</a></li>
+  <li><a href="#we-can-now-see-that-a-project-has-been-created-on-the-language-studio." id="toc-we-can-now-see-that-a-project-has-been-created-on-the-language-studio." class="nav-link" data-scroll-target="#we-can-now-see-that-a-project-has-been-created-on-the-language-studio.">We can now see that a project has been created on the Language Studio.</a></li>
+  <li><a href="#testing-the-project-through-sdk" id="toc-testing-the-project-through-sdk" class="nav-link" data-scroll-target="#testing-the-project-through-sdk">Testing the project through SDK</a>
+  <ul class="collapse">
+  <li><a href="#test-by-asking-one-question" id="toc-test-by-asking-one-question" class="nav-link" data-scroll-target="#test-by-asking-one-question">1. Test by asking one question:</a></li>
+  <li><a href="#test-by-creating-a-chit-chat" id="toc-test-by-creating-a-chit-chat" class="nav-link" data-scroll-target="#test-by-creating-a-chit-chat">2. Test by creating a chit-chat:</a></li>
+  </ul></li>
+  <li><a href="#bot-creation" id="toc-bot-creation" class="nav-link" data-scroll-target="#bot-creation">Bot Creation</a>
+  <ul class="collapse">
+  <li><a href="#test-in-web-chat" id="toc-test-in-web-chat" class="nav-link" data-scroll-target="#test-in-web-chat">Test in Web Chat</a></li>
+  <li><a href="#create-a-groupme-application" id="toc-create-a-groupme-application" class="nav-link" data-scroll-target="#create-a-groupme-application">Create a Groupme application</a></li>
+  <li><a href="#integrating-azure-bot-with-groupme" id="toc-integrating-azure-bot-with-groupme" class="nav-link" data-scroll-target="#integrating-azure-bot-with-groupme">Integrating Azure Bot with GroupMe</a></li>
+  </ul></li>
+  <li><a href="#closing-the-project---resource-deletion" id="toc-closing-the-project---resource-deletion" class="nav-link" data-scroll-target="#closing-the-project---resource-deletion">Closing the project - resource deletion</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References:</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="task-6c-d-azure-language---credit-score-bot-creation" class="level1">
+<h1>Task 6C, D: Azure Language - Credit Score Bot Creation</h1>
+<section id="a-report-by" class="level4">
+<h4 class="anchored" data-anchor-id="a-report-by">A Report By:</h4>
+</section>
+<section id="name-kashish-mukheja" class="level3">
+<h3 class="anchored" data-anchor-id="name-kashish-mukheja">Name: Kashish Mukheja</h3>
+</section>
+<section id="student-id-224234568" class="level3">
+<h3 class="anchored" data-anchor-id="student-id-224234568">Student Id: 224234568</h3>
+</section>
+<section id="email-s224234568deakin.edu.au" class="level3">
+<h3 class="anchored" data-anchor-id="email-s224234568deakin.edu.au">Email: s224234568@deakin.edu.au</h3>
+<p><strong>Task</strong>: You need to select a domain and application and build a Custom Question Answering Bot using Azure Cognitive Services Language Studio, deploy it to Azure and attach it to a channel like Facebook.</p>
+</section>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This is a report on Azure Custom Question Answering service for building a knowledge base and developing a project focused on Credit Scoring FAQs. As mentioned, I have selected Credit Scores as a domain here for bot creation using Azure Cognitive Services Language Studio. This report aims to provide a comprehensive understanding of Azure’s cognitive language understanding capabilities and the process of creating a bot attaching with one of the channels, <em>GroupMe</em> to interact with the bot realtime.</p>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites:</h2>
+</section>
+<section id="install-the-necessary-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="install-the-necessary-libraries">1. Install the necessary libraries:</h2>
+<div class="cell" data-executioninfo="{&quot;elapsed&quot;:16228,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1711104643726,&quot;user&quot;:{&quot;displayName&quot;:&quot;Shambhavi Kamal Prasad&quot;,&quot;userId&quot;:&quot;08086685616728887641&quot;},&quot;user_tz&quot;:-330}" data-outputid="5ab62e06-b270-4b8e-848d-ee7ec44165f1" data-execution_count="41">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the azure question answering library</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>Uq azure<span class="op">-</span>ai<span class="op">-</span>language<span class="op">-</span>questionanswering</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dotenv library</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install <span class="op">-</span>q python<span class="op">-</span>dotenv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="import-the-required-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="import-the-required-libraries">2. Import the required libraries:</h2>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To read the secret keys for Authentication</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.core.credentials <span class="im">import</span> AzureKeyCredential</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># To create new project</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.ai.language.questionanswering.authoring <span class="im">import</span> AuthoringClient</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># to create a question-answering client, and to ask questions using the knowledge base</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.ai.language.questionanswering <span class="im">import</span> QuestionAnsweringClient</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> azure.ai.language.questionanswering <span class="im">import</span> models <span class="im">as</span> qna</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="create-a-language-resource-in-your-resource-group-azure-portal" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-language-resource-in-your-resource-group-azure-portal">3. Create a Language resource in your resource group (Azure Portal):</h2>
+<section id="resource-group" class="level4">
+<h4 class="anchored" data-anchor-id="resource-group">Resource Group</h4>
+<p>Go to your resource group in Azure Portal https://portal.azure.com/ 1. Create new language service resource. 2. Select both options for your language resource:</p>
+<blockquote class="blockquote">
+<p>Custom Question Answering</p>
+<p>Custom text classification etc.</p>
+</blockquote>
+<p>Note: 1. Please select the free pricing tier for your resource. 2. Please select the Premium LRS for your storage account.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/da8e4222-1-Screenshot 2024-04-28 at 12.16.30 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%2012.16.30%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="create-language-resource-by-going-to-azure-ai-services" class="level4">
+<h4 class="anchored" data-anchor-id="create-language-resource-by-going-to-azure-ai-services">Create Language Resource by going to Azure AI Services</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/4230be2e-1-Screenshot 2024-04-28 at 12.17.28 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%2012.17.28%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>After executing the above steps, you will see three resources in your resource group:</p>
+<ol type="1">
+<li>Language resource</li>
+<li>Storage resource</li>
+<li>Search resource</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/d3dcbba6-1-Screenshot 2024-04-28 at 12.32.40 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%2012.32.40%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>Copy the subscription key and endpoint. Save them as environment variables, to authenticate and connect to the Language Service client.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/d5e1a9b7-1-Screenshot 2024-04-28 at 12.34.45 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%2012.34.45%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<div class="cell" data-execution_count="11">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get service secrets</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>load_dotenv()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>endpoint <span class="op">=</span> os.environ.get(<span class="st">"endpoint"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> os.environ.get(<span class="st">"subscription_key"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Please note, we will create two clients, one for creating the project (Authoring) and one for querying it (Question Answering)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>authoring_client <span class="op">=</span> AuthoringClient(endpoint, AzureKeyCredential(key))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>qna_client <span class="op">=</span> QuestionAnsweringClient(endpoint, AzureKeyCredential(key))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="azure-language-service" class="level2">
+<h2 class="anchored" data-anchor-id="azure-language-service">Azure Language Service</h2>
+<p>Now that your resource is created, go to the Language Studio https://language.cognitive.azure.com/home</p>
+<section id="select-your-resource-to-access-the-studio." class="level3">
+<h3 class="anchored" data-anchor-id="select-your-resource-to-access-the-studio.">Select your resource to access the studio.</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/b552df81-1-Screenshot 2024-04-28 at 12.42.13 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%2012.42.13%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="project-setup" class="level2">
+<h2 class="anchored" data-anchor-id="project-setup">Project Setup</h2>
+<p>We will now leverage the Azure Authoring client to create a new project named “CreditScore FAQs” focused on credit score related questions. It involves creating the project, adding a knowledge base, and deploying it.</p>
+<section id="explanation" class="level4">
+<h4 class="anchored" data-anchor-id="explanation">Explanation:</h4>
+<p>The code performs the following steps:</p>
+<ol type="1">
+<li><p><strong>Creating a New Project</strong>: The script creates a new project named “CreditScoreFAQs” with English as the language. It also specifies a default answer if no relevant response is found.</p></li>
+<li><p><strong>Adding a Knowledge Base</strong>: A knowledge base is added to the project. In this example, three articles on credit scores have been used as the source.</p></li>
+<li><p><strong>Deploying the Project</strong>: After adding the knowledge base, the project is deployed, making it ready for use.</p></li>
+</ol>
+<div class="cell" data-execution_count="37">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create new project, add knowldege base and deploy it.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>authoring_client <span class="op">=</span> AuthoringClient(endpoint, AzureKeyCredential(key))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> authoring_client:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: create project</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">********************** Creating a new project *********************"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    project_name <span class="op">=</span> <span class="st">"CreditScoreFAQs"</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    project <span class="op">=</span> authoring_client.create_project(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span>project_name,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        options<span class="op">=</span>{</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">"description"</span>: <span class="st">"FAQs for Credit Score"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"language"</span>: <span class="st">"en"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"multilingualResource"</span>: <span class="va">True</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"settings"</span>: {</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                <span class="st">"defaultAnswer"</span>: <span class="st">"no answer"</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Output 1: View the project details</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"view created project info:"</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">name: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(project[<span class="st">"projectName"</span>]))</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">language: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(project[<span class="st">"language"</span>]))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">description: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(project[<span class="st">"description"</span>]))</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 2: Add a knowledge base</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">********************* Adding a knowledge base *********************"</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># We are adding two knowledge bases here. A minimum of one knowledge base is required.</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Please note, the knowledge base cannot have more than 3 sources (urls, files) in Free Tier.</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In other words, you can add upto three sources/indices in one project, under the free tier.</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    update_sources_poller <span class="op">=</span> authoring_client.begin_update_sources(</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span>project_name,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        sources<span class="op">=</span>[</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>                <span class="st">"op"</span>: <span class="st">"add"</span>,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value"</span>: {</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"displayName"</span>: <span class="st">"Marriage Credit FAQ"</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceUri"</span>: <span class="st">"https://www.experian.com/blogs/ask-experian/credit-education/life-events/marriage-and-credit/"</span>,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceKind"</span>: <span class="st">"url"</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>            },</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>                <span class="st">"op"</span>: <span class="st">"add"</span>,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value"</span>: {</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"displayName"</span>: <span class="st">"Credit Score Drop FAQ"</span>,</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceUri"</span>: <span class="st">"https://www.experian.com/blogs/ask-experian/why-did-my-credit-score-drop/"</span>,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceKind"</span>: <span class="st">"url"</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>            },</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>                <span class="st">"op"</span>: <span class="st">"add"</span>,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value"</span>: {</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"displayName"</span>: <span class="st">"Credit Score General FAQ"</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceUri"</span>: <span class="st">"https://www.experian.com/blogs/ask-experian/credit-education/faqs/credit-score-faqs/"</span>,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"sourceKind"</span>: <span class="st">"url"</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>            },</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>    update_sources_poller.result()</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Output 2: list sources</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">list project sources"</span>)</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>    sources <span class="op">=</span> authoring_client.list_sources(</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span>project_name</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> source <span class="kw">in</span> sources:</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"knowledge base name: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(source[<span class="st">"displayName"</span>]))</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">source: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(source[<span class="st">"source"</span>]))</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">source Uri: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(source[<span class="st">"sourceUri"</span>]))</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"</span><span class="ch">\t</span><span class="st">source kind: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(source[<span class="st">"sourceKind"</span>]))</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 3: deploy the project</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">********************** Deploying the project **********************"</span>)</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    deployment_poller <span class="op">=</span> authoring_client.begin_deploy_project(</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span>project_name,</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>        deployment_name<span class="op">=</span><span class="st">"production"</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>    deployment_poller.result()</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    <span class="co"># list all deployments</span></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>    deployments <span class="op">=</span> authoring_client.list_deployments(</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span>project_name</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"view project deployments"</span>)</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> d <span class="kw">in</span> deployments:</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(d)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+********************** Creating a new project *********************
+view created project info:
+    name: CreditScoreFAQs
+    language: en
+    description: FAQs for Credit Score
+
+********************* Adding a knowledge base *********************
+
+list project sources
+knowledge base name: Marriage Credit FAQ
+    source: https://www.experian.com/blogs/ask-experian/credit-education/life-events/marriage-and-credit/
+    source Uri: https://www.experian.com/blogs/ask-experian/credit-education/life-events/marriage-and-credit/
+    source kind: url
+knowledge base name: Credit Score Drop FAQ
+    source: https://www.experian.com/blogs/ask-experian/why-did-my-credit-score-drop/
+    source Uri: https://www.experian.com/blogs/ask-experian/why-did-my-credit-score-drop/
+    source kind: url
+knowledge base name: Credit Score General FAQ
+    source: https://www.experian.com/blogs/ask-experian/credit-education/faqs/credit-score-faqs/
+    source Uri: https://www.experian.com/blogs/ask-experian/credit-education/faqs/credit-score-faqs/
+    source kind: url
+
+********************** Deploying the project **********************
+view project deployments
+{'deploymentName': 'production', 'lastDeployedDateTime': '2024-04-28T08:15:22Z'}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="view-the-project-on-the-language-studio" class="level2">
+<h2 class="anchored" data-anchor-id="view-the-project-on-the-language-studio">View the project on the Language Studio:</h2>
+<ol type="1">
+<li>Navigate to https://language.cognitive.azure.com/home</li>
+<li>Before executing the above steps, we can see that the Language Studio had no projects. Now, you can see your project created here.</li>
+<li>Click on the project title to view the details like source name, url, and whether it is structured or unstructured.</li>
+<li>Clicking on the source on this page shows you the questions and answers.</li>
+</ol>
+</section>
+<section id="we-can-now-see-that-a-project-has-been-created-on-the-language-studio." class="level2">
+<h2 class="anchored" data-anchor-id="we-can-now-see-that-a-project-has-been-created-on-the-language-studio.">We can now see that a project has been created on the Language Studio.</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/f6932cb9-1-Screenshot 2024-04-28 at 1.19.08 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%201.19.08%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/7bbf642f-1-Screenshot 2024-04-28 at 4.00.19 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%204.00.19%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>The Knowledge base and resource is now getting deployed, which can then be used for creating the bot.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/64a5130f-1-Screenshot 2024-04-28 at 4.00.07 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%204.00.07%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/ef43725a-1-Screenshot 2024-04-28 at 4.11.15 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%204.11.15%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<p>Once, it is deployed as shown above, the next step is to create a chatbot using this corpus.</p>
+</section>
+<section id="testing-the-project-through-sdk" class="level2">
+<h2 class="anchored" data-anchor-id="testing-the-project-through-sdk">Testing the project through SDK</h2>
+<p>Let’s test the question answering through the QuestionAnsweringClient from Python Jupyter Notebook.</p>
+<section id="test-by-asking-one-question" class="level3">
+<h3 class="anchored" data-anchor-id="test-by-asking-one-question">1. Test by asking one question:</h3>
+<div class="cell" data-executioninfo="{&quot;elapsed&quot;:1573,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1711104789537,&quot;user&quot;:{&quot;displayName&quot;:&quot;Shambhavi Kamal Prasad&quot;,&quot;userId&quot;:&quot;08086685616728887641&quot;},&quot;user_tz&quot;:-330}" data-outputid="60f8412e-3e2e-4bb4-ce4a-bf6e8437993a" data-execution_count="38">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Test by asking a question</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>qna_client <span class="op">=</span> QuestionAnsweringClient(endpoint, AzureKeyCredential(key))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> qna_client:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    question<span class="op">=</span> <span class="st">"How Does Marriage Affect Credit?"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> qna_client.get_answers(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        question<span class="op">=</span>question,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        top<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        confidence_threshold<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        include_unstructured_sources<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        short_answer_options<span class="op">=</span>qna.ShortAnswerOptions(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            confidence_threshold<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            top<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        project_name <span class="op">=</span> <span class="st">"CreditScoreFAQs"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        deployment_name<span class="op">=</span><span class="st">"production"</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     print(output.answers[0])</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output.answers:</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        best_candidate <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> output.answers <span class="cf">if</span> a.confidence <span class="kw">and</span> a.confidence <span class="op">&gt;</span> <span class="fl">0.4</span>][<span class="dv">0</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Q: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(question))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"A: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(best_candidate.answer))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"No answers returned from question '</span><span class="sc">{</span>question<span class="sc">}</span><span class="ss">'"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Q: How Does Marriage Affect Credit?
+A: Marriage has no impact on your credit. Credit reports at the three national credit bureaus (Experian, TransUnion and Equifax) do not record marital status. Credit scores, which are based on the contents of your credit reports, therefore cannot make marital status a factor in calculating your scores. 
+
+That said, actions you take after marriage can impact your credit. If you decide to take out a mortgage or car loan together, for example, lenders will review both spouses' credit before deciding whether to approve the loan. Because of this, each spouse's credit history—before and after marriage—can impact future borrowing.</code></pre>
+</div>
+</div>
+</section>
+<section id="test-by-creating-a-chit-chat" class="level3">
+<h3 class="anchored" data-anchor-id="test-by-creating-a-chit-chat">2. Test by creating a chit-chat:</h3>
+<div class="cell" data-executioninfo="{&quot;elapsed&quot;:2460,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1711104797197,&quot;user&quot;:{&quot;displayName&quot;:&quot;Shambhavi Kamal Prasad&quot;,&quot;userId&quot;:&quot;08086685616728887641&quot;},&quot;user_tz&quot;:-330}" data-outputid="64aa3c81-e320-4130-868a-3fb23f61f4cc" data-execution_count="40">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Testing by initiating a chit-chat.</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>qna_client <span class="op">=</span> QuestionAnsweringClient(endpoint, AzureKeyCredential(key))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> qna_client:</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    first_question<span class="op">=</span> <span class="st">"How Does Marriage Affect Credit?"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> qna_client.get_answers(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        question<span class="op">=</span>first_question,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        top<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        confidence_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        include_unstructured_sources<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        short_answer_options<span class="op">=</span>qna.ShortAnswerOptions(</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>            confidence_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            top<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        project_name<span class="op">=</span><span class="st">"CreditScoreFAQs"</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        deployment_name<span class="op">=</span><span class="st">"production"</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output.answers:</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        best_candidate <span class="op">=</span> [a <span class="cf">for</span> a <span class="kw">in</span> output.answers <span class="cf">if</span> a.confidence <span class="kw">and</span> a.confidence <span class="op">&gt;</span> <span class="fl">0.2</span>][<span class="dv">0</span>]</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">u"Q: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(first_question))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">u"A: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(best_candidate.answer))</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">***********************************************************************************</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"No answers returned from question '</span><span class="sc">{</span>first_question<span class="sc">}</span><span class="ss">'"</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> best_candidate.qna_id:</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>        followup_question <span class="op">=</span> <span class="st">"Will Changing Your Name Impact Your Credit?"</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> qna_client.get_answers(</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>            question<span class="op">=</span>followup_question,</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>            top<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>            confidence_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>            answer_context<span class="op">=</span>qna.KnowledgeBaseAnswerContext(</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>                previous_question<span class="op">=</span>first_question,</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>                previous_qna_id<span class="op">=</span>best_candidate.qna_id</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>            short_answer_options<span class="op">=</span>qna.ShortAnswerOptions(</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>                confidence_threshold<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>                top<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>            ),</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>            include_unstructured_sources<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>            project_name<span class="op">=</span><span class="st">"CreditScoreFAQs"</span>,</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>            deployment_name<span class="op">=</span><span class="st">"production"</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> output.answers:</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">u"Q: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(followup_question))</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">u"A: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(output.answers[<span class="dv">0</span>].answer))</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">***********************************************************************************</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"No answers returned from question '</span><span class="sc">{</span>followup_question<span class="sc">}</span><span class="ss">'"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Q: How Does Marriage Affect Credit?
+A: Marriage has no impact on your credit. Credit reports at the three national credit bureaus (Experian, TransUnion and Equifax) do not record marital status. Credit scores, which are based on the contents of your credit reports, therefore cannot make marital status a factor in calculating your scores. 
+
+That said, actions you take after marriage can impact your credit. If you decide to take out a mortgage or car loan together, for example, lenders will review both spouses' credit before deciding whether to approve the loan. Because of this, each spouse's credit history—before and after marriage—can impact future borrowing.
+
+***********************************************************************************
+
+Q: Will Changing Your Name Impact Your Credit?
+A: No, name changes have [no effect on credit standing](https://www.experian.com/blogs/ask-experian/myths-vs-facts-about-marriage-and-credit/). If you change your name after marriage, you should notify the issuers of any outstanding loans or credit accounts you may have. Your new name will appear in the personal information section of your credit reports within a few months, as lenders update their records. 
+
+Personal information listings, including name changes, have no effect on credit scores.
+
+***********************************************************************************
+</code></pre>
+</div>
+</div>
+<p><em>Note: Changing the confidence threshold will change the way the answers are returned.</em></p>
+</section>
+</section>
+<section id="bot-creation" class="level2">
+<h2 class="anchored" data-anchor-id="bot-creation">Bot Creation</h2>
+<p>We will now create bot in Azure, test it in web chat and integrate it with the GroupMe application.</p>
+<ol type="1">
+<li>Go to Deploy Knowledge Base section on the left pane, and then ‘Create a bot’ button.</li>
+<li>Fill in the required details. For Language Resource Key, go to Azure Portal, and check the resource type as “language”. Copy the Key from the endpoints section on the left pane.</li>
+</ol>
+<p>Wait for Deployment to complete.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/2ebea429-1-Screenshot 2024-04-28 at 2.33.17 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%202.33.17%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<section id="test-in-web-chat" class="level3">
+<h3 class="anchored" data-anchor-id="test-in-web-chat">Test in Web Chat</h3>
+<p>Once the deployment is finished successfully, we can now hover to “Test in Web Chat” section of the bot page, under settings.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/b6008435-1-Screenshot 2024-04-28 at 2.34.58 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%202.34.58%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+</section>
+<section id="create-a-groupme-application" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-groupme-application">Create a Groupme application</h3>
+<p>Before integrating the app, we create an application on GroupMe by following the below mentioned steps:</p>
+<ol type="1">
+<li>Create a GroupMe account from https://web.groupme.com/chats</li>
+<li>Navigate to the developers’ site and sign in to your account.</li>
+<li>Select <em>Create an application</em> for your bot.
+<ul>
+<li>Enter an application name</li>
+<li>Provide callback URL as https://groupme.botframework.com/Home/Login.</li>
+<li>Provide remaining details and select Agree to GroupMe’s terms and select save.</li>
+</ul></li>
+<li>Note down your app’s credentials.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/ae2fa4dc-1-WhatsApp Image 2024-04-28 at 14.31.47.jpeg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">WhatsApp%20Image%202024-04-28%20at%2014.31.47.jpeg</figcaption>
+</figure>
+</div>
+</section>
+<section id="integrating-azure-bot-with-groupme" class="level3">
+<h3 class="anchored" data-anchor-id="integrating-azure-bot-with-groupme">Integrating Azure Bot with GroupMe</h3>
+<p>Let us now integrate our bot with the groupMe application created above. It’s a simple two step proces: 1. On the Azure bot page, go to <em>Channels</em> on the left pane window. 2. From the list of available channels, select <em>GroupMe</em> 3. Provide your <em>Access Token</em> and <em>Client Id</em> for the application created previously.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/3bd4964b-1-Screenshot 2024-04-28 at 3.46.10 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%203.46.10%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+<ol start="4" type="1">
+<li>Navigate to https://web.groupme.com/chats and create a new group.</li>
+<li>Now, again navigate to https://dev.groupme.com/applications/ and click on the <em>Redirect URL</em> in a new browser tab. Select the group name that you created in Step 4, and Save.</li>
+<li>You will now be able to chat on the groupme application.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Task 6 Azure Language - Credit Score Bot Creation_files/figure-html/8dd074c1-1-Screenshot 2024-04-28 at 3.30.45 PM.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Screenshot%202024-04-28%20at%203.30.45%E2%80%AFPM.png</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="closing-the-project---resource-deletion" class="level2">
+<h2 class="anchored" data-anchor-id="closing-the-project---resource-deletion">Closing the project - resource deletion</h2>
+<p>Once the above bot integration and testing has been completed, we can start with the cleaning up of resources. We can directly clean the resource from our “Resource groups” section, which will remove all resources created under this group, like bot, language service, storage, workspace and more.</p>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>In conclusion, this report highlights the integration of Azure Custom Question Answering service for building a knowledge base on Credit Scoring FAQs and the subsequent creation of a bot integrated with GroupMe. Through this project, we have successfully demonstrated the practical application of Azure’s cognitive language capabilities.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References:</h2>
+<p>olympus.mygreatlearning.com. (n.d.). Greatlearning login. [online] Available at: https://olympus.mygreatlearning.com/courses/109578/pages/faqbot1?module_item_id=5535798.</p>
+<p>‌ web.groupme.com. (n.d.). GroupMe. [online] Available at: https://web.groupme.com/chats.</p>
+<p>‌ azure-sdk (2022). Azure Cognitive Language Service Question Answering client library for Python. [online] learn.microsoft.com. Available at: https://learn.microsoft.com/en-us/python/api/overview/azure/ai-language-questionanswering-readme?view=azure-python.</p>
+<p>‌ JonathanFingold (n.d.). Azure Bot Service documentation - Bot Service. [online] learn.microsoft.com. Available at: https://learn.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0.</p>
+<p>‌</p>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://giscus.app/client.js" data-repo="kashish18/kashish18.github.io" data-repo-id="646083787" data-category="Giscus Comments" data-category-id="" data-mapping="title" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="dark_dimmed" data-lang="en" crossorigin="anonymous" data-loading="lazy" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left"><a href="https://kashish18.github.io/">Kash’s Portfolio</a> © 2024 and Blogs™ by <a href="https://kashish18.github.io/about.html">Kashish Mukheja</a></div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://forums.fast.ai/u/kashish18/summary">
+      <i class="bi bi-file-post-fill" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/KashMkj">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/kashmkj18">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/kashish18">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:kash.mkj18@gmail.com">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../../myblogs/index.html"><span class="animate__animated animate__fadeInDown" style="display: inline-block;">Welcome to the realm of Kashish</span></a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right"><a href="https://kashish18.github.io/about.html">Site Version 2.2.1.2</a> | <a href="https://kashish18.github.io/about.html">Site Feedback</a> | Website made by me!</div>
+  </div>
+</footer>
+
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
